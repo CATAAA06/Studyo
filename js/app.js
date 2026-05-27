@@ -12,6 +12,8 @@ let state = {
     playerCorso: '',
     playerTipoScuola: '',
     playerClasse: '',
+    firebaseUid: null,
+    firebaseEmail: '',
     xp: 0,
     streak: 1,
     level: 1,
@@ -101,6 +103,27 @@ function updateNav() {
 }
 
 /* =============================================
+   EMAIL LOGIN
+   ============================================= */
+
+function loginWithEmail() {
+    const email = document.getElementById('auth-email').value.trim();
+    const password = document.getElementById('auth-password').value;
+
+    if (!email) {
+        document.getElementById('auth-email').style.borderColor = '#E17055';
+        return;
+    }
+    if (!password || password.length < 6) {
+        document.getElementById('auth-password').style.borderColor = '#E17055';
+        showNotification('La password deve avere almeno 6 caratteri.');
+        return;
+    }
+
+    signInWithEmail(email, password);
+}
+
+/* =============================================
    SETUP
    ============================================= */
 
@@ -135,6 +158,12 @@ function completeSetup() {
 
     closeModal('setup');
     saveState();
+
+    // Save to Firestore
+    if (typeof saveUserToFirestore === 'function') {
+        saveUserToFirestore();
+    }
+
     updateNav();
     renderLobbies();
     renderChallenges();
@@ -753,6 +782,11 @@ function addXP(amount, reason) {
 
     updateNav();
     saveState();
+
+    // Sync to Firestore
+    if (typeof saveUserToFirestore === 'function') {
+        saveUserToFirestore();
+    }
 }
 
 function getCurrentLevel() {
@@ -1118,6 +1152,11 @@ function sendFeedback() {
     });
     localStorage.setItem('studyo_feedbacks', JSON.stringify(feedbacks));
 
+    // Save to Firestore
+    if (typeof saveFeedbackToFirestore === 'function') {
+        saveFeedbackToFirestore(type, text);
+    }
+
     closeModal('feedback');
     document.getElementById('feedback-text').value = '';
     showNotification('💬 Feedback inviato! Grazie per aiutarci a migliorare.');
@@ -1131,8 +1170,11 @@ function sendFeedback() {
 function init() {
     loadState();
 
+    // Firebase handles auth modals now
+    // Close setup if already done (firebase will re-open if needed)
     if (state.setupDone) {
         closeModal('setup');
+        closeModal('auth');
     }
 
     updateNav();
