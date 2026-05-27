@@ -9,6 +9,9 @@ let state = {
     playerSchool: 'universita',
     playerUni: '',
     playerScuola: '',
+    playerCorso: '',
+    playerTipoScuola: '',
+    playerClasse: '',
     xp: 0,
     streak: 1,
     level: 1,
@@ -72,9 +75,29 @@ function navigate(page, data) {
 }
 
 function updateNav() {
-    document.getElementById('nav-xp').textContent = state.xp;
-    document.getElementById('nav-streak').textContent = state.streak;
-    document.getElementById('nav-name').textContent = state.playerName || 'Studente';
+    const sidebarName = document.getElementById('sidebar-name');
+    const sidebarXp = document.getElementById('sidebar-xp');
+    const welcomeName = document.getElementById('main-welcome-name');
+    const uniIcon = document.getElementById('server-uni-icon');
+
+    if (sidebarName) sidebarName.textContent = state.playerName || 'Studente';
+    if (sidebarXp) sidebarXp.textContent = `${state.xp} XP · 🔥${state.streak}`;
+    if (welcomeName) welcomeName.textContent = state.playerName || 'Studente';
+
+    if (uniIcon && (state.playerUni || state.playerScuola)) {
+        uniIcon.style.display = 'flex';
+        uniIcon.title = state.playerUni || state.playerScuola;
+    }
+
+    // Home stats
+    const homeXp = document.getElementById('home-xp');
+    const homeStreak = document.getElementById('home-streak');
+    const homeQuizzes = document.getElementById('home-quizzes');
+    const homePomodoros = document.getElementById('home-pomodoros');
+    if (homeXp) homeXp.textContent = state.xp;
+    if (homeStreak) homeStreak.textContent = state.streak;
+    if (homeQuizzes) homeQuizzes.textContent = state.quizzesCompleted;
+    if (homePomodoros) homePomodoros.textContent = state.pomodorosCompleted;
 }
 
 /* =============================================
@@ -100,8 +123,11 @@ function completeSetup() {
 
     if (state.playerSchool === 'universita') {
         state.playerUni = document.getElementById('setup-uni').value.trim();
+        state.playerCorso = document.getElementById('setup-corso').value;
     } else {
         state.playerScuola = document.getElementById('setup-scuola').value.trim();
+        state.playerTipoScuola = document.getElementById('setup-tipo-scuola').value;
+        state.playerClasse = document.getElementById('setup-classe').value;
     }
 
     state.setupDone = true;
@@ -122,28 +148,23 @@ function completeSetup() {
    ============================================= */
 
 function renderLobbies(filter = 'all') {
-    const grid = document.getElementById('lobbies-grid');
+    const sidebarEl = document.getElementById('sidebar-lobbies');
     const filtered = filter === 'all' ? LOBBIES : LOBBIES.filter(l => l.category === filter);
 
-    grid.innerHTML = filtered.map(lobby => `
-        <div class="lobby-card" onclick="navigate('lobby', '${lobby.id}')">
-            <span class="lobby-card-icon">${lobby.icon}</span>
-            <div class="lobby-card-name">${lobby.name}</div>
-            <div class="lobby-card-category">${lobby.category}</div>
-            <div class="lobby-card-footer">
-                <span class="lobby-online-count">
-                    <span class="online-dot"></span>
-                    ${lobby.online + Math.floor(Math.random() * 5)} online
-                </span>
-                <span class="lobby-card-xp">+100 XP/h</span>
+    if (sidebarEl) {
+        sidebarEl.innerHTML = filtered.map(lobby => `
+            <div class="sidebar-lobby ${state.currentLobby === lobby.id ? 'active' : ''}" onclick="navigate('lobby', '${lobby.id}')">
+                <span class="sidebar-lobby-icon">${lobby.icon}</span>
+                <span class="sidebar-lobby-name">${lobby.name}</span>
+                <span class="sidebar-lobby-count">${lobby.online + Math.floor(Math.random() * 5)}</span>
             </div>
-        </div>
-    `).join('');
+        `).join('');
+    }
 }
 
 function filterLobbies(category) {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
+    document.querySelectorAll('.sidebar-filter').forEach(b => b.classList.remove('active'));
+    if (event && event.target) event.target.classList.add('active');
     renderLobbies(category);
 }
 
@@ -624,14 +645,14 @@ function handleAIKey(e) {
    ============================================= */
 
 function renderChallenges() {
-    const list = document.getElementById('challenges-list');
+    const list = document.getElementById('sidebar-challenges');
+    if (!list) return;
     list.innerHTML = DAILY_CHALLENGES.map(c => `
-        <div class="challenge-card">
-            <div class="challenge-title">${c.title}</div>
-            <div class="challenge-desc">${c.desc}</div>
-            <div class="challenge-reward">${c.reward}</div>
-            <div class="challenge-progress">
-                <div class="challenge-progress-fill" style="width: ${c.progress}%"></div>
+        <div class="sidebar-challenge">
+            <div class="sidebar-challenge-title">${c.title}</div>
+            <div class="sidebar-challenge-reward">${c.reward}</div>
+            <div class="sidebar-challenge-bar">
+                <div class="sidebar-challenge-fill" style="width:${c.progress}%"></div>
             </div>
         </div>
     `).join('');
@@ -647,6 +668,15 @@ function renderProfile() {
     document.getElementById('profile-name').textContent = state.playerName || 'Studente';
     document.getElementById('profile-level').textContent = `Livello ${levelData.level}`;
     document.getElementById('profile-title').textContent = levelData.title;
+
+    const uniLabel = document.getElementById('profile-uni-label');
+    const courseLabel = document.getElementById('profile-course-label');
+    if (uniLabel) {
+        uniLabel.textContent = state.playerUni || state.playerScuola || '';
+    }
+    if (courseLabel) {
+        courseLabel.textContent = state.playerCorso || state.playerTipoScuola || '';
+    }
 
     const prevXP = levelData.level > 1 ? LEVELS[levelData.level - 2].xpNeeded : 0;
     const progress = ((state.xp - prevXP) / (levelData.xpNeeded - prevXP)) * 100;
@@ -1062,6 +1092,36 @@ function escapeHTML(str) {
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
+}
+
+/* =============================================
+   FEEDBACK
+   ============================================= */
+
+function sendFeedback() {
+    const type = document.getElementById('feedback-type').value;
+    const text = document.getElementById('feedback-text').value.trim();
+
+    if (!text) {
+        document.getElementById('feedback-text').style.borderColor = '#E17055';
+        return;
+    }
+
+    // Save feedback locally (in production would go to a server)
+    const feedbacks = JSON.parse(localStorage.getItem('studyo_feedbacks') || '[]');
+    feedbacks.push({
+        type,
+        text,
+        user: state.playerName,
+        uni: state.playerUni || state.playerScuola,
+        date: new Date().toISOString()
+    });
+    localStorage.setItem('studyo_feedbacks', JSON.stringify(feedbacks));
+
+    closeModal('feedback');
+    document.getElementById('feedback-text').value = '';
+    showNotification('💬 Feedback inviato! Grazie per aiutarci a migliorare.');
+    addXP(25, 'Feedback inviato');
 }
 
 /* =============================================
