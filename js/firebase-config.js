@@ -32,41 +32,67 @@ async function signInWithGoogle() {
         await handleUserLogin(user);
         return user;
     } catch (error) {
-        console.error('Google sign-in error:', error);
-        showNotification('Errore nel login con Google. Riprova.');
+        console.error('Google sign-in error:', error.code, error.message);
+
+        if (error.code === 'auth/popup-blocked') {
+            showNotification('Popup bloccato! Disattiva il blocco popup per questo sito.');
+        } else if (error.code === 'auth/popup-closed-by-user') {
+            // User closed the popup, no error needed
+        } else if (error.code === 'auth/unauthorized-domain') {
+            showNotification('Dominio non autorizzato su Firebase. Aggiungi il dominio nelle impostazioni.');
+        } else if (error.code === 'auth/cancelled-popup-request') {
+            // Ignore
+        } else {
+            showNotification('Errore Google: ' + error.code);
+        }
         return null;
     }
 }
 
 async function signInWithEmail(email, password) {
+    // First try to sign in
     try {
         const result = await auth.signInWithEmailAndPassword(email, password);
         await handleUserLogin(result.user);
         return result.user;
-    } catch (error) {
-        if (error.code === 'auth/user-not-found') {
-            // Auto-create account
-            return await registerWithEmail(email, password);
-        }
-        console.error('Email sign-in error:', error);
-        showNotification('Email o password non corretti.');
-        return null;
-    }
-}
+    } catch (signInError) {
+        console.log('Sign-in failed, code:', signInError.code);
 
-async function registerWithEmail(email, password) {
-    try {
-        const result = await auth.createUserWithEmailAndPassword(email, password);
-        await handleUserLogin(result.user, true);
-        return result.user;
-    } catch (error) {
-        console.error('Registration error:', error);
-        if (error.code === 'auth/email-already-in-use') {
-            showNotification('Email già registrata. Prova ad accedere.');
-        } else if (error.code === 'auth/weak-password') {
-            showNotification('Password troppo debole (min 6 caratteri).');
+        // If user not found or invalid credential, try to register
+        if (signInError.code === 'auth/user-not-found' ||
+            signInError.code === 'auth/invalid-credential' ||
+            signInError.code === 'auth/wrong-password') {
+
+            // Try creating a new account
+            try {
+                const result = await auth.createUserWithEmailAndPassword(email, password);
+                await handleUserLogin(result.user, true);
+                showNotification('🎉 Account creato con successo!');
+                return result.user;
+            } catch (registerError) {
+                console.log('Register failed, code:', registerError.code);
+
+                if (registerError.code === 'auth/email-already-in-use') {
+                    // Account exists but password was wrong
+                    showNotification('Password non corretta. Riprova.');
+                } else if (registerError.code === 'auth/weak-password') {
+                    showNotification('Password troppo debole (min 6 caratteri).');
+                } else if (registerError.code === 'auth/invalid-email') {
+                    showNotification('Email non valida.');
+                } else {
+                    showNotification('Errore: ' + registerError.message);
+                }
+                return null;
+            }
+        }
+
+        // Other errors
+        if (signInError.code === 'auth/invalid-email') {
+            showNotification('Email non valida.');
+        } else if (signInError.code === 'auth/too-many-requests') {
+            showNotification('Troppi tentativi. Aspetta qualche minuto.');
         } else {
-            showNotification('Errore nella registrazione. Riprova.');
+            showNotification('Errore login: ' + signInError.code);
         }
         return null;
     }
