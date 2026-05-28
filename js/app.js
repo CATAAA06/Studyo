@@ -215,15 +215,30 @@ function renderLobbies(filter = 'all') {
     const sidebarEl = document.getElementById('sidebar-lobbies');
     if (!sidebarEl) return;
 
-    // Get user's corso esami
-    const corso = state.playerCorso;
-    const mieiEsamiIds = (corso && CORSI_ESAMI[corso]) ? CORSI_ESAMI[corso] : [];
+    const isUni = state.playerSchool === 'universita';
+    const isSuperiori = state.playerSchool === 'superiori';
+    const is5anno = state.playerClasse === '5';
+
+    // Determine user's personal lobbies
+    let mieiIds = [];
+    let mieiLabel = '';
+    if (isUni && state.playerCorso && CORSI_ESAMI[state.playerCorso]) {
+        mieiIds = CORSI_ESAMI[state.playerCorso];
+        mieiLabel = state.playerCorso;
+    } else if (isSuperiori && state.playerTipoScuola && typeof SCUOLE_MATERIE !== 'undefined' && SCUOLE_MATERIE[state.playerTipoScuola]) {
+        mieiIds = SCUOLE_MATERIE[state.playerTipoScuola];
+        mieiLabel = state.playerTipoScuola;
+    }
 
     // Show/hide "I miei esami" filter button
     const filterMiei = document.getElementById('filter-miei');
     if (filterMiei) {
-        filterMiei.style.display = mieiEsamiIds.length > 0 ? 'block' : 'none';
+        filterMiei.style.display = mieiIds.length > 0 ? 'block' : 'none';
+        filterMiei.textContent = isSuperiori ? '🎓 Le mie materie' : '🎓 I miei esami';
     }
+
+    // Update filter bar visibility based on user type
+    updateFilterBar();
 
     let html = '';
 
@@ -234,69 +249,87 @@ function renderLobbies(filter = 'all') {
         giuridica: { emoji: '⚖️', label: 'Giuridica' },
         umanistica: { emoji: '📖', label: 'Umanistica' },
         medicina: { emoji: '🏥', label: 'Medicina' },
+        superiori: { emoji: '🏫', label: 'Superiori' },
+        tolc: { emoji: '🎯', label: 'TOLC' },
         trasversale: { emoji: '🌍', label: 'Trasversali' }
     };
 
-    if (filter === 'miei' && mieiEsamiIds.length > 0) {
-        const mieiLobbies = LOBBIES.filter(l => mieiEsamiIds.includes(l.id));
-        const altreLobbies = LOBBIES.filter(l => !mieiEsamiIds.includes(l.id));
+    // Helper: group lobbies by category and render
+    function renderGrouped(lobbies) {
+        let out = '';
+        const grouped = {};
+        lobbies.forEach(l => {
+            if (!grouped[l.category]) grouped[l.category] = [];
+            grouped[l.category].push(l);
+        });
+        for (const cat of Object.keys(grouped)) {
+            const meta = CATEGORY_META[cat] || { emoji: '📁', label: cat };
+            out += renderSectionHeader(cat, meta.emoji, meta.label, grouped[cat].length);
+            out += grouped[cat].map(lobby => renderLobbyItem(lobby)).join('');
+            out += '</div>';
+        }
+        return out;
+    }
 
-        html += renderSectionHeader('miei', '📚', corso, mieiLobbies.length);
+    // Determine which lobbies are relevant to this user type
+    function getRelevantLobbies() {
+        if (isSuperiori) {
+            // Superiori users see: superiori lobbies + TOLC (if 5th year) — NOT uni lobbies by default
+            let relevant = LOBBIES.filter(l => l.category === 'superiori');
+            if (is5anno) {
+                relevant = relevant.concat(LOBBIES.filter(l => l.category === 'tolc'));
+            }
+            return relevant;
+        } else {
+            // Uni users see: uni lobbies (not superiori or tolc by default)
+            return LOBBIES.filter(l => l.category !== 'superiori' && l.category !== 'tolc');
+        }
+    }
+
+    if (filter === 'miei' && mieiIds.length > 0) {
+        const mieiLobbies = LOBBIES.filter(l => mieiIds.includes(l.id));
+        const relevant = getRelevantLobbies();
+        const altreLobbies = relevant.filter(l => !mieiIds.includes(l.id));
+
+        const headerEmoji = isSuperiori ? '🏫' : '📚';
+        html += renderSectionHeader('miei', headerEmoji, mieiLabel, mieiLobbies.length);
         html += mieiLobbies.map(lobby => renderLobbyItem(lobby)).join('');
         html += '</div>';
 
         if (altreLobbies.length > 0) {
-            // Group "altre" by category
-            const grouped = {};
-            altreLobbies.forEach(l => {
-                if (!grouped[l.category]) grouped[l.category] = [];
-                grouped[l.category].push(l);
-            });
-            for (const cat of Object.keys(grouped)) {
-                const meta = CATEGORY_META[cat] || { emoji: '📁', label: cat };
-                html += renderSectionHeader('altre-' + cat, meta.emoji, meta.label, grouped[cat].length);
-                html += grouped[cat].map(lobby => renderLobbyItem(lobby)).join('');
-                html += '</div>';
-            }
+            html += renderGrouped(altreLobbies);
         }
     } else if (filter === 'all') {
-        // If user has a corso, show "I tuoi esami" section first
-        if (mieiEsamiIds.length > 0) {
-            const mieiLobbies = LOBBIES.filter(l => mieiEsamiIds.includes(l.id));
-            const altreLobbies = LOBBIES.filter(l => !mieiEsamiIds.includes(l.id));
+        const relevant = getRelevantLobbies();
 
-            html += renderSectionHeader('miei', '📚', 'I tuoi esami', mieiLobbies.length);
+        if (mieiIds.length > 0) {
+            const mieiLobbies = LOBBIES.filter(l => mieiIds.includes(l.id));
+            const altreLobbies = relevant.filter(l => !mieiIds.includes(l.id));
+
+            const headerEmoji = isSuperiori ? '🏫' : '📚';
+            const headerLabel = isSuperiori ? 'Le tue materie' : 'I tuoi esami';
+            html += renderSectionHeader('miei', headerEmoji, headerLabel, mieiLobbies.length);
             html += mieiLobbies.map(lobby => renderLobbyItem(lobby)).join('');
             html += '</div>';
 
-            // Group remaining lobbies by category
-            const grouped = {};
-            altreLobbies.forEach(l => {
-                if (!grouped[l.category]) grouped[l.category] = [];
-                grouped[l.category].push(l);
-            });
-            for (const cat of Object.keys(grouped)) {
-                const meta = CATEGORY_META[cat] || { emoji: '📁', label: cat };
-                html += renderSectionHeader(cat, meta.emoji, meta.label, grouped[cat].length);
-                html += grouped[cat].map(lobby => renderLobbyItem(lobby)).join('');
-                html += '</div>';
+            if (altreLobbies.length > 0) {
+                html += renderGrouped(altreLobbies);
             }
         } else {
-            // No corso — group all lobbies by category
-            const grouped = {};
-            LOBBIES.forEach(l => {
-                if (!grouped[l.category]) grouped[l.category] = [];
-                grouped[l.category].push(l);
-            });
-            for (const cat of Object.keys(grouped)) {
-                const meta = CATEGORY_META[cat] || { emoji: '📁', label: cat };
-                html += renderSectionHeader(cat, meta.emoji, meta.label, grouped[cat].length);
-                html += grouped[cat].map(lobby => renderLobbyItem(lobby)).join('');
-                html += '</div>';
-            }
+            html += renderGrouped(relevant);
         }
+    } else if (filter === 'tolc') {
+        const tolcLobbies = LOBBIES.filter(l => l.category === 'tolc');
+        html += renderSectionHeader('tolc', '🎯', 'TOLC', tolcLobbies.length);
+        html += tolcLobbies.map(lobby => renderLobbyItem(lobby)).join('');
+        html += '</div>';
+    } else if (filter === 'superiori') {
+        const supLobbies = LOBBIES.filter(l => l.category === 'superiori');
+        html += renderSectionHeader('superiori', '🏫', 'Superiori', supLobbies.length);
+        html += supLobbies.map(lobby => renderLobbyItem(lobby)).join('');
+        html += '</div>';
     } else {
-        // Single category filter — still collapsible
+        // Standard category filter (scientifica, economia, etc.)
         const filtered = LOBBIES.filter(l => l.category === filter);
         const meta = CATEGORY_META[filter] || { emoji: '📁', label: filter };
         html += renderSectionHeader(filter, meta.emoji, meta.label, filtered.length);
@@ -305,6 +338,48 @@ function renderLobbies(filter = 'all') {
     }
 
     sidebarEl.innerHTML = html;
+}
+
+// Dynamically update filter buttons based on user type
+function updateFilterBar() {
+    const filtersEl = document.getElementById('sidebar-filters');
+    if (!filtersEl) return;
+
+    const isSuperiori = state.playerSchool === 'superiori';
+    const is5anno = state.playerClasse === '5';
+
+    // Get current active filter
+    const activeBtn = filtersEl.querySelector('.sidebar-filter.active');
+    const activeFilter = activeBtn ? activeBtn.dataset.filter || 'all' : 'all';
+
+    let buttonsHtml = '';
+
+    // "I miei esami / Le mie materie" — shown if user has a profile
+    const mieiLabel = isSuperiori ? '🎓 Le mie materie' : '🎓 I miei esami';
+    const hasMiei = isSuperiori
+        ? (state.playerTipoScuola && typeof SCUOLE_MATERIE !== 'undefined' && SCUOLE_MATERIE[state.playerTipoScuola])
+        : (state.playerCorso && CORSI_ESAMI[state.playerCorso]);
+    buttonsHtml += `<button class="sidebar-filter ${activeFilter === 'miei' ? 'active' : ''}" data-filter="miei" onclick="filterLobbies('miei')" style="${hasMiei ? '' : 'display:none'}">${mieiLabel}</button>`;
+
+    // "Tutte"
+    buttonsHtml += `<button class="sidebar-filter ${activeFilter === 'all' ? 'active' : ''}" data-filter="all" onclick="filterLobbies('all')">Tutte</button>`;
+
+    if (isSuperiori) {
+        // Superiori filters
+        buttonsHtml += `<button class="sidebar-filter ${activeFilter === 'superiori' ? 'active' : ''}" data-filter="superiori" onclick="filterLobbies('superiori')">🏫 Materie</button>`;
+        if (is5anno) {
+            buttonsHtml += `<button class="sidebar-filter ${activeFilter === 'tolc' ? 'active' : ''}" data-filter="tolc" onclick="filterLobbies('tolc')">🎯 TOLC</button>`;
+        }
+    } else {
+        // Uni filters
+        buttonsHtml += `<button class="sidebar-filter ${activeFilter === 'scientifica' ? 'active' : ''}" data-filter="scientifica" onclick="filterLobbies('scientifica')">🔬 Scientifica</button>`;
+        buttonsHtml += `<button class="sidebar-filter ${activeFilter === 'umanistica' ? 'active' : ''}" data-filter="umanistica" onclick="filterLobbies('umanistica')">📖 Umanistica</button>`;
+        buttonsHtml += `<button class="sidebar-filter ${activeFilter === 'economia' ? 'active' : ''}" data-filter="economia" onclick="filterLobbies('economia')">📊 Economia</button>`;
+        buttonsHtml += `<button class="sidebar-filter ${activeFilter === 'giuridica' ? 'active' : ''}" data-filter="giuridica" onclick="filterLobbies('giuridica')">⚖️ Giuridica</button>`;
+        buttonsHtml += `<button class="sidebar-filter ${activeFilter === 'medicina' ? 'active' : ''}" data-filter="medicina" onclick="filterLobbies('medicina')">🏥 Medicina</button>`;
+    }
+
+    filtersEl.innerHTML = buttonsHtml;
 }
 
 function renderLobbyItem(lobby) {
@@ -319,7 +394,9 @@ function renderLobbyItem(lobby) {
 
 function filterLobbies(category) {
     document.querySelectorAll('.sidebar-filter').forEach(b => b.classList.remove('active'));
-    if (event && event.target) event.target.classList.add('active');
+    const btn = document.querySelector(`.sidebar-filter[data-filter="${category}"]`);
+    if (btn) btn.classList.add('active');
+    else if (event && event.target) event.target.classList.add('active');
     renderLobbies(category);
 }
 

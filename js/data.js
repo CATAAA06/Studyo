@@ -1,5 +1,7 @@
 const LOBBIES = [
-    // --- Scientifica ---
+    // ==========================================
+    //  UNIVERSITA — Scientifica
+    // ==========================================
     { id: 'analisi1', name: 'Analisi Matematica 1', icon: '📐', category: 'scientifica', online: 12 },
     { id: 'analisi2', name: 'Analisi Matematica 2', icon: '📐', category: 'scientifica', online: 6 },
     { id: 'fisica1', name: 'Fisica 1', icon: '⚛️', category: 'scientifica', online: 9 },
@@ -15,7 +17,9 @@ const LOBBIES = [
     { id: 'meccanica', name: 'Meccanica Razionale', icon: '⚙️', category: 'scientifica', online: 5 },
     { id: 'elettrotecnica', name: 'Elettrotecnica', icon: '⚡', category: 'scientifica', online: 6 },
 
-    // --- Economia ---
+    // ==========================================
+    //  UNIVERSITA — Economia
+    // ==========================================
     { id: 'microeconomia', name: 'Microeconomia', icon: '📊', category: 'economia', online: 8 },
     { id: 'macroeconomia', name: 'Macroeconomia', icon: '🌍', category: 'economia', online: 9 },
     { id: 'ragioneria', name: 'Ragioneria / Economia Aziendale', icon: '📒', category: 'economia', online: 11 },
@@ -25,7 +29,9 @@ const LOBBIES = [
     { id: 'econometria', name: 'Econometria', icon: '📉', category: 'economia', online: 4 },
     { id: 'dirCommerciale', name: 'Diritto Commerciale', icon: '🏦', category: 'economia', online: 7 },
 
-    // --- Giuridica ---
+    // ==========================================
+    //  UNIVERSITA — Giuridica
+    // ==========================================
     { id: 'giurisprudenza', name: 'Diritto Privato', icon: '⚖️', category: 'giuridica', online: 15 },
     { id: 'dirCostituzionale', name: 'Diritto Costituzionale', icon: '📜', category: 'giuridica', online: 12 },
     { id: 'dirPenale', name: 'Diritto Penale', icon: '🔒', category: 'giuridica', online: 10 },
@@ -34,7 +40,9 @@ const LOBBIES = [
     { id: 'dirUE', name: "Diritto dell'Unione Europea", icon: '🇪🇺', category: 'giuridica', online: 5 },
     { id: 'procCivile', name: 'Procedura Civile', icon: '📋', category: 'giuridica', online: 4 },
 
-    // --- Umanistica ---
+    // ==========================================
+    //  UNIVERSITA — Umanistica
+    // ==========================================
     { id: 'letteratura', name: 'Letteratura Italiana', icon: '📖', category: 'umanistica', online: 5 },
     { id: 'storia', name: 'Storia Contemporanea', icon: '📜', category: 'umanistica', online: 7 },
     { id: 'filosofiaGen', name: 'Filosofia', icon: '💭', category: 'umanistica', online: 6 },
@@ -44,15 +52,97 @@ const LOBBIES = [
     { id: 'sociologia', name: 'Sociologia', icon: '👥', category: 'umanistica', online: 6 },
     { id: 'storiaArte', name: "Storia dell'Arte", icon: '🎨', category: 'umanistica', online: 3 },
 
-    // --- Medicina ---
+    // ==========================================
+    //  UNIVERSITA — Medicina
+    // ==========================================
     { id: 'anatomia', name: 'Anatomia Umana', icon: '🫀', category: 'medicina', online: 14 },
     { id: 'fisiologia', name: 'Fisiologia', icon: '🫁', category: 'medicina', online: 10 },
     { id: 'biochimica', name: 'Biochimica', icon: '🔬', category: 'medicina', online: 8 },
     { id: 'patologia', name: 'Patologia Generale', icon: '🩺', category: 'medicina', online: 7 },
     { id: 'farmacologia', name: 'Farmacologia', icon: '💊', category: 'medicina', online: 6 },
 
-    // --- Trasversali ---
+    // ==========================================
+    //  UNIVERSITA — Trasversali
+    // ==========================================
     { id: 'inglese', name: 'Inglese Accademico', icon: '🇬🇧', category: 'umanistica', online: 16 },
+
+    // ==========================================
+    //  SUPERIORI — Materie comuni e specifiche
+    // ==========================================
+    // Materie comuni a tutti gli indirizzi
+    { id: 'sup_italiano', name: 'Italiano', icon: '📝', category: 'superiori', online: 22 },
+    { id: 'sup_matematica', name: 'Matematica', icon: '🔢', category: 'superiori', online: 25 },
+    { id: 'sup_inglese', name: 'Inglese', icon: '🇬🇧', category: 'superiori', online: 18 },
+    { id: 'sup_storia', name: 'Storia', icon: '📜', category: 'superiori', online: 14 },
+    { id: 'sup_scienze', name: 'Scienze Naturali', icon: '🌿', category: 'superiori', online: 11 },
+    { id: 'sup_fisica', name: 'Fisica', icon: '⚛️', category: 'superiori', online: 13 },
+    { id: 'sup_chimica', name: 'Chimica', icon: '🧪', category: 'superiori', online: 10 },
+    { id: 'sup_filosofia', name: 'Filosofia', icon: '💭', category: 'superiori', online: 9 },
+    { id: 'sup_edFisica', name: 'Scienze Motorie', icon: '🏃', category: 'superiori', online: 5 },
+    { id: 'sup_religione', name: 'Religione / Alt.', icon: '🕊️', category: 'superiori', online: 3 },
+    { id: 'sup_edCivica', name: 'Educazione Civica', icon: '🏛️', category: 'superiori', online: 6 },
+
+    // Liceo Scientifico
+    { id: 'sup_disegnoTecn', name: 'Disegno e St. Arte', icon: '✏️', category: 'superiori', online: 5 },
+
+    // Liceo Classico
+    { id: 'sup_latino', name: 'Latino', icon: '🏛️', category: 'superiori', online: 12 },
+    { id: 'sup_greco', name: 'Greco Antico', icon: '🏺', category: 'superiori', online: 8 },
+    { id: 'sup_lettClassiche', name: 'Letteratura Classica', icon: '📜', category: 'superiori', online: 6 },
+
+    // Liceo Linguistico
+    { id: 'sup_francese', name: 'Francese', icon: '🇫🇷', category: 'superiori', online: 7 },
+    { id: 'sup_spagnolo', name: 'Spagnolo', icon: '🇪🇸', category: 'superiori', online: 9 },
+    { id: 'sup_tedesco', name: 'Tedesco', icon: '🇩🇪', category: 'superiori', online: 5 },
+
+    // Liceo Artistico
+    { id: 'sup_storiaArte', name: "Storia dell'Arte", icon: '🎨', category: 'superiori', online: 6 },
+    { id: 'sup_discipline', name: 'Discipline Pittoriche', icon: '🖌️', category: 'superiori', online: 4 },
+    { id: 'sup_scultura', name: 'Discipline Plastiche', icon: '🗿', category: 'superiori', online: 3 },
+    { id: 'sup_graficaArt', name: 'Discipline Grafiche', icon: '🎭', category: 'superiori', online: 3 },
+
+    // Liceo Scienze Umane
+    { id: 'sup_scienzeUmane', name: 'Scienze Umane', icon: '🧠', category: 'superiori', online: 7 },
+    { id: 'sup_pedagogia', name: 'Pedagogia', icon: '📚', category: 'superiori', online: 5 },
+    { id: 'sup_psicologia', name: 'Psicologia', icon: '🧩', category: 'superiori', online: 6 },
+    { id: 'sup_sociologia', name: 'Sociologia', icon: '👥', category: 'superiori', online: 4 },
+    { id: 'sup_diritto', name: 'Diritto ed Economia', icon: '⚖️', category: 'superiori', online: 8 },
+
+    // Istituti Tecnici
+    { id: 'sup_informaticaTecn', name: 'Informatica (ITIS)', icon: '💻', category: 'superiori', online: 15 },
+    { id: 'sup_sistemi', name: 'Sistemi e Reti', icon: '🌐', category: 'superiori', online: 10 },
+    { id: 'sup_tpsit', name: 'TPSIT', icon: '🖥️', category: 'superiori', online: 8 },
+    { id: 'sup_telecomunicazioni', name: 'Telecomunicazioni', icon: '📡', category: 'superiori', online: 5 },
+    { id: 'sup_elettronica', name: 'Elettronica', icon: '⚡', category: 'superiori', online: 6 },
+    { id: 'sup_meccanica', name: 'Meccanica', icon: '⚙️', category: 'superiori', online: 5 },
+    { id: 'sup_econAziendale', name: 'Economia Aziendale', icon: '📒', category: 'superiori', online: 9 },
+    { id: 'sup_dirittoEcon', name: 'Diritto (ITC)', icon: '📋', category: 'superiori', online: 7 },
+    { id: 'sup_geoPolitica', name: 'Geografia Economica', icon: '🗺️', category: 'superiori', online: 4 },
+
+    // Istituto Alberghiero
+    { id: 'sup_cucina', name: 'Lab. Cucina', icon: '👨‍🍳', category: 'superiori', online: 6 },
+    { id: 'sup_sala', name: 'Lab. Sala e Vendita', icon: '🍽️', category: 'superiori', online: 4 },
+    { id: 'sup_alimentazione', name: 'Scienza degli Alimenti', icon: '🥗', category: 'superiori', online: 5 },
+    { id: 'sup_accoglienza', name: 'Accoglienza Turistica', icon: '🏨', category: 'superiori', online: 3 },
+
+    // Materie per 5° anno Maturita
+    { id: 'sup_maturita', name: 'Prep. Maturita', icon: '🎓', category: 'superiori', online: 20 },
+
+    // ==========================================
+    //  TOLC — Test Online CISIA (per 5° superiore)
+    // ==========================================
+    { id: 'tolc_i', name: 'TOLC-I (Ingegneria)', icon: '🔧', category: 'tolc', online: 18 },
+    { id: 'tolc_e', name: 'TOLC-E (Economia)', icon: '💼', category: 'tolc', online: 14 },
+    { id: 'tolc_med', name: 'TOLC-MED (Medicina)', icon: '🩺', category: 'tolc', online: 22 },
+    { id: 'tolc_vet', name: 'TOLC-VET (Veterinaria)', icon: '🐾', category: 'tolc', online: 8 },
+    { id: 'tolc_su', name: 'TOLC-SU (Sc. Umanistiche)', icon: '📖', category: 'tolc', online: 10 },
+    { id: 'tolc_f', name: 'TOLC-F (Farmacia)', icon: '💊', category: 'tolc', online: 7 },
+    { id: 'tolc_b', name: 'TOLC-B (Biologia)', icon: '🧬', category: 'tolc', online: 9 },
+    { id: 'tolc_av', name: 'TOLC-AV (Architettura)', icon: '🏗️', category: 'tolc', online: 6 },
+    { id: 'tolc_logica', name: 'TOLC — Logica', icon: '🧩', category: 'tolc', online: 16 },
+    { id: 'tolc_matTolc', name: 'TOLC — Matematica', icon: '📐', category: 'tolc', online: 15 },
+    { id: 'tolc_comprensione', name: 'TOLC — Comprensione Verbale', icon: '📝', category: 'tolc', online: 11 },
+    { id: 'tolc_scienzeTolc', name: 'TOLC — Scienze (Bio+Chim+Fis)', icon: '🔬', category: 'tolc', online: 13 },
 ];
 
 /* =============================================
@@ -109,6 +199,47 @@ const CORSI_ESAMI = {
     'Scienze della Formazione': ['pedagogia', 'psicologia', 'filosofiaGen', 'storia', 'sociologia', 'statistica', 'letteratura', 'inglese'],
     'Agraria': ['chimica', 'chimicaOrg', 'biologia', 'statistica', 'fisica1', 'microeconomia', 'inglese'],
     'Veterinaria': ['anatomia', 'fisiologia', 'chimica', 'chimicaOrg', 'biologia', 'patologia', 'fisica1', 'statistica', 'inglese'],
+};
+
+/* =============================================
+   MATERIE PER TIPO DI SCUOLA SUPERIORE
+   ============================================= */
+
+const SCUOLE_MATERIE = {
+    // Licei
+    'Liceo Scientifico': ['sup_matematica', 'sup_fisica', 'sup_scienze', 'sup_chimica', 'sup_italiano', 'sup_latino', 'sup_inglese', 'sup_storia', 'sup_filosofia', 'sup_disegnoTecn', 'sup_edFisica', 'sup_edCivica', 'sup_maturita'],
+    'Liceo Scientifico - Scienze Applicate': ['sup_matematica', 'sup_fisica', 'sup_scienze', 'sup_chimica', 'sup_informaticaTecn', 'sup_italiano', 'sup_inglese', 'sup_storia', 'sup_filosofia', 'sup_disegnoTecn', 'sup_edFisica', 'sup_edCivica', 'sup_maturita'],
+    'Liceo Classico': ['sup_latino', 'sup_greco', 'sup_lettClassiche', 'sup_italiano', 'sup_storia', 'sup_filosofia', 'sup_matematica', 'sup_fisica', 'sup_inglese', 'sup_scienze', 'sup_storiaArte', 'sup_edFisica', 'sup_edCivica', 'sup_maturita'],
+    'Liceo Linguistico': ['sup_inglese', 'sup_francese', 'sup_spagnolo', 'sup_tedesco', 'sup_italiano', 'sup_storia', 'sup_filosofia', 'sup_matematica', 'sup_fisica', 'sup_scienze', 'sup_storiaArte', 'sup_edFisica', 'sup_edCivica', 'sup_maturita'],
+    'Liceo Artistico': ['sup_storiaArte', 'sup_discipline', 'sup_scultura', 'sup_graficaArt', 'sup_italiano', 'sup_storia', 'sup_matematica', 'sup_fisica', 'sup_chimica', 'sup_inglese', 'sup_filosofia', 'sup_edFisica', 'sup_edCivica', 'sup_maturita'],
+    'Liceo delle Scienze Umane': ['sup_scienzeUmane', 'sup_pedagogia', 'sup_psicologia', 'sup_sociologia', 'sup_diritto', 'sup_italiano', 'sup_latino', 'sup_storia', 'sup_filosofia', 'sup_matematica', 'sup_inglese', 'sup_scienze', 'sup_edFisica', 'sup_edCivica', 'sup_maturita'],
+    'Liceo Musicale e Coreutico': ['sup_italiano', 'sup_storia', 'sup_filosofia', 'sup_matematica', 'sup_fisica', 'sup_inglese', 'sup_storiaArte', 'sup_edFisica', 'sup_edCivica', 'sup_maturita'],
+
+    // Istituti Tecnici
+    'ITIS': ['sup_informaticaTecn', 'sup_sistemi', 'sup_tpsit', 'sup_telecomunicazioni', 'sup_elettronica', 'sup_meccanica', 'sup_matematica', 'sup_fisica', 'sup_chimica', 'sup_italiano', 'sup_inglese', 'sup_storia', 'sup_edFisica', 'sup_edCivica', 'sup_maturita'],
+    'Tecnico Informatico': ['sup_informaticaTecn', 'sup_sistemi', 'sup_tpsit', 'sup_telecomunicazioni', 'sup_matematica', 'sup_fisica', 'sup_italiano', 'sup_inglese', 'sup_storia', 'sup_edFisica', 'sup_edCivica', 'sup_maturita'],
+    'ITC': ['sup_econAziendale', 'sup_dirittoEcon', 'sup_geoPolitica', 'sup_matematica', 'sup_italiano', 'sup_inglese', 'sup_francese', 'sup_storia', 'sup_informaticaTecn', 'sup_edFisica', 'sup_edCivica', 'sup_maturita'],
+    'Tecnico Turistico': ['sup_geoPolitica', 'sup_dirittoEcon', 'sup_econAziendale', 'sup_inglese', 'sup_francese', 'sup_spagnolo', 'sup_tedesco', 'sup_italiano', 'sup_storia', 'sup_storiaArte', 'sup_matematica', 'sup_accoglienza', 'sup_edFisica', 'sup_edCivica', 'sup_maturita'],
+
+    // Istituti Professionali
+    'IPSIA': ['sup_meccanica', 'sup_elettronica', 'sup_matematica', 'sup_fisica', 'sup_chimica', 'sup_italiano', 'sup_inglese', 'sup_storia', 'sup_diritto', 'sup_edFisica', 'sup_edCivica', 'sup_maturita'],
+    'Alberghiero': ['sup_cucina', 'sup_sala', 'sup_alimentazione', 'sup_accoglienza', 'sup_italiano', 'sup_inglese', 'sup_francese', 'sup_storia', 'sup_matematica', 'sup_scienze', 'sup_diritto', 'sup_edFisica', 'sup_edCivica', 'sup_maturita'],
+    'Professionale Servizi': ['sup_diritto', 'sup_psicologia', 'sup_italiano', 'sup_inglese', 'sup_storia', 'sup_matematica', 'sup_scienze', 'sup_edFisica', 'sup_edCivica', 'sup_maturita'],
+};
+
+/* =============================================
+   TOLC — SEZIONI PER TIPO DI TEST
+   ============================================= */
+
+const TOLC_SEZIONI = {
+    'TOLC-I': ['tolc_i', 'tolc_logica', 'tolc_matTolc', 'tolc_scienzeTolc', 'tolc_comprensione'],
+    'TOLC-E': ['tolc_e', 'tolc_logica', 'tolc_matTolc', 'tolc_comprensione'],
+    'TOLC-MED': ['tolc_med', 'tolc_logica', 'tolc_matTolc', 'tolc_scienzeTolc', 'tolc_comprensione'],
+    'TOLC-VET': ['tolc_vet', 'tolc_logica', 'tolc_matTolc', 'tolc_scienzeTolc', 'tolc_comprensione'],
+    'TOLC-SU': ['tolc_su', 'tolc_logica', 'tolc_matTolc', 'tolc_comprensione'],
+    'TOLC-F': ['tolc_f', 'tolc_logica', 'tolc_matTolc', 'tolc_scienzeTolc', 'tolc_comprensione'],
+    'TOLC-B': ['tolc_b', 'tolc_logica', 'tolc_matTolc', 'tolc_scienzeTolc', 'tolc_comprensione'],
+    'TOLC-AV': ['tolc_av', 'tolc_logica', 'tolc_matTolc', 'tolc_comprensione'],
 };
 
 /* =============================================
@@ -450,6 +581,392 @@ const QUIZZES = {
         {
             question: "La tavola periodica è organizzata per:",
             options: ["Ordine alfabetico", "Numero atomico crescente", "Data di scoperta", "Colore degli elementi"],
+            correct: 1
+        }
+    ],
+
+    // ==========================================
+    // TOLC QUIZZES
+    // ==========================================
+    tolc_logica: [
+        {
+            question: "Se tutti i gatti sono animali e alcuni animali sono domestici, allora:",
+            options: ["Tutti i gatti sono domestici", "Alcuni gatti potrebbero essere domestici", "Nessun gatto e domestico", "Tutti gli animali sono gatti"],
+            correct: 1
+        },
+        {
+            question: "Quale numero completa la serie: 2, 6, 18, 54, ...?",
+            options: ["108", "162", "72", "216"],
+            correct: 1
+        },
+        {
+            question: "Se A implica B, e B e falso, allora:",
+            options: ["A e vero", "A e falso", "Non si puo concludere nulla", "B e vero"],
+            correct: 1
+        },
+        {
+            question: "In un gruppo di 30 studenti, 18 studiano inglese e 15 francese. Almeno quanti studiano entrambe?",
+            options: ["3", "5", "0", "15"],
+            correct: 0
+        },
+        {
+            question: "Quale termine non appartiene alla serie: mela, pera, carota, banana, arancia?",
+            options: ["Mela", "Pera", "Carota", "Banana"],
+            correct: 2
+        }
+    ],
+    tolc_matTolc: [
+        {
+            question: "Il logaritmo in base 2 di 32 e:",
+            options: ["4", "5", "6", "3"],
+            correct: 1
+        },
+        {
+            question: "L'equazione x^2 - 5x + 6 = 0 ha soluzioni:",
+            options: ["x = 2 e x = 3", "x = 1 e x = 6", "x = -2 e x = -3", "Nessuna soluzione reale"],
+            correct: 0
+        },
+        {
+            question: "Il seno di 30 gradi vale:",
+            options: ["1/2", "sqrt(3)/2", "sqrt(2)/2", "1"],
+            correct: 0
+        },
+        {
+            question: "La derivata di x^3 e:",
+            options: ["x^2", "3x^2", "3x", "x^4/4"],
+            correct: 1
+        },
+        {
+            question: "Una retta con pendenza 0 e:",
+            options: ["Verticale", "Orizzontale", "Obliqua a 45 gradi", "Non esiste"],
+            correct: 1
+        }
+    ],
+    tolc_comprensione: [
+        {
+            question: "In un testo argomentativo, la tesi e:",
+            options: ["Un esempio pratico", "La posizione sostenuta dall'autore", "La conclusione del testo", "Una citazione"],
+            correct: 1
+        },
+        {
+            question: "Un sinonimo di 'obsoleto' e:",
+            options: ["Moderno", "Superato", "Necessario", "Evidente"],
+            correct: 1
+        },
+        {
+            question: "Quale connettivo indica una conseguenza?",
+            options: ["Tuttavia", "Pertanto", "Sebbene", "Oppure"],
+            correct: 1
+        },
+        {
+            question: "L'antitesi e una figura retorica che:",
+            options: ["Ripete un suono", "Accosta concetti opposti", "Esagera un concetto", "Attribuisce qualita umane a oggetti"],
+            correct: 1
+        },
+        {
+            question: "In un sillogismo, se la premessa maggiore e falsa:",
+            options: ["La conclusione e comunque vera", "La conclusione non e necessariamente vera", "Le premesse diventano irrilevanti", "Il sillogismo e sempre valido"],
+            correct: 1
+        }
+    ],
+    tolc_scienzeTolc: [
+        {
+            question: "Il DNA e composto da:",
+            options: ["Amminoacidi", "Nucleotidi", "Lipidi", "Carboidrati"],
+            correct: 1
+        },
+        {
+            question: "La fotosintesi avviene nei:",
+            options: ["Mitocondri", "Cloroplasti", "Ribosomi", "Lisosomi"],
+            correct: 1
+        },
+        {
+            question: "L'unita SI della forza e il:",
+            options: ["Joule", "Newton", "Watt", "Pascal"],
+            correct: 1
+        },
+        {
+            question: "Il numero di Avogadro e circa:",
+            options: ["6.02 x 10^23", "3.14 x 10^8", "1.6 x 10^-19", "9.8 x 10^1"],
+            correct: 0
+        },
+        {
+            question: "La mitosi produce:",
+            options: ["4 cellule diverse", "2 cellule identiche", "1 cellula piu grande", "4 cellule identiche"],
+            correct: 1
+        }
+    ],
+
+    // ==========================================
+    // SUPERIORI QUIZZES
+    // ==========================================
+    sup_matematica: [
+        {
+            question: "Il discriminante dell'equazione ax^2 + bx + c = 0 e:",
+            options: ["a^2 - 4bc", "b^2 - 4ac", "c^2 - 4ab", "b^2 + 4ac"],
+            correct: 1
+        },
+        {
+            question: "Il valore di pi greco e circa:",
+            options: ["2.14", "3.14", "4.14", "3.41"],
+            correct: 1
+        },
+        {
+            question: "Una funzione e pari se:",
+            options: ["f(-x) = f(x)", "f(-x) = -f(x)", "f(0) = 0", "f(x) > 0 per ogni x"],
+            correct: 0
+        },
+        {
+            question: "log(100) in base 10 e uguale a:",
+            options: ["1", "2", "10", "100"],
+            correct: 1
+        },
+        {
+            question: "La somma degli angoli interni di un triangolo e:",
+            options: ["90 gradi", "180 gradi", "270 gradi", "360 gradi"],
+            correct: 1
+        }
+    ],
+    sup_italiano: [
+        {
+            question: "Chi ha scritto 'I Promessi Sposi'?",
+            options: ["Giacomo Leopardi", "Alessandro Manzoni", "Giovanni Verga", "Luigi Pirandello"],
+            correct: 1
+        },
+        {
+            question: "Il Futurismo e un movimento letterario del:",
+            options: ["Ottocento", "Primo Novecento", "Secondo Novecento", "Settecento"],
+            correct: 1
+        },
+        {
+            question: "L'analisi del periodo studia:",
+            options: ["Le singole parole", "I rapporti tra le proposizioni", "I suoni delle parole", "La punteggiatura"],
+            correct: 1
+        },
+        {
+            question: "Un ossimoro e:",
+            options: ["Una ripetizione di suoni", "L'accostamento di termini contraddittori", "Un'esagerazione", "Un paragone"],
+            correct: 1
+        },
+        {
+            question: "La Divina Commedia e scritta in:",
+            options: ["Prosa", "Terzine di endecasillabi", "Sonetti", "Ottave"],
+            correct: 1
+        }
+    ],
+    sup_fisica: [
+        {
+            question: "La velocita e il rapporto tra:",
+            options: ["Massa e tempo", "Spazio e tempo", "Forza e massa", "Energia e tempo"],
+            correct: 1
+        },
+        {
+            question: "L'accelerazione di gravita sulla Terra e circa:",
+            options: ["8.9 m/s^2", "9.8 m/s^2", "10.8 m/s^2", "6.7 m/s^2"],
+            correct: 1
+        },
+        {
+            question: "La legge di Ohm afferma che V =",
+            options: ["I / R", "I * R", "R / I", "I + R"],
+            correct: 1
+        },
+        {
+            question: "L'unita di misura della potenza e il:",
+            options: ["Joule", "Newton", "Watt", "Ampere"],
+            correct: 2
+        },
+        {
+            question: "Un corpo in caduta libera (senza attrito) ha accelerazione:",
+            options: ["Crescente", "Costante", "Decrescente", "Nulla"],
+            correct: 1
+        }
+    ],
+    sup_latino: [
+        {
+            question: "Rosa, rosae appartiene alla:",
+            options: ["Prima declinazione", "Seconda declinazione", "Terza declinazione", "Quarta declinazione"],
+            correct: 0
+        },
+        {
+            question: "L'Eneide e stata scritta da:",
+            options: ["Ovidio", "Virgilio", "Orazio", "Cicerone"],
+            correct: 1
+        },
+        {
+            question: "Il congiuntivo latino esprime:",
+            options: ["Solo certezza", "Possibilita, desiderio, dubbio", "Solo comandi", "Solo il passato"],
+            correct: 1
+        },
+        {
+            question: "Il complemento di specificazione in latino e il caso:",
+            options: ["Nominativo", "Genitivo", "Dativo", "Ablativo"],
+            correct: 1
+        },
+        {
+            question: "Quante declinazioni ha il latino?",
+            options: ["3", "4", "5", "6"],
+            correct: 2
+        }
+    ],
+    sup_inglese: [
+        {
+            question: "Il Present Perfect si usa per:",
+            options: ["Azioni future", "Azioni passate con legame al presente", "Azioni in corso", "Abitudini passate"],
+            correct: 1
+        },
+        {
+            question: "Quale frase e corretta?",
+            options: ["I have went", "I have gone", "I have go", "I have goed"],
+            correct: 1
+        },
+        {
+            question: "Il Second Conditional usa:",
+            options: ["If + present, will + infinitive", "If + past simple, would + infinitive", "If + past perfect, would have + past participle", "If + present, present"],
+            correct: 1
+        },
+        {
+            question: "'Although' introduce una proposizione:",
+            options: ["Causale", "Concessiva", "Finale", "Temporale"],
+            correct: 1
+        },
+        {
+            question: "Il plurale di 'child' e:",
+            options: ["Childs", "Children", "Childes", "Childern"],
+            correct: 1
+        }
+    ],
+    sup_storia: [
+        {
+            question: "La Rivoluzione Industriale e iniziata nel:",
+            options: ["XVII secolo in Francia", "XVIII secolo in Inghilterra", "XIX secolo in Germania", "XVI secolo in Italia"],
+            correct: 1
+        },
+        {
+            question: "L'Italia e entrata nella Prima Guerra Mondiale nel:",
+            options: ["1914", "1915", "1916", "1917"],
+            correct: 1
+        },
+        {
+            question: "La marcia su Roma e avvenuta nel:",
+            options: ["1920", "1922", "1924", "1926"],
+            correct: 1
+        },
+        {
+            question: "Il referendum Repubblica/Monarchia in Italia si e tenuto nel:",
+            options: ["1945", "1946", "1947", "1948"],
+            correct: 1
+        },
+        {
+            question: "La Guerra Fredda e il conflitto tra:",
+            options: ["USA e Cina", "USA e URSS", "UK e Francia", "Germania e Russia"],
+            correct: 1
+        }
+    ],
+    sup_filosofia: [
+        {
+            question: "Socrate e noto per il metodo:",
+            options: ["Deduttivo", "Maieutico", "Induttivo", "Sperimentale"],
+            correct: 1
+        },
+        {
+            question: "Cogito ergo sum e di:",
+            options: ["Kant", "Cartesio", "Hegel", "Nietzsche"],
+            correct: 1
+        },
+        {
+            question: "L'Illuminismo si sviluppa nel:",
+            options: ["Cinquecento", "Seicento", "Settecento", "Ottocento"],
+            correct: 2
+        },
+        {
+            question: "Per Platone, le Idee sono:",
+            options: ["Opinioni soggettive", "Realta perfette e immutabili", "Concetti scientifici", "Illusioni"],
+            correct: 1
+        },
+        {
+            question: "L'imperativo categorico e un concetto di:",
+            options: ["Hegel", "Kant", "Marx", "Schopenhauer"],
+            correct: 1
+        }
+    ],
+    sup_informaticaTecn: [
+        {
+            question: "HTML e un linguaggio di:",
+            options: ["Programmazione", "Markup", "Scripting", "Database"],
+            correct: 1
+        },
+        {
+            question: "In un database relazionale, i dati sono organizzati in:",
+            options: ["Grafi", "Tabelle", "Alberi", "Liste"],
+            correct: 1
+        },
+        {
+            question: "L'indirizzo IP identifica:",
+            options: ["Un sito web", "Un dispositivo in rete", "Un utente", "Un file"],
+            correct: 1
+        },
+        {
+            question: "Quale protocollo si usa per il web?",
+            options: ["FTP", "SMTP", "HTTP", "SSH"],
+            correct: 2
+        },
+        {
+            question: "In Python, 'print' e una:",
+            options: ["Variabile", "Classe", "Funzione", "Modulo"],
+            correct: 2
+        }
+    ],
+    sup_diritto: [
+        {
+            question: "La Costituzione italiana e entrata in vigore il:",
+            options: ["25 aprile 1945", "2 giugno 1946", "1 gennaio 1948", "22 dicembre 1947"],
+            correct: 2
+        },
+        {
+            question: "Il Parlamento italiano e composto da:",
+            options: ["Solo la Camera", "Camera e Senato", "Camera, Senato e Governo", "Solo il Senato"],
+            correct: 1
+        },
+        {
+            question: "Il PIL misura:",
+            options: ["Il debito pubblico", "Il valore della produzione di un Paese", "Le esportazioni", "La disoccupazione"],
+            correct: 1
+        },
+        {
+            question: "L'articolo 1 della Costituzione afferma che l'Italia e:",
+            options: ["Una monarchia", "Una repubblica presidenziale", "Una repubblica democratica fondata sul lavoro", "Uno stato federale"],
+            correct: 2
+        },
+        {
+            question: "Lo Stato sociale (welfare state) garantisce:",
+            options: ["Solo la difesa militare", "Servizi essenziali ai cittadini", "Solo il libero mercato", "L'anarchia"],
+            correct: 1
+        }
+    ],
+    sup_maturita: [
+        {
+            question: "La prima prova della maturita e di:",
+            options: ["Matematica", "Italiano", "La materia di indirizzo", "Inglese"],
+            correct: 1
+        },
+        {
+            question: "Il punteggio massimo alla maturita e:",
+            options: ["60/60", "100/100", "110/110", "30/30"],
+            correct: 1
+        },
+        {
+            question: "Il credito scolastico massimo (triennio) e di:",
+            options: ["30 punti", "40 punti", "50 punti", "20 punti"],
+            correct: 1
+        },
+        {
+            question: "La tipologia A della prima prova e:",
+            options: ["Tema argomentativo", "Analisi del testo", "Tema di attualita", "Comprensione"],
+            correct: 1
+        },
+        {
+            question: "Il colloquio orale parte da:",
+            options: ["Una domanda del presidente", "Un materiale scelto dalla commissione", "La tesina", "La media dei voti"],
             correct: 1
         }
     ]
