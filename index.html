@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
     <title>Studyo — Lo studio diventa multiplayer</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/discord.css">
@@ -28,6 +28,12 @@
                 <span>💬</span>
             </div>
         </div>
+
+        <!-- MOBILE: Toggle sidebar button + overlay -->
+        <button class="mobile-sidebar-toggle" id="mobile-sidebar-toggle" onclick="toggleMobileSidebar()">
+            <span class="hamburger-icon" id="hamburger-icon">☰</span>
+        </button>
+        <div class="mobile-sidebar-overlay" id="mobile-sidebar-overlay" onclick="toggleMobileSidebar()"></div>
 
         <!-- DISCORD-STYLE: Channel Sidebar -->
         <div class="channel-sidebar">
@@ -288,7 +294,7 @@
 
             <!-- PROFILE PAGE -->
             <div id="page-profile" class="page">
-                <div class="main-header" style="display:flex;justify-content:space-between;align-items:center">
+                <div class="main-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
                     <h1>Il tuo profilo</h1>
                     <button class="btn-logout" onclick="signOut()">🚪 Esci</button>
                 </div>

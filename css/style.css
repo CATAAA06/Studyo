@@ -1192,7 +1192,7 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
 /* =============================================
-   RESPONSIVE
+   RESPONSIVE — TABLET (≤1024px)
    ============================================= */
 
 @media (max-width: 1024px) {
@@ -1202,20 +1202,262 @@ body {
     .lobby-sidebar {
         order: -1;
     }
+    .tools-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .profile-sections {
+        grid-template-columns: 1fr;
+    }
 }
 
+/* =============================================
+   RESPONSIVE — MOBILE (≤768px)
+   ============================================= */
+
 @media (max-width: 768px) {
-    .hero h1 { font-size: 32px; }
-    .lobbies-grid { grid-template-columns: 1fr; }
-    .profile-stats-grid { grid-template-columns: repeat(2, 1fr); }
-    .profile-sections { grid-template-columns: 1fr; }
-    .profile-header-section { flex-direction: column; text-align: center; }
-    .tools-grid { grid-template-columns: repeat(2, 1fr); }
-    .nav-right { gap: 8px; }
-    .profile-name { display: none; }
-    .build-scene { height: 200px; }
+    body {
+        -webkit-text-size-adjust: 100%;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Hero */
+    .hero { padding: 24px 0 16px; }
+    .hero h1 { font-size: 26px; }
+    .hero-sub { font-size: 14px; }
+
+    /* Lobby grid */
+    .lobbies-grid { grid-template-columns: 1fr; gap: 12px; }
+    .lobby-card { padding: 16px; }
+    .lobby-card-icon { font-size: 32px; margin-bottom: 8px; }
+    .lobby-card-name { font-size: 16px; }
+
+    /* Profile */
+    .profile-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .profile-header-section {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px 16px;
+        gap: 16px;
+    }
+    .profile-big-avatar { font-size: 56px; }
+    .profile-info h1 { font-size: 22px; }
+    .stat-card { padding: 14px 10px; }
+    .stat-value { font-size: 24px; }
+    .stat-label { font-size: 12px; }
+
+    /* Lobby page */
+    .lobby-icon-big { font-size: 36px; }
+    .lobby-title-section h1 { font-size: 24px; }
+    .lobby-title-section { gap: 10px; }
+    .lobby-meta { font-size: 12px; gap: 8px; }
+
+    /* Timer / Pomodoro */
+    .timer-display { font-size: 48px; }
+    .build-scene { height: 180px; }
+    .build-block { width: 50px; height: 18px; }
+    .build-block span { font-size: 10px; }
+    .build-timer-small { font-size: 12px; bottom: 24px; right: 10px; }
+    .pomo-btn { padding: 8px 14px; font-size: 13px; min-height: 36px; }
+    .pomodoro-controls { gap: 4px; flex-wrap: wrap; }
+    .timer-actions { flex-wrap: wrap; gap: 8px; }
+    .timer-actions .btn { flex: 1; min-width: 120px; justify-content: center; }
+
+    /* Cards */
+    .card { padding: 16px; margin-bottom: 16px; border-radius: 12px; }
+    .card-header { margin-bottom: 12px; }
+    .card-header h3 { font-size: 15px; }
+
+    /* Tools grid */
+    .tools-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .tool-item { padding: 14px 8px; }
+    .tool-icon { font-size: 24px; }
+    .tool-name { font-size: 12px; }
+    .tool-desc { font-size: 10px; }
+
+    /* Sounds */
+    .sounds-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .sound-item { padding: 10px 6px; }
+    .sound-icon { font-size: 20px; }
+    .sound-name { font-size: 10px; }
+
+    /* Quiz */
+    .quiz-question { font-size: 16px; }
+    .quiz-option {
+        padding: 14px 16px;
+        font-size: 14px;
+        min-height: 48px;
+    }
+    .quiz-score { font-size: 36px; }
+
+    /* Chat */
+    .chat-messages { height: 220px; }
+    .chat-msg { font-size: 13px; }
+    #chat-input { font-size: 16px; padding: 12px; } /* 16px prevents iOS zoom */
+    .chat-send { min-width: 44px; min-height: 44px; }
+
+    /* Students */
+    .student-item { padding: 10px 8px; }
+
+    /* Community */
+    .community-section { padding: 16px; }
+    .community-header h2 { font-size: 18px; }
+    .community-stats-row { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .community-stat { padding: 10px 6px; }
+    .community-stat-value { font-size: 20px; }
+    .community-members { grid-template-columns: 1fr; gap: 8px; }
+    .community-member { padding: 10px; }
+
+    /* Buttons — larger touch targets */
+    .btn {
+        padding: 12px 20px;
+        font-size: 14px;
+        min-height: 44px;
+    }
+    .btn-large {
+        padding: 14px 24px;
+        font-size: 15px;
+        min-height: 48px;
+    }
+
+    /* Filters */
+    .lobby-filters { gap: 6px; }
+    .filter-btn { padding: 10px 16px; font-size: 13px; min-height: 40px; }
+
+    /* Challenges */
+    .challenges-list { gap: 10px; }
+    .challenge-card { min-width: 220px; padding: 14px; }
+
+    /* Modals */
+    .modal { padding: 12px; align-items: flex-end; }
+    .modal-content {
+        max-width: 100%;
+        max-height: 90vh;
+        max-height: 90dvh;
+        border-radius: 16px 16px 0 0;
+        padding: 20px 16px;
+        padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    }
+    .modal-large { max-width: 100%; }
+    .setup-modal { max-width: 100%; }
+    .modal-header h2 { font-size: 18px; }
+    .modal-close { font-size: 24px; padding: 8px 12px; min-width: 44px; min-height: 44px; }
+
+    /* Form inputs — 16px to prevent iOS auto-zoom */
+    .form-group input,
+    .form-group select {
+        font-size: 16px;
+        padding: 14px;
+        min-height: 48px;
+    }
+    .form-group label { font-size: 13px; }
+
+    /* Setup modal */
+    .setup-logo { font-size: 44px; }
+    .setup-header h1 { font-size: 22px; }
+    .setup-header p { font-size: 14px; }
+
+    /* Flashcard */
+    .flashcard { min-height: 160px; padding: 20px; }
+    .flashcard-front, .flashcard-back { font-size: 16px; }
+    .flashcard-actions { gap: 6px; flex-wrap: wrap; }
+    .flashcard-actions .btn { flex: 1; min-width: 90px; font-size: 13px; }
+
+    /* Notes */
+    .notes-editor {
+        min-height: 280px;
+        font-size: 16px;
+        padding: 14px;
+    }
+
+    /* AI Tutor */
+    .ai-chat { height: 260px; }
+    .ai-message { font-size: 14px; max-width: 90%; }
+    #ai-input { font-size: 16px; padding: 12px; }
+
+    /* Home stats */
+    .home-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .home-stat-card { padding: 12px 10px; }
+    .home-stat-value { font-size: 22px; }
+    .home-stat-icon { font-size: 20px; }
+    .home-stat-label { font-size: 11px; }
+
+    /* Badges */
+    .badges-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .badge-item { padding: 10px 6px; }
+    .badge-icon { font-size: 24px; }
+
+    /* Notifications */
+    .notification-toast {
+        max-width: calc(100vw - 32px) !important;
+        right: 16px !important;
+        left: 16px !important;
+    }
+
+    /* Scrollbar — hide on mobile for cleaner look */
+    ::-webkit-scrollbar { width: 0px; }
+
+    /* Auth modal — centered on mobile */
+    #modal-auth { align-items: center; }
+    #modal-auth .modal-content {
+        border-radius: 16px;
+        max-height: 85vh;
+        max-height: 85dvh;
+    }
+    .btn-google { min-height: 48px; font-size: 15px; }
+
+    /* Logout button */
+    .btn-logout { min-height: 44px; padding: 10px 16px; font-size: 14px; }
+
+    /* Pomo stats */
+    .pomo-stats { font-size: 12px; gap: 8px; }
+}
+
+/* =============================================
+   RESPONSIVE — SMALL PHONES (≤480px)
+   ============================================= */
+
+@media (max-width: 480px) {
+    .hero h1 { font-size: 22px; }
+    .hero-sub { font-size: 13px; }
+
+    .lobby-card { padding: 14px; }
+
+    .build-scene { height: 150px; }
+    .build-block { width: 44px; height: 16px; }
+
     .sounds-grid { grid-template-columns: repeat(2, 1fr); }
-    .community-stats-row { grid-template-columns: 1fr; }
+
+    .timer-display { font-size: 40px; }
+
+    .community-stats-row { grid-template-columns: 1fr 1fr 1fr; }
+
+    .profile-header-section { padding: 16px 12px; }
+    .profile-info h1 { font-size: 20px; }
+
+    .badges-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* =============================================
+   SAFE AREAS (Notched phones)
+   ============================================= */
+
+@supports (padding: env(safe-area-inset-bottom)) {
+    @media (max-width: 768px) {
+        .main-content {
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+    }
+}
+
+/* =============================================
+   LANDSCAPE MOBILE
+   ============================================= */
+
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 500px) {
+    .build-scene { height: 120px; }
+    .modal-content { max-height: 95vh; }
+    .hero { padding: 12px 0; }
+    .hero h1 { font-size: 22px; }
 }
 
 /* =============================================

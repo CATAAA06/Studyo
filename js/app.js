@@ -72,6 +72,9 @@ function navigate(page, data) {
         renderProfile();
     }
 
+    // Close mobile sidebar when navigating
+    closeMobileSidebar();
+
     updateNav();
     window.scrollTo(0, 0);
 }
@@ -814,7 +817,23 @@ function closeModal(name) {
 
 function showNotification(text) {
     const notif = document.createElement('div');
-    notif.style.cssText = `
+    const isMobile = window.innerWidth <= 768;
+    notif.style.cssText = isMobile ? `
+        position: fixed;
+        top: 16px;
+        left: 16px;
+        right: 16px;
+        background: var(--bg-card);
+        border: 1px solid var(--primary);
+        border-radius: 12px;
+        padding: 14px 16px;
+        font-size: 13px;
+        font-weight: 600;
+        z-index: 300;
+        animation: fadeIn 0.3s ease;
+        box-shadow: 0 8px 32px rgba(108, 92, 231, 0.3);
+        text-align: center;
+    ` : `
         position: fixed;
         top: 80px;
         right: 24px;
@@ -1108,6 +1127,41 @@ function renderCommunity() {
             <span class="community-member-xp">${m.xp} XP</span>
         </div>
     `).join('');
+}
+
+/* =============================================
+   MOBILE SIDEBAR
+   ============================================= */
+
+function toggleMobileSidebar() {
+    const sidebar = document.querySelector('.channel-sidebar');
+    const overlay = document.getElementById('mobile-sidebar-overlay');
+    const icon = document.getElementById('hamburger-icon');
+
+    if (sidebar.classList.contains('mobile-open')) {
+        sidebar.classList.remove('mobile-open');
+        overlay.classList.remove('active');
+        icon.textContent = '☰';
+        document.body.style.overflow = '';
+    } else {
+        sidebar.classList.add('mobile-open');
+        overlay.classList.add('active');
+        icon.textContent = '✕';
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeMobileSidebar() {
+    const sidebar = document.querySelector('.channel-sidebar');
+    const overlay = document.getElementById('mobile-sidebar-overlay');
+    const icon = document.getElementById('hamburger-icon');
+
+    if (sidebar && sidebar.classList.contains('mobile-open')) {
+        sidebar.classList.remove('mobile-open');
+        overlay.classList.remove('active');
+        if (icon) icon.textContent = '☰';
+        document.body.style.overflow = '';
+    }
 }
 
 /* =============================================
