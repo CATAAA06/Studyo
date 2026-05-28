@@ -1180,6 +1180,139 @@ body {
 #ai-input:focus { border-color: var(--primary); }
 
 /* =============================================
+   FLOATING FEEDBACK WIDGET
+   ============================================= */
+
+.feedback-fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 180;
+    box-shadow: 0 4px 20px rgba(108, 92, 231, 0.5);
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.feedback-fab:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 28px rgba(108, 92, 231, 0.7);
+}
+
+.feedback-fab-icon {
+    font-size: 24px;
+    line-height: 1;
+}
+
+.feedback-fab-pulse {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50%;
+    border: 2px solid var(--primary);
+    animation: fabPulse 2s infinite;
+    pointer-events: none;
+}
+
+@keyframes fabPulse {
+    0% { transform: scale(1); opacity: 0.6; }
+    100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* Feedback welcome banner */
+.feedback-welcome {
+    position: fixed;
+    bottom: 90px;
+    right: 24px;
+    z-index: 175;
+    animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.feedback-welcome-content {
+    background: var(--bg-card);
+    border: 1px solid var(--primary);
+    border-radius: 16px;
+    padding: 20px;
+    width: 300px;
+    max-width: calc(100vw - 48px);
+    box-shadow: 0 8px 32px rgba(108, 92, 231, 0.3);
+    position: relative;
+}
+
+.feedback-welcome-close {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+}
+
+.feedback-welcome-close:hover { color: var(--text); }
+
+.feedback-welcome-emoji {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+.feedback-welcome-title {
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 6px;
+}
+
+.feedback-welcome-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.feedback-welcome-question {
+    font-size: 14px;
+    color: var(--primary-light);
+    font-weight: 600;
+    font-style: italic;
+    line-height: 1.4;
+    padding: 8px 12px;
+    background: rgba(108, 92, 231, 0.1);
+    border-radius: 8px;
+    border-left: 3px solid var(--primary);
+}
+
+/* Sidebar — corso label */
+.sidebar-corso-label {
+    font-size: 11px;
+    color: var(--primary-light);
+    padding: 4px 8px 2px;
+    font-weight: 600;
+}
+
+.sidebar-corso-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 6px 8px;
+}
+
+/* =============================================
    SCROLLBAR
    ============================================= */
 
@@ -1391,6 +1524,23 @@ body {
         max-width: calc(100vw - 32px) !important;
         right: 16px !important;
         left: 16px !important;
+    }
+
+    /* Feedback widget mobile */
+    .feedback-fab {
+        bottom: 16px;
+        right: 16px;
+        width: 50px;
+        height: 50px;
+    }
+    .feedback-fab-icon { font-size: 22px; }
+    .feedback-welcome {
+        bottom: 76px;
+        right: 12px;
+        left: 12px;
+    }
+    .feedback-welcome-content {
+        width: 100%;
     }
 
     /* Scrollbar — hide on mobile for cleaner look */

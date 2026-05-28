@@ -52,9 +52,10 @@
             </div>
 
             <div class="sidebar-section">
-                <div class="sidebar-section-title">CATEGORIA</div>
+                <div class="sidebar-section-title">FILTRA</div>
                 <div class="sidebar-filters" id="sidebar-filters">
-                    <button class="sidebar-filter active" onclick="filterLobbies('all')">Tutte</button>
+                    <button class="sidebar-filter" id="filter-miei" onclick="filterLobbies('miei')" style="display:none">🎓 I miei esami</button>
+                    <button class="sidebar-filter active" onclick="filterLobbies('all')">Tutte le lobby</button>
                     <button class="sidebar-filter" onclick="filterLobbies('scientifica')">🔬 Scientifica</button>
                     <button class="sidebar-filter" onclick="filterLobbies('umanistica')">📖 Umanistica</button>
                     <button class="sidebar-filter" onclick="filterLobbies('economia')">📊 Economia</button>
@@ -393,7 +394,8 @@
                 <h2>💬 Invia Feedback</h2>
                 <button class="modal-close" onclick="closeModal('feedback')">✕</button>
             </div>
-            <p style="color:var(--text-secondary);font-size:14px;margin-bottom:16px">Aiutaci a migliorare Studyo! Ogni feedback conta.</p>
+            <p style="color:var(--text-secondary);font-size:14px;margin-bottom:12px">Aiutaci a migliorare Studyo! Ogni feedback conta.</p>
+            <div class="feedback-question-hint" id="feedback-question-hint" style="background:rgba(108,92,231,0.1);border-left:3px solid var(--primary);padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:16px;font-size:13px;color:var(--primary-light);font-style:italic;line-height:1.4"></div>
             <div class="form-group">
                 <label>Tipo di feedback</label>
                 <select id="feedback-type">
@@ -607,6 +609,24 @@
 
                 <button class="btn btn-primary btn-large" onclick="completeSetup()">🚀 Inizia a studiare!</button>
             </div>
+        </div>
+    </div>
+
+    <!-- FLOATING FEEDBACK WIDGET -->
+    <div class="feedback-fab" id="feedback-fab" onclick="openFeedbackWidget()">
+        <span class="feedback-fab-icon">💬</span>
+        <span class="feedback-fab-pulse"></span>
+    </div>
+
+    <!-- FEEDBACK WELCOME BANNER (appears on first visit) -->
+    <div class="feedback-welcome" id="feedback-welcome" style="display:none">
+        <div class="feedback-welcome-content">
+            <button class="feedback-welcome-close" onclick="closeFeedbackWelcome()">&times;</button>
+            <div class="feedback-welcome-emoji">🙏</div>
+            <p class="feedback-welcome-title">Grazie per provare Studyo!</p>
+            <p class="feedback-welcome-text" id="feedback-welcome-text">Siamo in fase beta e il tuo feedback vale tantissimo.</p>
+            <p class="feedback-welcome-question" id="feedback-welcome-question"></p>
+            <button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="closeFeedbackWelcome();openFeedbackWidget()">💬 Lascia un feedback</button>
         </div>
     </div>
 

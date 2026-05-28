@@ -13,6 +13,79 @@ const LOBBIES = [
     { id: 'chimica', name: 'Chimica Generale', icon: '🧪', category: 'scientifica', online: 13 },
 ];
 
+/* =============================================
+   ESAMI PER CORSO DI LAUREA
+   ============================================= */
+
+const CORSI_ESAMI = {
+    // Economia e Management
+    'Economia e Commercio': ['microeconomia', 'statistica', 'giurisprudenza', 'marketing', 'pianificazione', 'analisi1', 'storia'],
+    'Economia Aziendale': ['microeconomia', 'statistica', 'giurisprudenza', 'marketing', 'pianificazione', 'analisi1'],
+    'Management': ['microeconomia', 'marketing', 'pianificazione', 'statistica', 'giurisprudenza'],
+    'Marketing': ['marketing', 'microeconomia', 'statistica', 'pianificazione', 'informatica'],
+    'Finanza': ['microeconomia', 'statistica', 'analisi1', 'giurisprudenza', 'pianificazione'],
+
+    // Ingegneria
+    'Ingegneria Informatica': ['analisi1', 'fisica1', 'informatica', 'statistica', 'chimica'],
+    'Ingegneria Meccanica': ['analisi1', 'fisica1', 'chimica', 'statistica', 'informatica'],
+    'Ingegneria Civile': ['analisi1', 'fisica1', 'chimica', 'statistica'],
+    'Ingegneria Elettronica': ['analisi1', 'fisica1', 'informatica', 'chimica', 'statistica'],
+    'Ingegneria Gestionale': ['analisi1', 'fisica1', 'informatica', 'statistica', 'microeconomia', 'pianificazione'],
+
+    // Scienze
+    'Matematica': ['analisi1', 'fisica1', 'informatica', 'statistica'],
+    'Fisica': ['analisi1', 'fisica1', 'chimica', 'informatica', 'statistica'],
+    'Chimica': ['chimica', 'analisi1', 'fisica1', 'statistica'],
+    'Informatica': ['informatica', 'analisi1', 'fisica1', 'statistica'],
+    'Biologia': ['chimica', 'fisica1', 'statistica', 'analisi1'],
+    'Scienze Naturali': ['chimica', 'fisica1', 'statistica', 'analisi1'],
+
+    // Giuridica
+    'Giurisprudenza': ['giurisprudenza', 'filosofia', 'storia', 'microeconomia'],
+    'Scienze Giuridiche': ['giurisprudenza', 'filosofia', 'storia'],
+
+    // Umanistica
+    'Lettere': ['letteratura', 'storia', 'filosofia'],
+    'Filosofia': ['filosofia', 'storia', 'letteratura'],
+    'Storia': ['storia', 'letteratura', 'filosofia', 'giurisprudenza'],
+    'Lingue': ['letteratura', 'storia', 'filosofia'],
+    'Scienze della Comunicazione': ['marketing', 'statistica', 'storia', 'letteratura', 'informatica'],
+    'Psicologia': ['statistica', 'filosofia', 'storia', 'chimica'],
+
+    // Medicina e Salute
+    'Medicina e Chirurgia': ['chimica', 'fisica1', 'statistica', 'analisi1'],
+    'Infermieristica': ['chimica', 'statistica', 'fisica1'],
+    'Farmacia': ['chimica', 'analisi1', 'fisica1', 'statistica'],
+    'Scienze Motorie': ['fisica1', 'statistica', 'chimica'],
+
+    // Architettura e Design
+    'Architettura': ['analisi1', 'fisica1', 'storia'],
+    'Design': ['informatica', 'storia', 'marketing'],
+
+    // Altro
+    'Scienze Politiche': ['giurisprudenza', 'storia', 'microeconomia', 'statistica', 'filosofia'],
+    'Scienze della Formazione': ['filosofia', 'storia', 'statistica', 'letteratura'],
+    'Agraria': ['chimica', 'statistica', 'fisica1', 'microeconomia'],
+    'Veterinaria': ['chimica', 'fisica1', 'statistica'],
+};
+
+/* =============================================
+   DOMANDE FEEDBACK RANDOM
+   ============================================= */
+
+const FEEDBACK_QUESTIONS = [
+    "Cosa hai pensato quando hai aperto Studyo per la prima volta?",
+    "Lo useresti davvero per studiare? Perche si o perche no?",
+    "Qual e la feature che ti e piaciuta di piu?",
+    "Cosa vorresti che ci fosse e che ancora non c'e?",
+    "Cosa usi adesso per studiare? Studyo e meglio o peggio?",
+    "Pagheresti 2-3 euro al mese per una versione premium?",
+    "Lo consiglieresti a un amico? Perche?",
+    "C'e qualcosa che non funziona bene o che ti ha confuso?",
+    "Quale materia vorresti vedere aggiunta per prima?",
+    "Preferisci studiare da solo o in gruppo? Studyo cambia qualcosa?",
+];
+
 const QUIZZES = {
     analisi1: [
         {

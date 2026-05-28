@@ -200,7 +200,7 @@ GitHub Pages si aggiorna automaticamente in 1-2 minuti.
 
 ## TEAM
 
-- **[Nome fondatore]** — CEO & Product (studente UNIMORE, Modena)
+- **[Francesco]** — CEO & Product (studente UNIMORE, Modena)
 - **Davide** — Co-founder & Growth (studente UNIMORE, Modena)
 - **[Cercasi]** — CTO / Co-founder tecnico (dev full-stack)
 

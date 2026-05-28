@@ -173,6 +173,9 @@ function completeSetup() {
     renderCommunity();
 
     addXP(50, 'Benvenuto su Studyo!');
+
+    // Show feedback welcome for new users after a moment
+    setTimeout(() => showFeedbackWelcome(), 4000);
 }
 
 /* =============================================
@@ -181,17 +184,64 @@ function completeSetup() {
 
 function renderLobbies(filter = 'all') {
     const sidebarEl = document.getElementById('sidebar-lobbies');
-    const filtered = filter === 'all' ? LOBBIES : LOBBIES.filter(l => l.category === filter);
+    if (!sidebarEl) return;
 
-    if (sidebarEl) {
-        sidebarEl.innerHTML = filtered.map(lobby => `
-            <div class="sidebar-lobby ${state.currentLobby === lobby.id ? 'active' : ''}" onclick="navigate('lobby', '${lobby.id}')">
-                <span class="sidebar-lobby-icon">${lobby.icon}</span>
-                <span class="sidebar-lobby-name">${lobby.name}</span>
-                <span class="sidebar-lobby-count">${lobby.online + Math.floor(Math.random() * 5)}</span>
-            </div>
-        `).join('');
+    // Get user's corso esami
+    const corso = state.playerCorso;
+    const mieiEsamiIds = (corso && CORSI_ESAMI[corso]) ? CORSI_ESAMI[corso] : [];
+
+    // Show/hide "I miei esami" filter button
+    const filterMiei = document.getElementById('filter-miei');
+    if (filterMiei) {
+        filterMiei.style.display = mieiEsamiIds.length > 0 ? 'block' : 'none';
     }
+
+    let html = '';
+
+    if (filter === 'miei' && mieiEsamiIds.length > 0) {
+        // Show lobbies grouped: "I tuoi esami" first, then "Altre lobby"
+        const mieiLobbies = LOBBIES.filter(l => mieiEsamiIds.includes(l.id));
+        const altreLobbies = LOBBIES.filter(l => !mieiEsamiIds.includes(l.id));
+
+        html += `<div class="sidebar-corso-label">📚 ${corso}</div>`;
+        html += mieiLobbies.map(lobby => renderLobbyItem(lobby)).join('');
+
+        if (altreLobbies.length > 0) {
+            html += `<div class="sidebar-corso-divider"></div>`;
+            html += `<div class="sidebar-corso-label">🌐 Altre lobby</div>`;
+            html += altreLobbies.map(lobby => renderLobbyItem(lobby)).join('');
+        }
+    } else if (filter === 'all') {
+        // If user has a corso, show "I tuoi esami" section first even in "all" view
+        if (mieiEsamiIds.length > 0) {
+            const mieiLobbies = LOBBIES.filter(l => mieiEsamiIds.includes(l.id));
+            const altreLobbies = LOBBIES.filter(l => !mieiEsamiIds.includes(l.id));
+
+            html += `<div class="sidebar-corso-label">📚 I tuoi esami</div>`;
+            html += mieiLobbies.map(lobby => renderLobbyItem(lobby)).join('');
+            html += `<div class="sidebar-corso-divider"></div>`;
+            html += `<div class="sidebar-corso-label">🌐 Esplora</div>`;
+            html += altreLobbies.map(lobby => renderLobbyItem(lobby)).join('');
+        } else {
+            html = LOBBIES.map(lobby => renderLobbyItem(lobby)).join('');
+        }
+    } else {
+        // Category filter
+        const filtered = LOBBIES.filter(l => l.category === filter);
+        html = filtered.map(lobby => renderLobbyItem(lobby)).join('');
+    }
+
+    sidebarEl.innerHTML = html;
+}
+
+function renderLobbyItem(lobby) {
+    return `
+        <div class="sidebar-lobby ${state.currentLobby === lobby.id ? 'active' : ''}" onclick="navigate('lobby', '${lobby.id}')">
+            <span class="sidebar-lobby-icon">${lobby.icon}</span>
+            <span class="sidebar-lobby-name">${lobby.name}</span>
+            <span class="sidebar-lobby-count">${lobby.online + Math.floor(Math.random() * 5)}</span>
+        </div>
+    `;
 }
 
 function filterLobbies(category) {
@@ -1130,6 +1180,56 @@ function renderCommunity() {
 }
 
 /* =============================================
+   FEEDBACK WIDGET
+   ============================================= */
+
+function openFeedbackWidget() {
+    // Close welcome banner if open
+    closeFeedbackWelcome();
+
+    // Show a random guiding question in the modal
+    const randomQ = FEEDBACK_QUESTIONS[Math.floor(Math.random() * FEEDBACK_QUESTIONS.length)];
+    const hintEl = document.getElementById('feedback-question-hint');
+    if (hintEl) {
+        hintEl.textContent = '💡 Spunto: "' + randomQ + '"';
+    }
+    const textarea = document.getElementById('feedback-text');
+    if (textarea) {
+        textarea.placeholder = 'Scrivi il tuo pensiero...';
+    }
+
+    openModal('feedback');
+}
+
+function showFeedbackWelcome() {
+    // Don't show if already dismissed this session or feedback already given
+    const dismissed = sessionStorage.getItem('studyo_feedback_welcome_dismissed');
+    if (dismissed) return;
+
+    // Don't show if no setup done (user hasn't logged in yet)
+    if (!state.setupDone) return;
+
+    const welcome = document.getElementById('feedback-welcome');
+    const questionEl = document.getElementById('feedback-welcome-question');
+
+    if (welcome && questionEl) {
+        // Pick a random question to display
+        const randomQ = FEEDBACK_QUESTIONS[Math.floor(Math.random() * FEEDBACK_QUESTIONS.length)];
+        questionEl.textContent = '"' + randomQ + '"';
+
+        welcome.style.display = 'block';
+    }
+}
+
+function closeFeedbackWelcome() {
+    const welcome = document.getElementById('feedback-welcome');
+    if (welcome) {
+        welcome.style.display = 'none';
+    }
+    sessionStorage.setItem('studyo_feedback_welcome_dismissed', 'true');
+}
+
+/* =============================================
    MOBILE SIDEBAR
    ============================================= */
 
@@ -1240,6 +1340,13 @@ function init() {
     const hours = Math.floor(state.studyHours);
     const mins = Math.round((state.studyHours - hours) * 60);
     document.getElementById('pomo-total').textContent = `${hours}h ${mins}m`;
+
+    // Show feedback welcome after a short delay (only if logged in)
+    setTimeout(() => {
+        if (state.setupDone) {
+            showFeedbackWelcome();
+        }
+    }, 3000);
 }
 
 init();
