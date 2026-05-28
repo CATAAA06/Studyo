@@ -1,16 +1,58 @@
 const LOBBIES = [
+    // --- Scientifica ---
     { id: 'analisi1', name: 'Analisi Matematica 1', icon: '📐', category: 'scientifica', online: 12 },
-    { id: 'microeconomia', name: 'Microeconomia', icon: '📊', category: 'economia', online: 8 },
-    { id: 'giurisprudenza', name: 'Diritto Privato', icon: '⚖️', category: 'giuridica', online: 15 },
-    { id: 'pianificazione', name: "Pianificazione d'Impresa", icon: '🏢', category: 'economia', online: 6 },
+    { id: 'analisi2', name: 'Analisi Matematica 2', icon: '📐', category: 'scientifica', online: 6 },
     { id: 'fisica1', name: 'Fisica 1', icon: '⚛️', category: 'scientifica', online: 9 },
-    { id: 'storia', name: 'Storia Contemporanea', icon: '📜', category: 'umanistica', online: 7 },
-    { id: 'informatica', name: 'Fondamenti di Informatica', icon: '💻', category: 'scientifica', online: 18 },
-    { id: 'letteratura', name: 'Letteratura Italiana', icon: '📖', category: 'umanistica', online: 5 },
-    { id: 'statistica', name: 'Statistica', icon: '📈', category: 'scientifica', online: 11 },
-    { id: 'marketing', name: 'Marketing', icon: '📣', category: 'economia', online: 10 },
-    { id: 'filosofia', name: 'Filosofia del Diritto', icon: '🤔', category: 'giuridica', online: 4 },
+    { id: 'fisica2', name: 'Fisica 2', icon: '⚛️', category: 'scientifica', online: 5 },
     { id: 'chimica', name: 'Chimica Generale', icon: '🧪', category: 'scientifica', online: 13 },
+    { id: 'chimicaOrg', name: 'Chimica Organica', icon: '🧬', category: 'scientifica', online: 7 },
+    { id: 'informatica', name: 'Fondamenti di Informatica', icon: '💻', category: 'scientifica', online: 18 },
+    { id: 'programmazione', name: 'Programmazione', icon: '🖥️', category: 'scientifica', online: 14 },
+    { id: 'algebra', name: 'Algebra Lineare e Geometria', icon: '📏', category: 'scientifica', online: 10 },
+    { id: 'statistica', name: 'Statistica', icon: '📈', category: 'scientifica', online: 11 },
+    { id: 'biologia', name: 'Biologia Generale', icon: '🦠', category: 'scientifica', online: 8 },
+    { id: 'calcoloNum', name: 'Calcolo Numerico', icon: '🔢', category: 'scientifica', online: 4 },
+    { id: 'meccanica', name: 'Meccanica Razionale', icon: '⚙️', category: 'scientifica', online: 5 },
+    { id: 'elettrotecnica', name: 'Elettrotecnica', icon: '⚡', category: 'scientifica', online: 6 },
+
+    // --- Economia ---
+    { id: 'microeconomia', name: 'Microeconomia', icon: '📊', category: 'economia', online: 8 },
+    { id: 'macroeconomia', name: 'Macroeconomia', icon: '🌍', category: 'economia', online: 9 },
+    { id: 'ragioneria', name: 'Ragioneria / Economia Aziendale', icon: '📒', category: 'economia', online: 11 },
+    { id: 'marketing', name: 'Marketing', icon: '📣', category: 'economia', online: 10 },
+    { id: 'pianificazione', name: "Pianificazione d'Impresa", icon: '🏢', category: 'economia', online: 6 },
+    { id: 'matFin', name: 'Matematica Finanziaria', icon: '💰', category: 'economia', online: 5 },
+    { id: 'econometria', name: 'Econometria', icon: '📉', category: 'economia', online: 4 },
+    { id: 'dirCommerciale', name: 'Diritto Commerciale', icon: '🏦', category: 'economia', online: 7 },
+
+    // --- Giuridica ---
+    { id: 'giurisprudenza', name: 'Diritto Privato', icon: '⚖️', category: 'giuridica', online: 15 },
+    { id: 'dirCostituzionale', name: 'Diritto Costituzionale', icon: '📜', category: 'giuridica', online: 12 },
+    { id: 'dirPenale', name: 'Diritto Penale', icon: '🔒', category: 'giuridica', online: 10 },
+    { id: 'dirLavoro', name: 'Diritto del Lavoro', icon: '👷', category: 'giuridica', online: 6 },
+    { id: 'filosofia', name: 'Filosofia del Diritto', icon: '🤔', category: 'giuridica', online: 4 },
+    { id: 'dirUE', name: "Diritto dell'Unione Europea", icon: '🇪🇺', category: 'giuridica', online: 5 },
+    { id: 'procCivile', name: 'Procedura Civile', icon: '📋', category: 'giuridica', online: 4 },
+
+    // --- Umanistica ---
+    { id: 'letteratura', name: 'Letteratura Italiana', icon: '📖', category: 'umanistica', online: 5 },
+    { id: 'storia', name: 'Storia Contemporanea', icon: '📜', category: 'umanistica', online: 7 },
+    { id: 'filosofiaGen', name: 'Filosofia', icon: '💭', category: 'umanistica', online: 6 },
+    { id: 'linguistica', name: 'Linguistica Generale', icon: '🗣️', category: 'umanistica', online: 4 },
+    { id: 'pedagogia', name: 'Pedagogia', icon: '🎓', category: 'umanistica', online: 5 },
+    { id: 'psicologia', name: 'Psicologia Generale', icon: '🧠', category: 'umanistica', online: 9 },
+    { id: 'sociologia', name: 'Sociologia', icon: '👥', category: 'umanistica', online: 6 },
+    { id: 'storiaArte', name: "Storia dell'Arte", icon: '🎨', category: 'umanistica', online: 3 },
+
+    // --- Medicina ---
+    { id: 'anatomia', name: 'Anatomia Umana', icon: '🫀', category: 'medicina', online: 14 },
+    { id: 'fisiologia', name: 'Fisiologia', icon: '🫁', category: 'medicina', online: 10 },
+    { id: 'biochimica', name: 'Biochimica', icon: '🔬', category: 'medicina', online: 8 },
+    { id: 'patologia', name: 'Patologia Generale', icon: '🩺', category: 'medicina', online: 7 },
+    { id: 'farmacologia', name: 'Farmacologia', icon: '💊', category: 'medicina', online: 6 },
+
+    // --- Trasversali ---
+    { id: 'inglese', name: 'Inglese Accademico', icon: '🇬🇧', category: 'umanistica', online: 16 },
 ];
 
 /* =============================================
@@ -19,54 +61,54 @@ const LOBBIES = [
 
 const CORSI_ESAMI = {
     // Economia e Management
-    'Economia e Commercio': ['microeconomia', 'statistica', 'giurisprudenza', 'marketing', 'pianificazione', 'analisi1', 'storia'],
-    'Economia Aziendale': ['microeconomia', 'statistica', 'giurisprudenza', 'marketing', 'pianificazione', 'analisi1'],
-    'Management': ['microeconomia', 'marketing', 'pianificazione', 'statistica', 'giurisprudenza'],
-    'Marketing': ['marketing', 'microeconomia', 'statistica', 'pianificazione', 'informatica'],
-    'Finanza': ['microeconomia', 'statistica', 'analisi1', 'giurisprudenza', 'pianificazione'],
+    'Economia e Commercio': ['microeconomia', 'macroeconomia', 'ragioneria', 'statistica', 'giurisprudenza', 'dirCommerciale', 'marketing', 'pianificazione', 'analisi1', 'matFin', 'econometria', 'inglese'],
+    'Economia Aziendale': ['ragioneria', 'microeconomia', 'macroeconomia', 'statistica', 'giurisprudenza', 'dirCommerciale', 'marketing', 'pianificazione', 'analisi1', 'matFin', 'inglese'],
+    'Management': ['microeconomia', 'macroeconomia', 'marketing', 'pianificazione', 'ragioneria', 'statistica', 'giurisprudenza', 'dirCommerciale', 'inglese'],
+    'Marketing': ['marketing', 'microeconomia', 'macroeconomia', 'statistica', 'pianificazione', 'informatica', 'psicologia', 'sociologia', 'inglese'],
+    'Finanza': ['microeconomia', 'macroeconomia', 'matFin', 'statistica', 'econometria', 'analisi1', 'ragioneria', 'giurisprudenza', 'dirCommerciale', 'inglese'],
 
     // Ingegneria
-    'Ingegneria Informatica': ['analisi1', 'fisica1', 'informatica', 'statistica', 'chimica'],
-    'Ingegneria Meccanica': ['analisi1', 'fisica1', 'chimica', 'statistica', 'informatica'],
-    'Ingegneria Civile': ['analisi1', 'fisica1', 'chimica', 'statistica'],
-    'Ingegneria Elettronica': ['analisi1', 'fisica1', 'informatica', 'chimica', 'statistica'],
-    'Ingegneria Gestionale': ['analisi1', 'fisica1', 'informatica', 'statistica', 'microeconomia', 'pianificazione'],
+    'Ingegneria Informatica': ['analisi1', 'analisi2', 'fisica1', 'fisica2', 'informatica', 'programmazione', 'algebra', 'statistica', 'chimica', 'calcoloNum', 'elettrotecnica', 'inglese'],
+    'Ingegneria Meccanica': ['analisi1', 'analisi2', 'fisica1', 'fisica2', 'chimica', 'algebra', 'meccanica', 'statistica', 'informatica', 'calcoloNum', 'inglese'],
+    'Ingegneria Civile': ['analisi1', 'analisi2', 'fisica1', 'fisica2', 'chimica', 'algebra', 'meccanica', 'statistica', 'calcoloNum', 'inglese'],
+    'Ingegneria Elettronica': ['analisi1', 'analisi2', 'fisica1', 'fisica2', 'informatica', 'programmazione', 'algebra', 'elettrotecnica', 'chimica', 'statistica', 'inglese'],
+    'Ingegneria Gestionale': ['analisi1', 'analisi2', 'fisica1', 'informatica', 'statistica', 'microeconomia', 'macroeconomia', 'pianificazione', 'ragioneria', 'algebra', 'inglese'],
 
     // Scienze
-    'Matematica': ['analisi1', 'fisica1', 'informatica', 'statistica'],
-    'Fisica': ['analisi1', 'fisica1', 'chimica', 'informatica', 'statistica'],
-    'Chimica': ['chimica', 'analisi1', 'fisica1', 'statistica'],
-    'Informatica': ['informatica', 'analisi1', 'fisica1', 'statistica'],
-    'Biologia': ['chimica', 'fisica1', 'statistica', 'analisi1'],
-    'Scienze Naturali': ['chimica', 'fisica1', 'statistica', 'analisi1'],
+    'Matematica': ['analisi1', 'analisi2', 'algebra', 'fisica1', 'fisica2', 'informatica', 'programmazione', 'statistica', 'calcoloNum', 'inglese'],
+    'Fisica': ['analisi1', 'analisi2', 'fisica1', 'fisica2', 'algebra', 'chimica', 'informatica', 'programmazione', 'statistica', 'calcoloNum', 'inglese'],
+    'Chimica': ['chimica', 'chimicaOrg', 'analisi1', 'fisica1', 'algebra', 'statistica', 'biologia', 'inglese'],
+    'Informatica': ['informatica', 'programmazione', 'analisi1', 'analisi2', 'algebra', 'fisica1', 'statistica', 'calcoloNum', 'inglese'],
+    'Biologia': ['biologia', 'chimica', 'chimicaOrg', 'fisica1', 'statistica', 'analisi1', 'inglese'],
+    'Scienze Naturali': ['chimica', 'biologia', 'fisica1', 'statistica', 'analisi1', 'inglese'],
 
     // Giuridica
-    'Giurisprudenza': ['giurisprudenza', 'filosofia', 'storia', 'microeconomia'],
-    'Scienze Giuridiche': ['giurisprudenza', 'filosofia', 'storia'],
+    'Giurisprudenza': ['giurisprudenza', 'dirCostituzionale', 'dirPenale', 'dirCommerciale', 'dirLavoro', 'dirUE', 'procCivile', 'filosofia', 'storia', 'microeconomia', 'inglese'],
+    'Scienze Giuridiche': ['giurisprudenza', 'dirCostituzionale', 'dirPenale', 'dirCommerciale', 'dirLavoro', 'filosofia', 'storia', 'inglese'],
 
     // Umanistica
-    'Lettere': ['letteratura', 'storia', 'filosofia'],
-    'Filosofia': ['filosofia', 'storia', 'letteratura'],
-    'Storia': ['storia', 'letteratura', 'filosofia', 'giurisprudenza'],
-    'Lingue': ['letteratura', 'storia', 'filosofia'],
-    'Scienze della Comunicazione': ['marketing', 'statistica', 'storia', 'letteratura', 'informatica'],
-    'Psicologia': ['statistica', 'filosofia', 'storia', 'chimica'],
+    'Lettere': ['letteratura', 'storia', 'filosofiaGen', 'linguistica', 'storiaArte', 'inglese'],
+    'Filosofia': ['filosofiaGen', 'storia', 'letteratura', 'pedagogia', 'psicologia', 'sociologia', 'inglese'],
+    'Storia': ['storia', 'letteratura', 'filosofiaGen', 'giurisprudenza', 'dirCostituzionale', 'sociologia', 'inglese'],
+    'Lingue': ['letteratura', 'linguistica', 'storia', 'filosofiaGen', 'inglese'],
+    'Scienze della Comunicazione': ['marketing', 'sociologia', 'psicologia', 'statistica', 'storia', 'letteratura', 'informatica', 'inglese'],
+    'Psicologia': ['psicologia', 'statistica', 'biologia', 'filosofiaGen', 'pedagogia', 'sociologia', 'inglese'],
 
     // Medicina e Salute
-    'Medicina e Chirurgia': ['chimica', 'fisica1', 'statistica', 'analisi1'],
-    'Infermieristica': ['chimica', 'statistica', 'fisica1'],
-    'Farmacia': ['chimica', 'analisi1', 'fisica1', 'statistica'],
-    'Scienze Motorie': ['fisica1', 'statistica', 'chimica'],
+    'Medicina e Chirurgia': ['anatomia', 'fisiologia', 'biochimica', 'patologia', 'farmacologia', 'chimica', 'chimicaOrg', 'fisica1', 'biologia', 'statistica', 'inglese'],
+    'Infermieristica': ['anatomia', 'fisiologia', 'patologia', 'farmacologia', 'chimica', 'biologia', 'statistica', 'psicologia', 'inglese'],
+    'Farmacia': ['chimica', 'chimicaOrg', 'biochimica', 'farmacologia', 'anatomia', 'fisiologia', 'analisi1', 'fisica1', 'biologia', 'inglese'],
+    'Scienze Motorie': ['anatomia', 'fisiologia', 'biologia', 'fisica1', 'statistica', 'psicologia', 'pedagogia', 'inglese'],
 
     // Architettura e Design
-    'Architettura': ['analisi1', 'fisica1', 'storia'],
-    'Design': ['informatica', 'storia', 'marketing'],
+    'Architettura': ['analisi1', 'fisica1', 'storia', 'storiaArte', 'informatica', 'inglese'],
+    'Design': ['informatica', 'storiaArte', 'storia', 'marketing', 'psicologia', 'inglese'],
 
     // Altro
-    'Scienze Politiche': ['giurisprudenza', 'storia', 'microeconomia', 'statistica', 'filosofia'],
-    'Scienze della Formazione': ['filosofia', 'storia', 'statistica', 'letteratura'],
-    'Agraria': ['chimica', 'statistica', 'fisica1', 'microeconomia'],
-    'Veterinaria': ['chimica', 'fisica1', 'statistica'],
+    'Scienze Politiche': ['giurisprudenza', 'dirCostituzionale', 'dirUE', 'storia', 'microeconomia', 'macroeconomia', 'statistica', 'sociologia', 'filosofiaGen', 'inglese'],
+    'Scienze della Formazione': ['pedagogia', 'psicologia', 'filosofiaGen', 'storia', 'sociologia', 'statistica', 'letteratura', 'inglese'],
+    'Agraria': ['chimica', 'chimicaOrg', 'biologia', 'statistica', 'fisica1', 'microeconomia', 'inglese'],
+    'Veterinaria': ['anatomia', 'fisiologia', 'chimica', 'chimicaOrg', 'biologia', 'patologia', 'fisica1', 'statistica', 'inglese'],
 };
 
 /* =============================================

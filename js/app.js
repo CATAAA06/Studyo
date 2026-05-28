@@ -182,6 +182,35 @@ function completeSetup() {
    LOBBIES
    ============================================= */
 
+// Track which sidebar sections are collapsed (persisted in sessionStorage)
+let collapsedSections = JSON.parse(sessionStorage.getItem('studyo_collapsed') || '{}');
+
+function toggleSidebarSection(sectionId) {
+    collapsedSections[sectionId] = !collapsedSections[sectionId];
+    sessionStorage.setItem('studyo_collapsed', JSON.stringify(collapsedSections));
+    const content = document.getElementById('section-' + sectionId);
+    const arrow = document.getElementById('arrow-' + sectionId);
+    if (content) {
+        content.classList.toggle('collapsed', collapsedSections[sectionId]);
+    }
+    if (arrow) {
+        arrow.textContent = collapsedSections[sectionId] ? '▶' : '▼';
+    }
+}
+
+function renderSectionHeader(id, emoji, label, count) {
+    const isCollapsed = collapsedSections[id] || false;
+    return `
+        <div class="sidebar-section-toggle" onclick="toggleSidebarSection('${id}')">
+            <span class="sidebar-section-arrow" id="arrow-${id}">${isCollapsed ? '▶' : '▼'}</span>
+            <span class="sidebar-section-emoji">${emoji}</span>
+            <span class="sidebar-section-label">${label}</span>
+            <span class="sidebar-section-count">${count}</span>
+        </div>
+        <div class="sidebar-section-content ${isCollapsed ? 'collapsed' : ''}" id="section-${id}">
+    `;
+}
+
 function renderLobbies(filter = 'all') {
     const sidebarEl = document.getElementById('sidebar-lobbies');
     if (!sidebarEl) return;
@@ -198,37 +227,81 @@ function renderLobbies(filter = 'all') {
 
     let html = '';
 
+    // Category display config
+    const CATEGORY_META = {
+        scientifica: { emoji: '🔬', label: 'Scientifica' },
+        economia: { emoji: '📊', label: 'Economia' },
+        giuridica: { emoji: '⚖️', label: 'Giuridica' },
+        umanistica: { emoji: '📖', label: 'Umanistica' },
+        medicina: { emoji: '🏥', label: 'Medicina' },
+        trasversale: { emoji: '🌍', label: 'Trasversali' }
+    };
+
     if (filter === 'miei' && mieiEsamiIds.length > 0) {
-        // Show lobbies grouped: "I tuoi esami" first, then "Altre lobby"
         const mieiLobbies = LOBBIES.filter(l => mieiEsamiIds.includes(l.id));
         const altreLobbies = LOBBIES.filter(l => !mieiEsamiIds.includes(l.id));
 
-        html += `<div class="sidebar-corso-label">📚 ${corso}</div>`;
+        html += renderSectionHeader('miei', '📚', corso, mieiLobbies.length);
         html += mieiLobbies.map(lobby => renderLobbyItem(lobby)).join('');
+        html += '</div>';
 
         if (altreLobbies.length > 0) {
-            html += `<div class="sidebar-corso-divider"></div>`;
-            html += `<div class="sidebar-corso-label">🌐 Altre lobby</div>`;
-            html += altreLobbies.map(lobby => renderLobbyItem(lobby)).join('');
+            // Group "altre" by category
+            const grouped = {};
+            altreLobbies.forEach(l => {
+                if (!grouped[l.category]) grouped[l.category] = [];
+                grouped[l.category].push(l);
+            });
+            for (const cat of Object.keys(grouped)) {
+                const meta = CATEGORY_META[cat] || { emoji: '📁', label: cat };
+                html += renderSectionHeader('altre-' + cat, meta.emoji, meta.label, grouped[cat].length);
+                html += grouped[cat].map(lobby => renderLobbyItem(lobby)).join('');
+                html += '</div>';
+            }
         }
     } else if (filter === 'all') {
-        // If user has a corso, show "I tuoi esami" section first even in "all" view
+        // If user has a corso, show "I tuoi esami" section first
         if (mieiEsamiIds.length > 0) {
             const mieiLobbies = LOBBIES.filter(l => mieiEsamiIds.includes(l.id));
             const altreLobbies = LOBBIES.filter(l => !mieiEsamiIds.includes(l.id));
 
-            html += `<div class="sidebar-corso-label">📚 I tuoi esami</div>`;
+            html += renderSectionHeader('miei', '📚', 'I tuoi esami', mieiLobbies.length);
             html += mieiLobbies.map(lobby => renderLobbyItem(lobby)).join('');
-            html += `<div class="sidebar-corso-divider"></div>`;
-            html += `<div class="sidebar-corso-label">🌐 Esplora</div>`;
-            html += altreLobbies.map(lobby => renderLobbyItem(lobby)).join('');
+            html += '</div>';
+
+            // Group remaining lobbies by category
+            const grouped = {};
+            altreLobbies.forEach(l => {
+                if (!grouped[l.category]) grouped[l.category] = [];
+                grouped[l.category].push(l);
+            });
+            for (const cat of Object.keys(grouped)) {
+                const meta = CATEGORY_META[cat] || { emoji: '📁', label: cat };
+                html += renderSectionHeader(cat, meta.emoji, meta.label, grouped[cat].length);
+                html += grouped[cat].map(lobby => renderLobbyItem(lobby)).join('');
+                html += '</div>';
+            }
         } else {
-            html = LOBBIES.map(lobby => renderLobbyItem(lobby)).join('');
+            // No corso — group all lobbies by category
+            const grouped = {};
+            LOBBIES.forEach(l => {
+                if (!grouped[l.category]) grouped[l.category] = [];
+                grouped[l.category].push(l);
+            });
+            for (const cat of Object.keys(grouped)) {
+                const meta = CATEGORY_META[cat] || { emoji: '📁', label: cat };
+                html += renderSectionHeader(cat, meta.emoji, meta.label, grouped[cat].length);
+                html += grouped[cat].map(lobby => renderLobbyItem(lobby)).join('');
+                html += '</div>';
+            }
         }
     } else {
-        // Category filter
+        // Single category filter — still collapsible
         const filtered = LOBBIES.filter(l => l.category === filter);
-        html = filtered.map(lobby => renderLobbyItem(lobby)).join('');
+        const meta = CATEGORY_META[filter] || { emoji: '📁', label: filter };
+        html += renderSectionHeader(filter, meta.emoji, meta.label, filtered.length);
+        html += filtered.map(lobby => renderLobbyItem(lobby)).join('');
+        html += '</div>';
     }
 
     sidebarEl.innerHTML = html;
