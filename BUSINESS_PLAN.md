@@ -236,17 +236,21 @@ Gli studenti usano 5-8 strumenti diversi per studiare:
 
 ## 7. TEAM E STRUTTURA
 
-### 7.1 Fondatore
+### 7.1 Founding Team
 - **[Il tuo nome]** — CEO & Product
   - Studente UNIMORE, Modena
   - Comprensione diretta del problema (è il target)
-  - Visione prodotto e strategia
+  - Visione prodotto, strategia e business development
+- **Davide** — Co-founder & Growth
+  - Studente UNIMORE, Modena
+  - Community building e go-to-market
+  - Partner di studio originale da cui è nata l'idea
 
-### 7.2 Team Necessario (Fase Seed)
+### 7.2 Co-founder Cercato
 - **1 Co-founder tecnico** — Full-stack developer (React/Node.js/Firebase)
-  - Priorità: trovare tra colleghi di Ingegneria Informatica UNIMORE
-- **1 Growth/Marketing** — Social media + community management
-  - Priorità: studente di Marketing/Comunicazione
+  - Priorità: cercare tra studenti di Ingegneria Informatica / Informatica UNIMORE
+  - Canali: hackathon, lab universitari, gruppi dev Modena, LinkedIn
+  - Offerta: equity 20-30% + ruolo CTO
 
 ### 7.3 Advisory Board (da costruire)
 - Professore UNIMORE (credibilità accademica)
