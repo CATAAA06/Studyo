@@ -1490,104 +1490,137 @@ function createNoiseGenerator(type) {
     return { source, gain };
 }
 
+// --- noise buffer helper ---
+function _ambBuffer(ctx, seconds, kind) {
+    const len = Math.max(1, Math.floor(seconds * ctx.sampleRate));
+    const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    if (kind === 'brown') {
+        let last = 0;
+        for (let i = 0; i < len; i++) { const w = Math.random() * 2 - 1; d[i] = (last + 0.02 * w) / 1.02; last = d[i]; d[i] *= 3.5; }
+    } else {
+        for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    }
+    return buf;
+}
+
+// Slowly modulate an AudioParam for natural ebb & flow
+function _slowLFO(ctx, targetParam, baseValue, depth, rateHz) {
+    const lfo = ctx.createOscillator();
+    lfo.frequency.value = rateHz;
+    const lg = ctx.createGain();
+    lg.gain.value = depth;
+    targetParam.value = baseValue;
+    lfo.connect(lg); lg.connect(targetParam);
+    lfo.start();
+    return lfo;
+}
+
+// --- characteristic transient events (recursively self-schedule) ---
+function _fireCrackle(ctx, dest, node) {
+    if (node._stopped) return;
+    const t = ctx.currentTime;
+    const src = ctx.createBufferSource();
+    src.buffer = _ambBuffer(ctx, 0.12, 'white');
+    const bp = ctx.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = 1000 + Math.random() * 2600;
+    bp.Q.value = 1.5 + Math.random() * 2.5;
+    const g = ctx.createGain();
+    const peak = 0.3 + Math.random() * 0.7;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(peak, t + 0.004);
+    g.gain.exponentialRampToValueAtTime(0.0008, t + 0.05 + Math.random() * 0.1);
+    src.connect(bp); bp.connect(g); g.connect(dest);
+    src.start(t); src.stop(t + 0.3);
+    node._timer = setTimeout(() => _fireCrackle(ctx, dest, node), 25 + Math.random() * 300);
+}
+
+function _birdChirp(ctx, dest, node) {
+    if (node._stopped) return;
+    const chirp = (delay) => {
+        const t = ctx.currentTime + delay;
+        const osc = ctx.createOscillator();
+        osc.type = Math.random() < 0.5 ? 'sine' : 'triangle';
+        const f0 = 1900 + Math.random() * 2200;
+        osc.frequency.setValueAtTime(f0, t);
+        osc.frequency.linearRampToValueAtTime(f0 * (1.15 + Math.random() * 0.45), t + 0.06);
+        osc.frequency.linearRampToValueAtTime(f0 * 0.9, t + 0.13);
+        const g = ctx.createGain();
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.linearRampToValueAtTime(0.22, t + 0.015);
+        g.gain.exponentialRampToValueAtTime(0.0005, t + 0.16);
+        osc.connect(g); g.connect(dest);
+        osc.start(t); osc.stop(t + 0.22);
+    };
+    chirp(0);
+    if (Math.random() < 0.5) chirp(0.18 + Math.random() * 0.18); // sometimes a double-chirp
+    node._timer = setTimeout(() => _birdChirp(ctx, dest, node), 700 + Math.random() * 3600);
+}
+
+function _cafeClink(ctx, dest, node) {
+    if (node._stopped) return;
+    const t = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.value = 1400 + Math.random() * 2600;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.1 + Math.random() * 0.12, t + 0.004);
+    g.gain.exponentialRampToValueAtTime(0.0004, t + 0.12 + Math.random() * 0.12);
+    osc.connect(g); g.connect(dest);
+    osc.start(t); osc.stop(t + 0.32);
+    node._timer = setTimeout(() => _cafeClink(ctx, dest, node), 1300 + Math.random() * 4000);
+}
+
 function createNatureSound(type) {
     const ctx = getAudioContext();
     const gain = ctx.createGain();
     gain.gain.value = (state.soundsMuted ? 0 : state.masterVolume) * gainMultiplier(type);
     gain.connect(ctx.destination);
 
-    const oscillators = [];
+    const node = { oscillators: [], gain, _stopped: false, _timer: null };
 
-    if (type === 'rain') {
-        const bufferSize = 2 * ctx.sampleRate;
-        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-            data[i] = Math.random() * 2 - 1;
-        }
-        const source = ctx.createBufferSource();
-        source.buffer = buffer;
-        source.loop = true;
-
-        const lpFilter = ctx.createBiquadFilter();
-        lpFilter.type = 'lowpass';
-        lpFilter.frequency.value = 800;
-
-        const hpFilter = ctx.createBiquadFilter();
-        hpFilter.type = 'highpass';
-        hpFilter.frequency.value = 200;
-
-        source.connect(hpFilter);
-        hpFilter.connect(lpFilter);
-        lpFilter.connect(gain);
-        source.start();
-        oscillators.push(source);
-    } else if (type === 'fire') {
-        const bufferSize = 2 * ctx.sampleRate;
-        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-        const data = buffer.getChannelData(0);
-        let last = 0;
-        for (let i = 0; i < bufferSize; i++) {
-            const w = Math.random() * 2 - 1;
-            data[i] = (last + 0.01 * w) / 1.01;
-            last = data[i];
-            data[i] *= 5;
-        }
-        const source = ctx.createBufferSource();
-        source.buffer = buffer;
-        source.loop = true;
-
-        const filter = ctx.createBiquadFilter();
-        filter.type = 'bandpass';
-        filter.frequency.value = 300;
-        filter.Q.value = 0.5;
-
-        source.connect(filter);
-        filter.connect(gain);
-        source.start();
-        oscillators.push(source);
-    } else if (type === 'cafe') {
-        const bufferSize = 2 * ctx.sampleRate;
-        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-            data[i] = Math.random() * 2 - 1;
-        }
-        const source = ctx.createBufferSource();
-        source.buffer = buffer;
-        source.loop = true;
-
-        const lpFilter = ctx.createBiquadFilter();
-        lpFilter.type = 'lowpass';
-        lpFilter.frequency.value = 500;
-
-        source.connect(lpFilter);
-        lpFilter.connect(gain);
-        source.start();
-        oscillators.push(source);
-    } else if (type === 'nature') {
-        const bufferSize = 2 * ctx.sampleRate;
-        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-            data[i] = Math.random() * 2 - 1;
-        }
-        const source = ctx.createBufferSource();
-        source.buffer = buffer;
-        source.loop = true;
-
-        const bp = ctx.createBiquadFilter();
-        bp.type = 'bandpass';
-        bp.frequency.value = 2000;
-        bp.Q.value = 2;
-
-        source.connect(bp);
-        bp.connect(gain);
-        source.start();
-        oscillators.push(source);
+    // Continuous base layer through a filter chain, at a fixed sub-level
+    function baseLayer(kind, filters, level) {
+        const src = ctx.createBufferSource();
+        src.buffer = _ambBuffer(ctx, 2, kind);
+        src.loop = true;
+        const bg = ctx.createGain();
+        bg.gain.value = level;
+        let prev = src;
+        filters.forEach(f => { prev.connect(f); prev = f; });
+        prev.connect(bg);
+        bg.connect(gain);
+        src.start();
+        node.oscillators.push(src);
+        return bg;
     }
 
-    return { oscillators, gain };
+    if (type === 'rain') {
+        const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 350;
+        const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 4500;
+        const bg = baseLayer('white', [hp, lp], 0.7);
+        node.oscillators.push(_slowLFO(ctx, bg.gain, 0.7, 0.18, 0.12)); // gentle surge
+    } else if (type === 'fire') {
+        const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 480;
+        baseLayer('brown', [lp], 0.5);        // low roar
+        _fireCrackle(ctx, gain, node);        // + crackles
+    } else if (type === 'cafe') {
+        const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 150;
+        const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 900;
+        const bg = baseLayer('brown', [hp, lp], 0.55);  // murmur
+        node.oscillators.push(_slowLFO(ctx, bg.gain, 0.55, 0.12, 0.25));
+        _cafeClink(ctx, gain, node);          // + clinks
+    } else if (type === 'nature') {
+        const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 500;
+        const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 3500;
+        const bg = baseLayer('white', [hp, lp], 0.28);  // wind / leaves
+        node.oscillators.push(_slowLFO(ctx, bg.gain, 0.28, 0.12, 0.15));
+        _birdChirp(ctx, gain, node);          // + bird chirps
+    }
+
+    return node;
 }
 
 function toggleSound(soundType) {
@@ -1619,6 +1652,9 @@ function toggleSound(soundType) {
 function stopSound(soundType) {
     const node = soundNodes[soundType];
     if (!node) return;
+
+    node._stopped = true;                              // halt event schedulers
+    if (node._timer) { clearTimeout(node._timer); node._timer = null; }
 
     if (node.source) {
         try { node.source.stop(); } catch(e) {}
