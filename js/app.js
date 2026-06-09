@@ -31,7 +31,7 @@ let state = {
     flashcardFlipped: false,
     setupDone: false,
     activeSounds: {},
-    masterVolume: 0.5,
+    masterVolume: 0.65,
     soundsMuted: false,
     lastStudyDay: null,
 };
@@ -542,10 +542,11 @@ function openLobby(lobbyId) {
     }
 }
 
-// Leaving the lobby page: stop presence + listeners
+// Leaving the lobby page: stop presence + listeners + any open video call
 function leaveLobby() {
     if (typeof leaveLobbyPresence === 'function') leaveLobbyPresence();
     if (typeof _chatUnsub !== 'undefined' && _chatUnsub) { _chatUnsub(); _chatUnsub = null; }
+    if (typeof closeModal === 'function') closeModal('video'); // disposes Jitsi if open
     lobbyRealUsers = [];
 }
 
@@ -999,6 +1000,85 @@ function openMindmap() {
 }
 
 /* =============================================
+   VIDEOCHIAMATA (Jitsi Meet embedded)
+   ============================================= */
+
+let jitsiApi = null;
+
+function loadJitsiScript() {
+    return new Promise((resolve, reject) => {
+        if (window.JitsiMeetExternalAPI) return resolve();
+        const s = document.createElement('script');
+        s.src = 'https://meet.jit.si/external_api.js';
+        s.async = true;
+        s.onload = () => resolve();
+        s.onerror = () => reject(new Error('Jitsi load failed'));
+        document.head.appendChild(s);
+    });
+}
+
+async function openVideoCall() {
+    if (!state.currentLobby) {
+        showNotification('Entra in una lobby per avviare la videochiamata.');
+        return;
+    }
+    const lobby = LOBBIES.find(l => l.id === state.currentLobby);
+    const nameEl = document.getElementById('video-lobby-name');
+    if (nameEl) nameEl.textContent = lobby ? '· ' + lobby.name : '';
+
+    openModal('video');
+
+    const container = document.getElementById('jitsi-container');
+    if (container) container.innerHTML = '<div class="jitsi-loading">Avvio videochiamata… 🎥</div>';
+
+    try {
+        await loadJitsiScript();
+    } catch (e) {
+        if (container) container.innerHTML = '<div class="jitsi-loading">Impossibile avviare la videochiamata. Controlla la connessione e riprova.</div>';
+        return;
+    }
+
+    if (container) container.innerHTML = '';
+
+    // One shared room per lobby (salted so randoms on the public server don't collide)
+    const room = 'StudyoBeta_x7k2_' + (state.currentLobby || 'lobby');
+
+    try {
+        jitsiApi = new JitsiMeetExternalAPI('meet.jit.si', {
+            roomName: room,
+            parentNode: container,
+            width: '100%',
+            height: '100%',
+            userInfo: { displayName: state.playerName || 'Studente' },
+            configOverwrite: {
+                prejoinPageEnabled: true,
+                startWithAudioMuted: true,
+                disableDeepLinking: true
+            },
+            interfaceConfigOverwrite: {
+                MOBILE_APP_PROMO: false,
+                SHOW_JITSI_WATERMARK: false,
+                SHOW_WATERMARK_FOR_GUESTS: false,
+                DISABLE_DEEP_LINKING: true
+            }
+        });
+        jitsiApi.addEventListener('readyToClose', () => closeModal('video'));
+        addXP(10, 'Videochiamata di studio');
+    } catch (e) {
+        if (container) container.innerHTML = '<div class="jitsi-loading">Errore videochiamata. Riprova tra poco.</div>';
+    }
+}
+
+function disposeJitsi() {
+    if (jitsiApi) {
+        try { jitsiApi.dispose(); } catch (e) {}
+        jitsiApi = null;
+    }
+    const c = document.getElementById('jitsi-container');
+    if (c) c.innerHTML = '';
+}
+
+/* =============================================
    AI TUTOR
    ============================================= */
 
@@ -1213,6 +1293,8 @@ function openModal(name) {
 
 function closeModal(name) {
     document.getElementById(`modal-${name}`).classList.remove('active');
+    // Tear down the video call whenever its modal closes (Esc, backdrop, X, readyToClose)
+    if (name === 'video' && typeof disposeJitsi === 'function') disposeJitsi();
 }
 
 // Modals that must NOT be dismissible by Esc / backdrop (login gate).
@@ -1250,6 +1332,13 @@ function setupGlobalUX() {
             leaveLobby();
         }
     });
+
+    // Resume the audio context on the first real user gesture (autoplay policy)
+    const resumeAudio = () => {
+        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    };
+    document.addEventListener('pointerdown', resumeAudio);
+    document.addEventListener('keydown', resumeAudio);
 }
 
 /* =============================================
@@ -1383,7 +1472,7 @@ function createNoiseGenerator(type) {
     source.loop = true;
 
     const gain = ctx.createGain();
-    gain.gain.value = state.masterVolume * 0.3;
+    gain.gain.value = (state.soundsMuted ? 0 : state.masterVolume) * gainMultiplier(type);
 
     if (type === 'brown') {
         const filter = ctx.createBiquadFilter();
@@ -1404,7 +1493,7 @@ function createNoiseGenerator(type) {
 function createNatureSound(type) {
     const ctx = getAudioContext();
     const gain = ctx.createGain();
-    gain.gain.value = state.masterVolume * 0.25;
+    gain.gain.value = (state.soundsMuted ? 0 : state.masterVolume) * gainMultiplier(type);
     gain.connect(ctx.destination);
 
     const oscillators = [];
@@ -1474,7 +1563,6 @@ function createNatureSound(type) {
 
         source.connect(lpFilter);
         lpFilter.connect(gain);
-        gain.gain.value = state.masterVolume * 0.15;
         source.start();
         oscillators.push(source);
     } else if (type === 'nature') {
@@ -1495,7 +1583,6 @@ function createNatureSound(type) {
 
         source.connect(bp);
         bp.connect(gain);
-        gain.gain.value = state.masterVolume * 0.1;
         source.start();
         oscillators.push(source);
     }
@@ -1515,7 +1602,7 @@ function toggleSound(soundType) {
         if (state.soundsMuted) {
             state.soundsMuted = false;
             const btn = document.getElementById('sound-master-btn');
-            if (btn) btn.textContent = '🔇 Muto';
+            if (btn) btn.textContent = '🔇 Silenzia';
         }
         let node;
         if (soundType === 'white' || soundType === 'brown') {
@@ -1544,9 +1631,16 @@ function stopSound(soundType) {
 }
 
 function gainMultiplier(type) {
-    if (type === 'cafe') return 0.15;
-    if (type === 'nature') return 0.1;
-    return 0.3;
+    // Boosted, post-filter levels so sounds are clearly audible.
+    const levels = {
+        white: 0.45,
+        brown: 0.85,
+        rain:  0.9,
+        fire:  0.85,
+        cafe:  0.7,
+        nature: 0.8
+    };
+    return levels[type] != null ? levels[type] : 0.5;
 }
 
 // Apply current master volume (respecting mute) to every live sound node.
@@ -1573,7 +1667,7 @@ function toggleAllSounds() {
     state.soundsMuted = !state.soundsMuted;
     applyAllGains();
 
-    if (btn) btn.textContent = state.soundsMuted ? '🔊 Riattiva' : '🔇 Muto';
+    if (btn) btn.textContent = state.soundsMuted ? '🔊 Riattiva' : '🔇 Silenzia';
     saveState();
 }
 
@@ -1583,7 +1677,7 @@ function setMasterVolume(val) {
     if (state.soundsMuted && state.masterVolume > 0) {
         state.soundsMuted = false;
         const btn = document.getElementById('sound-master-btn');
-        if (btn) btn.textContent = '🔇 Muto';
+        if (btn) btn.textContent = '🔇 Silenzia';
     }
     applyAllGains();
     saveState();

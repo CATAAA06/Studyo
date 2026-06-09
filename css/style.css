@@ -2120,4 +2120,96 @@ body {
     .confetti-container { display: none; }
     .feedback-fab-pulse,
     .feedback-fab-badge { animation: none !important; }
+    .live-dot { animation: none !important; }
+}
+
+/* =============================================
+   VIDEOCHIAMATA (Jitsi)
+   ============================================= */
+
+.lobby-main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.btn-video-cta {
+    background: linear-gradient(135deg, #FF6B6B, #6C5CE7);
+    color: #fff;
+    border: none;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 12px 18px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3);
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+.btn-video-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 26px rgba(255, 107, 107, 0.45);
+}
+
+.tool-video {
+    border: 1px solid rgba(255, 107, 107, 0.4);
+    background: rgba(255, 107, 107, 0.06);
+}
+
+.video-lobby-name {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 15px;
+}
+
+/* Near-fullscreen video modal */
+.modal-video-content {
+    width: 92vw;
+    max-width: 1100px;
+    height: 86vh;
+    max-height: 86vh;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.modal-video-content .modal-header {
+    padding: 16px 20px;
+    margin: 0;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+.jitsi-container {
+    flex: 1;
+    min-height: 0;
+    background: #0b0b12;
+    border-radius: 0 0 var(--radius) var(--radius);
+    overflow: hidden;
+    position: relative;
+}
+.jitsi-container iframe {
+    width: 100% !important;
+    height: 100% !important;
+    border: 0;
+}
+.jitsi-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    font-size: 15px;
+    text-align: center;
+    padding: 20px;
+}
+
+@media (max-width: 768px) {
+    .modal-video-content { width: 100vw; height: 92vh; max-height: 92vh; border-radius: 0; }
+    .btn-video-cta { width: 100%; justify-content: center; }
 }

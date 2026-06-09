@@ -179,6 +179,7 @@
                             </div>
                         </div>
                     </div>
+                    <button class="btn btn-video-cta" onclick="openVideoCall()">📹 Videochiamata</button>
                 </div>
 
                 <div class="lobby-layout">
@@ -232,7 +233,7 @@
                         <div class="card sounds-card">
                             <div class="card-header">
                                 <h3>🎧 Suoni Ambientali</h3>
-                                <button class="btn btn-secondary btn-sm" id="sound-master-btn" onclick="toggleAllSounds()">🔇 Muto</button>
+                                <button class="btn btn-secondary btn-sm" id="sound-master-btn" onclick="toggleAllSounds()">🔇 Silenzia</button>
                             </div>
                             <div class="sounds-grid">
                                 <div class="sound-item" id="sound-rain" onclick="toggleSound('rain')">
@@ -262,7 +263,7 @@
                             </div>
                             <div class="sound-volume-control">
                                 <span class="sound-vol-label">🔊</span>
-                                <input type="range" id="master-volume" min="0" max="100" value="50" oninput="setMasterVolume(this.value)">
+                                <input type="range" id="master-volume" min="0" max="100" value="65" oninput="setMasterVolume(this.value)">
                             </div>
                         </div>
 
@@ -285,6 +286,10 @@
                         <div class="card tools-card">
                             <div class="card-header"><h3>🛠️ Strumenti</h3></div>
                             <div class="tools-grid">
+                                <div class="tool-item tool-video" onclick="openVideoCall()">
+                                    <span class="tool-icon">📹</span><span class="tool-name">Videochiamata</span>
+                                    <span class="tool-desc">Studiate in video insieme</span>
+                                </div>
                                 <div class="tool-item" onclick="openFlashcards()">
                                     <span class="tool-icon">🃏</span><span class="tool-name">Flashcard</span>
                                     <span class="tool-desc">Ripetizione spaziata</span>
@@ -366,6 +371,19 @@
     </div>
 
     <!-- ============ MODALS ============ -->
+
+    <!-- VIDEO CALL MODAL -->
+    <div class="modal" id="modal-video">
+        <div class="modal-content modal-video-content">
+            <div class="modal-header">
+                <h2>📹 Videochiamata <span id="video-lobby-name" class="video-lobby-name"></span></h2>
+                <button class="modal-close" onclick="closeModal('video')">✕</button>
+            </div>
+            <div id="jitsi-container" class="jitsi-container">
+                <div class="jitsi-loading">Avvio videochiamata… 🎥</div>
+            </div>
+        </div>
+    </div>
 
     <!-- FLASHCARD MODAL -->
     <div class="modal" id="modal-flashcard">
