@@ -2,7 +2,7 @@
    STUDYO — Service Worker (PWA offline shell)
    ============================================= */
 
-const CACHE_VERSION = 'studyo-v2';
+const CACHE_VERSION = 'studyo-v3';
 const APP_SHELL = [
   './',
   './index.html',
@@ -64,11 +64,13 @@ self.addEventListener('fetch', (event) => {
     return; // do not call respondWith → default network behaviour
   }
 
-  // Same-origin assets: NETWORK-FIRST so deploys are seen immediately when online.
+  // Same-origin assets: NETWORK-FIRST and REVALIDATE so deploys are seen immediately.
+  // cache:'no-cache' forces a conditional request to the server (uses ETag) → always
+  // gets the latest version when changed, but stays efficient (304) when unchanged.
   // Falls back to the cache only when offline → keeps the app usable with no connection.
   if (url.origin === self.location.origin) {
     event.respondWith(
-      fetch(req)
+      fetch(req, { cache: 'no-cache' })
         .then((res) => {
           if (res && res.status === 200 && res.type === 'basic') {
             const copy = res.clone();
