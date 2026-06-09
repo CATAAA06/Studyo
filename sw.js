@@ -2,7 +2,7 @@
    STUDYO — Service Worker (PWA offline shell)
    ============================================= */
 
-const CACHE_VERSION = 'studyo-v1';
+const CACHE_VERSION = 'studyo-v2';
 const APP_SHELL = [
   './',
   './index.html',
@@ -16,11 +16,13 @@ const APP_SHELL = [
   './icons/icon-512.png'
 ];
 
-// Install: precache the app shell
+// Install: precache the app shell with fresh copies (cache: 'reload' bypasses HTTP cache)
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_VERSION)
-      .then((cache) => cache.addAll(APP_SHELL))
+      .then((cache) => cache.addAll(
+        APP_SHELL.map((url) => new Request(url, { cache: 'reload' }))
+      ))
       .then(() => self.skipWaiting())
       .catch((err) => console.warn('[SW] Precache failed:', err))
   );
@@ -62,21 +64,19 @@ self.addEventListener('fetch', (event) => {
     return; // do not call respondWith → default network behaviour
   }
 
-  // Same-origin static assets: cache-first, then update in background (stale-while-revalidate)
+  // Same-origin assets: NETWORK-FIRST so deploys are seen immediately when online.
+  // Falls back to the cache only when offline → keeps the app usable with no connection.
   if (url.origin === self.location.origin) {
     event.respondWith(
-      caches.match(req).then((cached) => {
-        const networkFetch = fetch(req)
-          .then((res) => {
-            if (res && res.status === 200 && res.type === 'basic') {
-              const copy = res.clone();
-              caches.open(CACHE_VERSION).then((cache) => cache.put(req, copy));
-            }
-            return res;
-          })
-          .catch(() => cached); // offline → fall back to cache
-        return cached || networkFetch;
-      })
+      fetch(req)
+        .then((res) => {
+          if (res && res.status === 200 && res.type === 'basic') {
+            const copy = res.clone();
+            caches.open(CACHE_VERSION).then((cache) => cache.put(req, copy));
+          }
+          return res;
+        })
+        .catch(() => caches.match(req).then((cached) => cached || caches.match('./index.html')))
     );
     return;
   }
