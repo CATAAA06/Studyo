@@ -723,7 +723,33 @@ body {
 .student-info { flex: 1; }
 .student-name { font-weight: 600; font-size: 14px; }
 .student-status { font-size: 12px; color: var(--text-muted); }
-.student-studying { color: var(--success); font-size: 11px; }
+.student-studying { color: var(--success); font-size: 11px; display: flex; align-items: center; gap: 5px; }
+
+/* Real present users vs ambient profiles */
+.student-item.ambient { opacity: 0.62; }
+.student-you {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--primary-light);
+    background: rgba(108, 92, 231, 0.18);
+    padding: 1px 6px;
+    border-radius: 8px;
+    margin-left: 2px;
+}
+.live-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--success);
+    box-shadow: 0 0 0 0 rgba(0, 184, 148, 0.6);
+    animation: livePulse 1.8s infinite;
+    flex-shrink: 0;
+}
+@keyframes livePulse {
+    0%   { box-shadow: 0 0 0 0 rgba(0, 184, 148, 0.55); }
+    70%  { box-shadow: 0 0 0 6px rgba(0, 184, 148, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 184, 148, 0); }
+}
 
 /* =============================================
    CHAT
@@ -746,9 +772,12 @@ body {
 
 .chat-msg {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     font-size: 14px;
+    align-items: baseline;
 }
+
+.chat-msg-avatar { font-size: 15px; flex-shrink: 0; }
 
 .chat-msg-name {
     font-weight: 600;

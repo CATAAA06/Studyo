@@ -229,6 +229,111 @@ async function loadCommunityFromFirestore() {
 }
 
 /* =============================================
+   REAL-TIME PRESENCE & CHAT
+   ============================================= */
+
+let _presenceHeartbeat = null;
+let _presenceUnsub = null;
+let _chatUnsub = null;
+
+// Announce that this user is now studying in a given lobby + keep a heartbeat.
+async function enterLobbyPresence(lobbyId) {
+    if (!state.firebaseUid) return;
+    const ref = db.collection('presence').doc(state.firebaseUid);
+    const payload = {
+        name: state.playerName || 'Studente',
+        avatar: avatarFor(state.firebaseUid || state.playerName || 'x'),
+        lobbyId: lobbyId,
+        status: 'studying',
+        xp: state.xp || 0,
+        uni: state.playerUni || state.playerScuola || '',
+        lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    try {
+        await ref.set(payload, { merge: true });
+    } catch (e) {
+        console.warn('presence set failed (rules?):', e.code || e.message);
+    }
+
+    // Heartbeat: refresh lastSeen so others know we're still here
+    if (_presenceHeartbeat) clearInterval(_presenceHeartbeat);
+    _presenceHeartbeat = setInterval(() => {
+        ref.update({ lastSeen: firebase.firestore.FieldValue.serverTimestamp() }).catch(() => {});
+    }, 45000);
+}
+
+// Live list of people currently in this lobby (active in the last 2 minutes).
+function listenLobbyPresence(lobbyId, cb) {
+    if (_presenceUnsub) { _presenceUnsub(); _presenceUnsub = null; }
+    try {
+        _presenceUnsub = db.collection('presence')
+            .where('lobbyId', '==', lobbyId)
+            .onSnapshot((snap) => {
+                const now = Date.now();
+                const users = snap.docs
+                    .map(d => ({ id: d.id, ...d.data() }))
+                    .filter(u => {
+                        if (!u.lastSeen) return true; // just-written (pending server ts)
+                        const ms = u.lastSeen.toMillis ? u.lastSeen.toMillis() : 0;
+                        return (now - ms) < 120000;
+                    });
+                cb(users);
+            }, (err) => {
+                console.warn('presence listen failed (rules?):', err.code || err.message);
+                cb([]); // fall back to ambient-only
+            });
+    } catch (e) {
+        cb([]);
+    }
+}
+
+// Stop being present in a lobby (on leaving the page / closing the tab).
+async function leaveLobbyPresence() {
+    if (_presenceHeartbeat) { clearInterval(_presenceHeartbeat); _presenceHeartbeat = null; }
+    if (_presenceUnsub) { _presenceUnsub(); _presenceUnsub = null; }
+    if (state.firebaseUid) {
+        try { await db.collection('presence').doc(state.firebaseUid).delete(); } catch (e) {}
+    }
+}
+
+// Live chat for a lobby (last 50 messages, oldest → newest).
+function listenChat(lobbyId, cb) {
+    if (_chatUnsub) { _chatUnsub(); _chatUnsub = null; }
+    try {
+        _chatUnsub = db.collection('lobbies').doc(lobbyId).collection('messages')
+            .orderBy('createdAt', 'asc')
+            .limitToLast(50)
+            .onSnapshot((snap) => {
+                const msgs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                cb(msgs);
+            }, (err) => {
+                console.warn('chat listen failed (rules?):', err.code || err.message);
+                cb(null); // null → show empty/offline state
+            });
+    } catch (e) {
+        cb(null);
+    }
+}
+
+async function sendChatMessage(lobbyId, text) {
+    if (!state.firebaseUid) return false;
+    try {
+        await db.collection('lobbies').doc(lobbyId).collection('messages').add({
+            uid: state.firebaseUid,
+            name: state.playerName || 'Studente',
+            avatar: avatarFor(state.firebaseUid || state.playerName || 'x'),
+            text: text,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        return true;
+    } catch (e) {
+        console.warn('chat send failed (rules?):', e.code || e.message);
+        showNotification('Messaggio non inviato (riprova tra poco).');
+        return false;
+    }
+}
+
+/* =============================================
    AUTH STATE LISTENER
    ============================================= */
 

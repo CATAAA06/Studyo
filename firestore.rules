@@ -48,6 +48,25 @@ service cloud.firestore {
       allow read, update, delete: if false;
     }
 
+    // ---- PRESENZA REAL-TIME ----
+    // Tutti gli autenticati leggono chi e online; ognuno scrive solo il proprio doc.
+    match /presence/{userId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ---- CHAT DELLE LOBBY ----
+    // Messaggi leggibili da tutti gli autenticati; creazione col proprio uid.
+    match /lobbies/{lobbyId}/messages/{messageId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null
+                    && request.resource.data.uid == request.auth.uid
+                    && request.resource.data.text is string
+                    && request.resource.data.text.size() > 0
+                    && request.resource.data.text.size() < 1000;
+      allow update, delete: if false;
+    }
+
     // ---- DEFAULT DENY ----
     match /{document=**} {
       allow read, write: if false;

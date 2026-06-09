@@ -154,6 +154,13 @@ function bumpDailyStat(field, amount = 1) {
    ============================================= */
 
 function navigate(page, data) {
+    // Leaving the lobby page → stop presence + chat listeners
+    const switchingLobby = page === 'lobby' && data && data !== state.currentLobby;
+    if (state.currentPage === 'lobby' && (page !== 'lobby' || switchingLobby)) {
+        if (typeof leaveLobby === 'function') leaveLobby();
+        if (page !== 'lobby') state.currentLobby = null;
+    }
+
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
 
     state.currentPage = page;
@@ -503,29 +510,78 @@ function filterLobbies(category) {
    LOBBY PAGE
    ============================================= */
 
+// Real present users in the current lobby (filled live by Firestore)
+let lobbyRealUsers = [];
+
 function openLobby(lobbyId) {
     const lobby = LOBBIES.find(l => l.id === lobbyId);
     if (!lobby) return;
 
     state.currentLobby = lobbyId;
+    lobbyRealUsers = [];
 
     document.getElementById('lobby-icon-big').textContent = lobby.icon;
     document.getElementById('lobby-title').textContent = lobby.name;
     document.getElementById('lobby-online').textContent = `${lobbyOnline(lobby)} studenti online`;
 
-    renderStudents();
-    renderChat();
+    // Render with ambient first; live data fills in via listeners below
+    renderStudents([]);
+    renderChat(null);
     resetQuizArea();
     resetTimer();
+
+    // ---- REAL-TIME: announce presence + listen to people & chat ----
+    if (typeof enterLobbyPresence === 'function') {
+        enterLobbyPresence(lobbyId);
+        listenLobbyPresence(lobbyId, (users) => {
+            lobbyRealUsers = users;
+            renderStudents(users);
+            updateLobbyOnlineCount(lobby, users.length);
+        });
+        listenChat(lobbyId, (msgs) => renderChat(msgs));
+    }
 }
 
-function renderStudents() {
-    const list = document.getElementById('students-list');
-    const count = 3 + Math.floor(Math.random() * 4);
-    const students = FAKE_STUDENTS.slice(0, count);
+// Leaving the lobby page: stop presence + listeners
+function leaveLobby() {
+    if (typeof leaveLobbyPresence === 'function') leaveLobbyPresence();
+    if (typeof _chatUnsub !== 'undefined' && _chatUnsub) { _chatUnsub(); _chatUnsub = null; }
+    lobbyRealUsers = [];
+}
 
-    list.innerHTML = students.map(s => `
-        <div class="student-item">
+function updateLobbyOnlineCount(lobby, realCount) {
+    // Hybrid: ambient baseline, but never show fewer than the real people present
+    const shown = Math.max(lobbyOnline(lobby), realCount);
+    const el = document.getElementById('lobby-online');
+    if (el) el.textContent = `${shown} studenti online`;
+}
+
+// Hybrid render: REAL present users first (live dot), then ambient profiles to fill.
+function renderStudents(realUsers = []) {
+    const list = document.getElementById('students-list');
+    if (!list) return;
+
+    const lobby = LOBBIES.find(l => l.id === state.currentLobby);
+    const ambientTarget = lobby ? (3 + (_hashString(lobby.id + 'amb') % 3)) : 4; // 3..5 stable
+
+    // Real users (mark self)
+    const realHtml = realUsers.map(u => {
+        const isSelf = u.id === state.firebaseUid;
+        return `
+            <div class="student-item">
+                <span class="student-avatar">${u.avatar || avatarFor(u.id)}</span>
+                <div class="student-info">
+                    <div class="student-name">${escapeHTML(u.name || 'Studente')}${isSelf ? ' <span class="student-you">(tu)</span>' : ''}</div>
+                    <div class="student-studying"><span class="live-dot"></span>Sta studiando ora</div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    // Ambient fill (only what's needed to reach the baseline)
+    const fill = Math.max(0, ambientTarget - realUsers.length);
+    const ambientHtml = FAKE_STUDENTS.slice(0, fill).map(s => `
+        <div class="student-item ambient">
             <span class="student-avatar">${s.avatar}</span>
             <div class="student-info">
                 <div class="student-name">${s.name}</div>
@@ -533,63 +589,55 @@ function renderStudents() {
             </div>
         </div>
     `).join('');
+
+    list.innerHTML = realHtml + ambientHtml;
 }
 
-function renderChat() {
-    const messages = document.getElementById('chat-messages');
-    messages.innerHTML = FAKE_CHAT.map(msg => {
-        if (msg.system) {
-            return `<div class="chat-msg-system">${msg.text}</div>`;
-        }
-        return `
+function renderChat(messages) {
+    const box = document.getElementById('chat-messages');
+    if (!box) return;
+
+    // Always start with a friendly system line
+    let html = `<div class="chat-msg-system">Benvenuto nella lobby! Scrivi per studiare insieme 👋</div>`;
+
+    if (messages === null) {
+        // Listener not ready / offline
+        html += `<div class="chat-msg-system" style="opacity:.6">Chat non disponibile offline.</div>`;
+    } else if (messages.length === 0) {
+        html += `<div class="chat-msg-system" style="opacity:.7">Ancora nessun messaggio. Rompi il ghiaccio! ✍️</div>`;
+    } else {
+        html += messages.map(m => `
             <div class="chat-msg">
-                <span class="chat-msg-name">${msg.name}:</span>
-                <span class="chat-msg-text">${msg.text}</span>
+                <span class="chat-msg-avatar">${m.avatar || avatarFor(m.uid)}</span>
+                <span class="chat-msg-name">${escapeHTML(m.name || 'Studente')}:</span>
+                <span class="chat-msg-text">${escapeHTML(m.text || '')}</span>
             </div>
-        `;
-    }).join('');
-    messages.scrollTop = messages.scrollHeight;
+        `).join('');
+    }
+
+    box.innerHTML = html;
+    box.scrollTop = box.scrollHeight;
 }
 
 function sendChat() {
     const input = document.getElementById('chat-input');
     const text = input.value.trim();
     if (!text) return;
-
-    const messages = document.getElementById('chat-messages');
-    messages.innerHTML += `
-        <div class="chat-msg">
-            <span class="chat-msg-name">${state.playerName}:</span>
-            <span class="chat-msg-text">${escapeHTML(text)}</span>
-        </div>
-    `;
+    if (text.length > 1000) {
+        showNotification('Messaggio troppo lungo (max 1000 caratteri).');
+        return;
+    }
 
     input.value = '';
-    messages.scrollTop = messages.scrollHeight;
+
+    // Send to Firestore — the real-time listener renders it for everyone (incl. us)
+    if (typeof sendChatMessage === 'function' && state.currentLobby) {
+        sendChatMessage(state.currentLobby, text);
+    }
 
     // Daily challenge: social messages
     bumpDailyStat('messages');
     renderChallenges();
-
-    setTimeout(() => {
-        const responses = [
-            "Bello, ci sto!",
-            "Qualcuno ha capito l'esercizio 3?",
-            "Facciamo un quiz?",
-            "Grande! Continuiamo così 💪",
-            "Io faccio una pausa caffè ☕",
-        ];
-        const randomStudent = FAKE_STUDENTS[Math.floor(Math.random() * FAKE_STUDENTS.length)];
-        const randomResp = responses[Math.floor(Math.random() * responses.length)];
-
-        messages.innerHTML += `
-            <div class="chat-msg">
-                <span class="chat-msg-name">${randomStudent.name}:</span>
-                <span class="chat-msg-text">${randomResp}</span>
-            </div>
-        `;
-        messages.scrollTop = messages.scrollHeight;
-    }, 1500 + Math.random() * 2000);
 }
 
 function handleChatKey(e) {
@@ -1195,6 +1243,13 @@ function setupGlobalUX() {
             if (e.target === modal) closeModal(name);
         });
     });
+
+    // Remove our presence when the tab closes / refreshes
+    window.addEventListener('beforeunload', () => {
+        if (state.currentPage === 'lobby' && typeof leaveLobby === 'function') {
+            leaveLobby();
+        }
+    });
 }
 
 /* =============================================
@@ -1685,6 +1740,15 @@ function escapeHTML(str) {
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
+}
+
+// Deterministic emoji avatar from a seed string (stable per user).
+const AVATAR_POOL = ['🎓', '😎', '👩‍🎓', '🧑‍💻', '📚', '🎯', '✨', '🔥', '💡', '🚀', '🦉', '🧠', '⭐', '🌟', '🎒'];
+function avatarFor(seed) {
+    let h = 0;
+    const s = String(seed || 'x');
+    for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+    return AVATAR_POOL[Math.abs(h) % AVATAR_POOL.length];
 }
 
 /* =============================================
