@@ -1,0 +1,17 @@
+# Logs
+*.log
+server.log
+server-err.log
+
+# Editor / tooling
+.claude/
+.vscode/
+.idea/
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Dependencies (if ever added)
+node_modules/

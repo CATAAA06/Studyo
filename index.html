@@ -4,9 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
     <title>Studyo — Lo studio diventa multiplayer</title>
+
+    <!-- SEO -->
+    <meta name="description" content="Studyo trasforma lo studio in un'esperienza multiplayer: entra in lobby per materia, guadagna XP, mantieni lo streak e studia insieme agli altri studenti. Università, superiori e preparazione TOLC.">
+    <meta name="keywords" content="studiare, università, superiori, TOLC, quiz, flashcard, pomodoro, studio di gruppo, gamification, studyo">
+    <meta name="author" content="Studyo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://cataaa06.github.io/Studyo/">
+
+    <!-- Open Graph (Facebook, WhatsApp, LinkedIn) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Studyo — Lo studio diventa multiplayer">
+    <meta property="og:description" content="Entra in lobby di studio, guadagna XP, mantieni lo streak. Lo studio diventa un gioco. 🎓">
+    <meta property="og:url" content="https://cataaa06.github.io/Studyo/">
+    <meta property="og:image" content="https://cataaa06.github.io/Studyo/icons/icon-512.png">
+    <meta property="og:site_name" content="Studyo">
+    <meta property="og:locale" content="it_IT">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Studyo — Lo studio diventa multiplayer">
+    <meta name="twitter:description" content="Entra in lobby di studio, guadagna XP, mantieni lo streak. Lo studio diventa un gioco. 🎓">
+    <meta name="twitter:image" content="https://cataaa06.github.io/Studyo/icons/icon-512.png">
+
+    <!-- PWA -->
+    <meta name="theme-color" content="#6C5CE7">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Studyo">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-180.png">
+
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/discord.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -197,7 +232,7 @@
                         <div class="card sounds-card">
                             <div class="card-header">
                                 <h3>🎧 Suoni Ambientali</h3>
-                                <button class="btn btn-secondary btn-sm" id="sound-master-btn" onclick="toggleAllSounds()">Mute</button>
+                                <button class="btn btn-secondary btn-sm" id="sound-master-btn" onclick="toggleAllSounds()">🔇 Muto</button>
                             </div>
                             <div class="sounds-grid">
                                 <div class="sound-item" id="sound-rain" onclick="toggleSound('rain')">
@@ -635,5 +670,16 @@
     <script src="js/data.js"></script>
     <script src="js/app.js"></script>
     <script src="js/firebase-config.js"></script>
+
+    <!-- PWA: register service worker (offline support + installability) -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('[Studyo] Service worker registrato:', reg.scope))
+                    .catch(err => console.warn('[Studyo] Service worker non registrato:', err));
+            });
+        }
+    </script>
 </body>
 </html>

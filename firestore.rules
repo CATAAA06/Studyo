@@ -1,0 +1,56 @@
+rules_version = '2';
+
+// =============================================
+// STUDYO — Firestore Security Rules
+// =============================================
+// Come applicarle:
+// Firebase Console -> Firestore Database -> Regole -> incolla questo -> Pubblica
+//
+// Sostituiscono la "test mode" (che scade dopo 30 giorni e lascia il DB aperto a tutti).
+// =============================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Validazione base del documento utente: impedisce campi giganti o tipi errati.
+    function isValidUser() {
+      return request.resource.data.xp is number
+             && request.resource.data.xp >= 0
+             && request.resource.data.name is string
+             && request.resource.data.name.size() < 100;
+    }
+
+    // ---- UTENTI ----
+    // Lettura consentita a qualsiasi utente autenticato (community/leaderboard).
+    // Scrittura solo sul proprio documento.
+    match /users/{userId} {
+      allow read: if request.auth != null;
+
+      allow create: if request.auth != null
+                    && request.auth.uid == userId
+                    && isValidUser();
+
+      allow update: if request.auth != null
+                    && request.auth.uid == userId
+                    && isValidUser();
+
+      allow delete: if false;
+    }
+
+    // ---- FEEDBACK ----
+    // Chiunque sia autenticato puo creare un feedback.
+    // Lettura/modifica/cancellazione bloccate dal client (li leggi dalla Console).
+    match /feedbacks/{feedbackId} {
+      allow create: if request.auth != null
+                    && request.resource.data.text is string
+                    && request.resource.data.text.size() > 0
+                    && request.resource.data.text.size() < 5000;
+      allow read, update, delete: if false;
+    }
+
+    // ---- DEFAULT DENY ----
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

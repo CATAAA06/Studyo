@@ -32,6 +32,8 @@ let state = {
     setupDone: false,
     activeSounds: {},
     masterVolume: 0.5,
+    soundsMuted: false,
+    lastStudyDay: null,
 };
 
 function loadState() {
@@ -41,6 +43,9 @@ function loadState() {
         Object.assign(state, parsed);
         state.timer = null;
         state.timerRunning = false;
+        // Audio can't resume without a user gesture → start each session clean
+        state.activeSounds = {};
+        state.soundsMuted = false;
     }
 }
 
@@ -48,6 +53,100 @@ function saveState() {
     const toSave = { ...state };
     toSave.timer = null;
     localStorage.setItem('studyo_state', JSON.stringify(toSave));
+}
+
+/* =============================================
+   DATE & STREAK HELPERS
+   ============================================= */
+
+function todayStr() {
+    return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+}
+
+function dayDiff(a, b) {
+    // whole days between date-strings a and b (b - a)
+    const da = new Date(a + 'T00:00:00');
+    const db = new Date(b + 'T00:00:00');
+    return Math.round((db - da) / 86400000);
+}
+
+// Call this whenever the user does real study (pomodoro / quiz).
+// Keeps the consecutive-day streak honest.
+function registerStudyDay() {
+    const today = todayStr();
+    const last = state.lastStudyDay;
+
+    if (last === today) return; // already counted today
+
+    if (last && dayDiff(last, today) === 1) {
+        state.streak = (state.streak || 0) + 1; // consecutive day
+        showNotification(`🔥 Streak ${state.streak} giorni! Continua così.`);
+    } else {
+        state.streak = 1; // first day or streak broken → restart at 1
+    }
+    state.lastStudyDay = today;
+    saveState();
+    updateNav();
+}
+
+// On load: if the user skipped one or more full days, the streak is broken.
+function reconcileStreak() {
+    const today = todayStr();
+    const last = state.lastStudyDay;
+    if (last && dayDiff(last, today) > 1) {
+        state.streak = 0; // broken — they'll restart at 1 on next study
+        saveState();
+    }
+}
+
+/* =============================================
+   STABLE "ONLINE" COUNTS (no jitter on re-render)
+   ============================================= */
+
+// Deterministic pseudo-random from a string seed, refreshed each session.
+const _sessionSalt = (() => {
+    let s = sessionStorage.getItem('studyo_session_salt');
+    if (!s) { s = String(Math.floor(Math.random() * 100000)); sessionStorage.setItem('studyo_session_salt', s); }
+    return s;
+})();
+
+function _hashString(str) {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) {
+        h = ((h << 5) - h + str.charCodeAt(i)) | 0;
+    }
+    return Math.abs(h);
+}
+
+// Stable per-lobby online count: base + deterministic 0..4 variation,
+// fixed for the whole session so it doesn't flicker when re-rendering.
+function lobbyOnline(lobby) {
+    const variation = _hashString(lobby.id + _sessionSalt) % 5;
+    return lobby.online + variation;
+}
+
+/* =============================================
+   DAILY CHALLENGE STATS
+   ============================================= */
+
+function getDailyStats() {
+    const today = todayStr();
+    const key = 'studyo_daily_' + today;
+    let stats = { pomodoros: 0, quizzes: 0, messages: 0, minutes: 0 };
+    try {
+        const saved = JSON.parse(localStorage.getItem(key) || 'null');
+        if (saved) stats = { ...stats, ...saved };
+    } catch (e) {}
+    return stats;
+}
+
+function bumpDailyStat(field, amount = 1) {
+    const today = todayStr();
+    const key = 'studyo_daily_' + today;
+    const stats = getDailyStats();
+    stats[field] = (stats[field] || 0) + amount;
+    localStorage.setItem(key, JSON.stringify(stats));
+    return stats;
 }
 
 /* =============================================
@@ -387,7 +486,7 @@ function renderLobbyItem(lobby) {
         <div class="sidebar-lobby ${state.currentLobby === lobby.id ? 'active' : ''}" onclick="navigate('lobby', '${lobby.id}')">
             <span class="sidebar-lobby-icon">${lobby.icon}</span>
             <span class="sidebar-lobby-name">${lobby.name}</span>
-            <span class="sidebar-lobby-count">${lobby.online + Math.floor(Math.random() * 5)}</span>
+            <span class="sidebar-lobby-count">${lobbyOnline(lobby)}</span>
         </div>
     `;
 }
@@ -412,7 +511,7 @@ function openLobby(lobbyId) {
 
     document.getElementById('lobby-icon-big').textContent = lobby.icon;
     document.getElementById('lobby-title').textContent = lobby.name;
-    document.getElementById('lobby-online').textContent = `${lobby.online + Math.floor(Math.random() * 5)} studenti online`;
+    document.getElementById('lobby-online').textContent = `${lobbyOnline(lobby)} studenti online`;
 
     renderStudents();
     renderChat();
@@ -467,6 +566,10 @@ function sendChat() {
 
     input.value = '';
     messages.scrollTop = messages.scrollHeight;
+
+    // Daily challenge: social messages
+    bumpDailyStat('messages');
+    renderChallenges();
 
     setTimeout(() => {
         const responses = [
@@ -556,6 +659,12 @@ function completePomodoro() {
 
     const minutes = state.timerTotal / 60;
     state.studyHours = Math.round((state.studyHours + minutes / 60) * 100) / 100;
+
+    // Streak + daily challenge tracking (real study activity)
+    registerStudyDay();
+    bumpDailyStat('pomodoros');
+    bumpDailyStat('minutes', minutes);
+    renderChallenges();
 
     const xpEarned = minutes >= 25 ? 75 : 30;
     addXP(xpEarned, `Pomodoro ${minutes}min completato!`);
@@ -680,6 +789,12 @@ function answerQuiz(selected) {
 
 function finishQuiz() {
     state.quizzesCompleted++;
+
+    // Streak + daily challenge tracking
+    registerStudyDay();
+    bumpDailyStat('quizzes');
+    renderChallenges();
+
     const xpEarned = state.quizScore * 50;
     addXP(xpEarned, `Quiz completato: ${state.quizScore}/${state.currentQuiz.length}`);
 
@@ -876,18 +991,58 @@ function handleAIKey(e) {
    CHALLENGES
    ============================================= */
 
+// Challenge definitions: real goals tied to today's activity
+const CHALLENGE_DEFS = [
+    { id: 'maratoneta', title: '🏃 Maratoneta', desc: 'Studia 2 ore oggi', metric: 'minutes', goal: 120, xp: 200 },
+    { id: 'quizmaster', title: '🧠 Quizmaster', desc: 'Completa 3 quiz', metric: 'quizzes', goal: 3, xp: 150 },
+    { id: 'costanza', title: '🔥 Costanza', desc: 'Streak di 3 giorni', metric: 'streak', goal: 3, xp: 300 },
+    { id: 'social', title: '💬 Social Learner', desc: 'Invia 10 messaggi', metric: 'messages', goal: 10, xp: 100 },
+];
+
+function getClaimedChallenges() {
+    const key = 'studyo_claimed_' + todayStr();
+    try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch (e) { return []; }
+}
+
+function claimChallenge(id, xp) {
+    const key = 'studyo_claimed_' + todayStr();
+    const claimed = getClaimedChallenges();
+    if (claimed.includes(id)) return;
+    claimed.push(id);
+    localStorage.setItem(key, JSON.stringify(claimed));
+    const def = CHALLENGE_DEFS.find(c => c.id === id);
+    addXP(xp, `Sfida completata: ${def ? def.desc : id}`);
+    showNotification(`🎯 Sfida completata! +${xp} XP`);
+}
+
 function renderChallenges() {
     const list = document.getElementById('sidebar-challenges');
     if (!list) return;
-    list.innerHTML = DAILY_CHALLENGES.map(c => `
-        <div class="sidebar-challenge">
-            <div class="sidebar-challenge-title">${c.title}</div>
-            <div class="sidebar-challenge-reward">${c.reward}</div>
-            <div class="sidebar-challenge-bar">
-                <div class="sidebar-challenge-fill" style="width:${c.progress}%"></div>
+
+    const stats = getDailyStats();
+    const claimed = getClaimedChallenges();
+
+    list.innerHTML = CHALLENGE_DEFS.map(c => {
+        let current = c.metric === 'streak' ? (state.streak || 0) : (stats[c.metric] || 0);
+        const pct = Math.min(100, Math.round((current / c.goal) * 100));
+        const isDone = current >= c.goal;
+        const isClaimed = claimed.includes(c.id);
+
+        // Auto-claim reward the moment a challenge is completed
+        if (isDone && !isClaimed) {
+            setTimeout(() => claimChallenge(c.id, c.xp), 50);
+        }
+
+        return `
+            <div class="sidebar-challenge ${isDone ? 'completed' : ''}">
+                <div class="sidebar-challenge-title">${c.title} ${isDone ? '✓' : ''}</div>
+                <div class="sidebar-challenge-reward">+${c.xp} XP · <span class="challenge-count">${Math.min(current, c.goal)}/${c.goal}</span></div>
+                <div class="sidebar-challenge-bar">
+                    <div class="sidebar-challenge-fill" style="width:${pct}%"></div>
+                </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 /* =============================================
@@ -981,6 +1136,7 @@ function addXP(amount, reason) {
     if (newLevelData.level > oldLevel) {
         state.level = newLevelData.level;
         showNotification(`🎉 Level Up! Sei ora ${newLevelData.title} (Livello ${newLevelData.level})`);
+        if (typeof celebrate === 'function') celebrate();
     }
 
     updateNav();
@@ -1011,45 +1167,119 @@ function closeModal(name) {
     document.getElementById(`modal-${name}`).classList.remove('active');
 }
 
+// Modals that must NOT be dismissible by Esc / backdrop (login gate).
+const PROTECTED_MODALS = ['auth', 'setup'];
+
+function closeTopModal() {
+    // Find the last-opened active modal that is dismissible
+    const active = Array.from(document.querySelectorAll('.modal.active'))
+        .filter(m => !PROTECTED_MODALS.includes(m.id.replace('modal-', '')));
+    if (active.length === 0) return false;
+    const top = active[active.length - 1];
+    top.classList.remove('active');
+    return true;
+}
+
+// Global UX: Esc closes modals, clicking the backdrop closes modals.
+function setupGlobalUX() {
+    // Esc to close the top dismissible modal
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeTopModal();
+    });
+
+    // Click on backdrop (the .modal element itself, not its content) to close
+    document.querySelectorAll('.modal').forEach(modal => {
+        const name = modal.id.replace('modal-', '');
+        if (PROTECTED_MODALS.includes(name)) return;
+        modal.addEventListener('mousedown', (e) => {
+            if (e.target === modal) closeModal(name);
+        });
+    });
+}
+
+/* =============================================
+   LEVEL-UP CELEBRATION (confetti)
+   ============================================= */
+
+function celebrate() {
+    const colors = ['#6C5CE7', '#A29BFE', '#FF6B6B', '#FDCB6E', '#00B894'];
+    const container = document.createElement('div');
+    container.className = 'confetti-container';
+    document.body.appendChild(container);
+
+    const count = 70;
+    for (let i = 0; i < count; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = Math.random() * 100 + 'vw';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDelay = (Math.random() * 0.6) + 's';
+        piece.style.animationDuration = (1.8 + Math.random() * 1.4) + 's';
+        piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+        piece.style.width = (6 + Math.random() * 8) + 'px';
+        piece.style.height = (8 + Math.random() * 10) + 'px';
+        container.appendChild(piece);
+    }
+
+    setTimeout(() => container.remove(), 3600);
+}
+
 /* =============================================
    NOTIFICATIONS
    ============================================= */
 
-function showNotification(text) {
-    const notif = document.createElement('div');
+// Toasts stack vertically in a fixed container (so multiple don't overlap).
+function getToastStack() {
+    let stack = document.getElementById('toast-stack');
+    if (!stack) {
+        stack = document.createElement('div');
+        stack.id = 'toast-stack';
+        document.body.appendChild(stack);
+    }
     const isMobile = window.innerWidth <= 768;
-    notif.style.cssText = isMobile ? `
+    stack.style.cssText = isMobile ? `
         position: fixed;
         top: 16px;
         left: 16px;
         right: 16px;
-        background: var(--bg-card);
-        border: 1px solid var(--primary);
-        border-radius: 12px;
-        padding: 14px 16px;
-        font-size: 13px;
-        font-weight: 600;
-        z-index: 300;
-        animation: fadeIn 0.3s ease;
-        box-shadow: 0 8px 32px rgba(108, 92, 231, 0.3);
-        text-align: center;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        z-index: 400;
+        pointer-events: none;
     ` : `
         position: fixed;
         top: 80px;
         right: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        z-index: 400;
+        pointer-events: none;
+        max-width: 340px;
+    `;
+    return stack;
+}
+
+function showNotification(text) {
+    const stack = getToastStack();
+    const isMobile = window.innerWidth <= 768;
+
+    const notif = document.createElement('div');
+    notif.style.cssText = `
         background: var(--bg-card);
         border: 1px solid var(--primary);
         border-radius: 12px;
-        padding: 14px 20px;
-        font-size: 14px;
+        padding: ${isMobile ? '14px 16px' : '14px 20px'};
+        font-size: ${isMobile ? '13px' : '14px'};
         font-weight: 600;
-        z-index: 300;
         animation: fadeIn 0.3s ease;
         box-shadow: 0 8px 32px rgba(108, 92, 231, 0.3);
-        max-width: 320px;
+        ${isMobile ? 'text-align: center;' : ''}
+        pointer-events: auto;
     `;
     notif.textContent = text;
-    document.body.appendChild(notif);
+    stack.appendChild(notif);
 
     setTimeout(() => {
         notif.style.opacity = '0';
@@ -1226,6 +1456,12 @@ function toggleSound(soundType) {
         el.classList.remove('active');
         delete state.activeSounds[soundType];
     } else {
+        // Explicitly turning a sound on → clear global mute
+        if (state.soundsMuted) {
+            state.soundsMuted = false;
+            const btn = document.getElementById('sound-master-btn');
+            if (btn) btn.textContent = '🔇 Muto';
+        }
         let node;
         if (soundType === 'white' || soundType === 'brown') {
             node = createNoiseGenerator(soundType);
@@ -1252,31 +1488,50 @@ function stopSound(soundType) {
     delete soundNodes[soundType];
 }
 
+function gainMultiplier(type) {
+    if (type === 'cafe') return 0.15;
+    if (type === 'nature') return 0.1;
+    return 0.3;
+}
+
+// Apply current master volume (respecting mute) to every live sound node.
+function applyAllGains() {
+    const vol = state.soundsMuted ? 0 : state.masterVolume;
+    Object.keys(soundNodes).forEach(type => {
+        const node = soundNodes[type];
+        if (node && node.gain) {
+            node.gain.gain.value = vol * gainMultiplier(type);
+        }
+    });
+}
+
+// Master button: mute/unmute all WITHOUT stopping the sources (so they resume instantly).
 function toggleAllSounds() {
     const anyActive = Object.keys(state.activeSounds).length > 0;
+    const btn = document.getElementById('sound-master-btn');
 
-    if (anyActive) {
-        Object.keys(state.activeSounds).forEach(type => {
-            stopSound(type);
-            document.getElementById(`sound-${type}`).classList.remove('active');
-        });
-        state.activeSounds = {};
-        document.getElementById('sound-master-btn').textContent = 'Mute';
+    if (!anyActive) {
+        showNotification('🎧 Attiva prima un suono ambientale!');
+        return;
     }
+
+    state.soundsMuted = !state.soundsMuted;
+    applyAllGains();
+
+    if (btn) btn.textContent = state.soundsMuted ? '🔊 Riattiva' : '🔇 Muto';
+    saveState();
 }
 
 function setMasterVolume(val) {
     state.masterVolume = val / 100;
-
-    Object.keys(soundNodes).forEach(type => {
-        const node = soundNodes[type];
-        if (node && node.gain) {
-            let mult = 0.3;
-            if (type === 'cafe') mult = 0.15;
-            if (type === 'nature') mult = 0.1;
-            node.gain.gain.value = state.masterVolume * mult;
-        }
-    });
+    // Changing volume implicitly unmutes
+    if (state.soundsMuted && state.masterVolume > 0) {
+        state.soundsMuted = false;
+        const btn = document.getElementById('sound-master-btn');
+        if (btn) btn.textContent = '🔇 Muto';
+    }
+    applyAllGains();
+    saveState();
 }
 
 /* =============================================
@@ -1474,6 +1729,9 @@ function sendFeedback() {
 function init() {
     loadState();
 
+    // Break the streak if the user skipped one or more full days
+    reconcileStreak();
+
     // Firebase handles auth modals now
     // Close setup if already done (firebase will re-open if needed)
     if (state.setupDone) {
@@ -1486,10 +1744,17 @@ function init() {
     renderChallenges();
     renderCommunity();
 
+    // Restore master volume slider + label
+    const volSlider = document.getElementById('master-volume');
+    if (volSlider) volSlider.value = Math.round((state.masterVolume ?? 0.5) * 100);
+
     document.getElementById('pomo-count').textContent = state.pomodorosCompleted;
     const hours = Math.floor(state.studyHours);
     const mins = Math.round((state.studyHours - hours) * 60);
     document.getElementById('pomo-total').textContent = `${hours}h ${mins}m`;
+
+    // Global UX: Esc / backdrop to close modals
+    setupGlobalUX();
 
     // Show feedback welcome after a short delay (only if logged in)
     setTimeout(() => {
