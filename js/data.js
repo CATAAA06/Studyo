@@ -14,6 +14,12 @@ const LOBBIES = [
     { id: 'statistica', name: 'Statistica', icon: '📈', category: 'scientifica', online: 11 },
     { id: 'biologia', name: 'Biologia Generale', icon: '🦠', category: 'scientifica', online: 8 },
     { id: 'calcoloNum', name: 'Calcolo Numerico', icon: '🔢', category: 'scientifica', online: 4 },
+    { id: 'archCalcolatori', name: 'Architettura dei Calcolatori', icon: '🧮', category: 'scientifica', online: 8 },
+    { id: 'sistemiOperativi', name: 'Sistemi Operativi', icon: '🐧', category: 'scientifica', online: 9 },
+    { id: 'basiDati', name: 'Basi di Dati', icon: '🗄️', category: 'scientifica', online: 10 },
+    { id: 'retiCalcolatori', name: 'Reti di Calcolatori', icon: '🌐', category: 'scientifica', online: 7 },
+    { id: 'ingSoftware', name: 'Ingegneria del Software', icon: '🛠️', category: 'scientifica', online: 6 },
+    { id: 'ricercaOperativa', name: 'Ricerca Operativa', icon: '📦', category: 'scientifica', online: 4 },
     { id: 'meccanica', name: 'Meccanica Razionale', icon: '⚙️', category: 'scientifica', online: 5 },
     { id: 'elettrotecnica', name: 'Elettrotecnica', icon: '⚡', category: 'scientifica', online: 6 },
 
@@ -158,17 +164,17 @@ const CORSI_ESAMI = {
     'Finanza': ['microeconomia', 'macroeconomia', 'matFin', 'statistica', 'econometria', 'analisi1', 'ragioneria', 'giurisprudenza', 'dirCommerciale', 'inglese'],
 
     // Ingegneria
-    'Ingegneria Informatica': ['analisi1', 'analisi2', 'fisica1', 'fisica2', 'informatica', 'programmazione', 'algebra', 'statistica', 'chimica', 'calcoloNum', 'elettrotecnica', 'inglese'],
+    'Ingegneria Informatica': ['analisi1', 'analisi2', 'fisica1', 'fisica2', 'informatica', 'programmazione', 'algebra', 'statistica', 'archCalcolatori', 'sistemiOperativi', 'basiDati', 'retiCalcolatori', 'ingSoftware', 'elettrotecnica', 'inglese'],
     'Ingegneria Meccanica': ['analisi1', 'analisi2', 'fisica1', 'fisica2', 'chimica', 'algebra', 'meccanica', 'statistica', 'informatica', 'calcoloNum', 'inglese'],
     'Ingegneria Civile': ['analisi1', 'analisi2', 'fisica1', 'fisica2', 'chimica', 'algebra', 'meccanica', 'statistica', 'calcoloNum', 'inglese'],
-    'Ingegneria Elettronica': ['analisi1', 'analisi2', 'fisica1', 'fisica2', 'informatica', 'programmazione', 'algebra', 'elettrotecnica', 'chimica', 'statistica', 'inglese'],
-    'Ingegneria Gestionale': ['analisi1', 'analisi2', 'fisica1', 'informatica', 'statistica', 'microeconomia', 'macroeconomia', 'pianificazione', 'ragioneria', 'algebra', 'inglese'],
+    'Ingegneria Elettronica': ['analisi1', 'analisi2', 'fisica1', 'fisica2', 'informatica', 'programmazione', 'algebra', 'elettrotecnica', 'archCalcolatori', 'retiCalcolatori', 'statistica', 'inglese'],
+    'Ingegneria Gestionale': ['analisi1', 'analisi2', 'fisica1', 'informatica', 'statistica', 'ricercaOperativa', 'microeconomia', 'macroeconomia', 'pianificazione', 'ragioneria', 'algebra', 'inglese'],
 
     // Scienze
     'Matematica': ['analisi1', 'analisi2', 'algebra', 'fisica1', 'fisica2', 'informatica', 'programmazione', 'statistica', 'calcoloNum', 'inglese'],
     'Fisica': ['analisi1', 'analisi2', 'fisica1', 'fisica2', 'algebra', 'chimica', 'informatica', 'programmazione', 'statistica', 'calcoloNum', 'inglese'],
     'Chimica': ['chimica', 'chimicaOrg', 'analisi1', 'fisica1', 'algebra', 'statistica', 'biologia', 'inglese'],
-    'Informatica': ['informatica', 'programmazione', 'analisi1', 'analisi2', 'algebra', 'fisica1', 'statistica', 'calcoloNum', 'inglese'],
+    'Informatica': ['informatica', 'programmazione', 'analisi1', 'algebra', 'archCalcolatori', 'sistemiOperativi', 'basiDati', 'retiCalcolatori', 'ingSoftware', 'ricercaOperativa', 'statistica', 'calcoloNum', 'inglese'],
     'Biologia': ['biologia', 'chimica', 'chimicaOrg', 'fisica1', 'statistica', 'analisi1', 'inglese'],
     'Scienze Naturali': ['chimica', 'biologia', 'fisica1', 'statistica', 'analisi1', 'inglese'],
 
