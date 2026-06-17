@@ -1447,9 +1447,9 @@ const SOUND_FILES = {
     rain:   'audio/rain.mp3',
     fire:   'audio/fire.mp3',
     cafe:   'audio/cafe.mp3',
-    nature: 'audio/nature.mp3',
-    white:  'audio/white.wav',
-    brown:  'audio/brown.wav'
+    nature: 'audio/nature2.mp3',   // real birdsong forest
+    white:  'audio/white2.wav',    // clean, seamless generated noise
+    brown:  'audio/brown2.wav'
 };
 const audioEls = {};
 
