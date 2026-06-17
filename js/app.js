@@ -1439,6 +1439,31 @@ function showNotification(text) {
 let audioCtx = null;
 let soundNodes = {};
 
+/* Real ambient audio loops (recorded files, looped) */
+const SOUND_FILES = {
+    rain:   'audio/rain.mp3',
+    fire:   'audio/fire.mp3',
+    cafe:   'audio/cafe.mp3',
+    nature: 'audio/nature.mp3',
+    white:  'audio/white.wav',
+    brown:  'audio/brown.wav'
+};
+const audioEls = {};
+
+function getAudioEl(type) {
+    if (!audioEls[type]) {
+        const a = new Audio(SOUND_FILES[type]);
+        a.loop = true;
+        a.preload = 'none';
+        audioEls[type] = a;
+    }
+    return audioEls[type];
+}
+
+function soundVolume() {
+    return state.soundsMuted ? 0 : (state.masterVolume != null ? state.masterVolume : 0.65);
+}
+
 function getAudioContext() {
     if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1627,9 +1652,10 @@ function toggleSound(soundType) {
     const el = document.getElementById(`sound-${soundType}`);
 
     if (state.activeSounds[soundType]) {
-        stopSound(soundType);
-        el.classList.remove('active');
+        const a = audioEls[soundType];
+        if (a) a.pause();
         delete state.activeSounds[soundType];
+        if (el) el.classList.remove('active');
     } else {
         // Explicitly turning a sound on → clear global mute
         if (state.soundsMuted) {
@@ -1637,56 +1663,22 @@ function toggleSound(soundType) {
             const btn = document.getElementById('sound-master-btn');
             if (btn) btn.textContent = '🔇 Silenzia';
         }
-        let node;
-        if (soundType === 'white' || soundType === 'brown') {
-            node = createNoiseGenerator(soundType);
-        } else {
-            node = createNatureSound(soundType);
-        }
-        soundNodes[soundType] = node;
+        const a = getAudioEl(soundType);
+        a.volume = soundVolume();
+        const p = a.play();
+        if (p && p.catch) p.catch(() => showNotification('🔊 Tocca di nuovo per attivare l\'audio'));
         state.activeSounds[soundType] = true;
-        el.classList.add('active');
+        if (el) el.classList.add('active');
     }
+    saveState();
 }
 
-function stopSound(soundType) {
-    const node = soundNodes[soundType];
-    if (!node) return;
-
-    node._stopped = true;                              // halt event schedulers
-    if (node._timer) { clearTimeout(node._timer); node._timer = null; }
-
-    if (node.source) {
-        try { node.source.stop(); } catch(e) {}
-    }
-    if (node.oscillators) {
-        node.oscillators.forEach(o => { try { o.stop(); } catch(e) {} });
-    }
-
-    delete soundNodes[soundType];
-}
-
-function gainMultiplier(type) {
-    // Boosted, post-filter levels so sounds are clearly audible.
-    const levels = {
-        white: 0.45,
-        brown: 0.85,
-        rain:  0.9,
-        fire:  0.85,
-        cafe:  0.7,
-        nature: 0.8
-    };
-    return levels[type] != null ? levels[type] : 0.5;
-}
-
-// Apply current master volume (respecting mute) to every live sound node.
+// Apply current master volume (respecting mute) to every playing loop.
 function applyAllGains() {
-    const vol = state.soundsMuted ? 0 : state.masterVolume;
-    Object.keys(soundNodes).forEach(type => {
-        const node = soundNodes[type];
-        if (node && node.gain) {
-            node.gain.gain.value = vol * gainMultiplier(type);
-        }
+    const v = soundVolume();
+    Object.keys(state.activeSounds).forEach(type => {
+        const a = audioEls[type];
+        if (a) a.volume = v;
     });
 }
 
