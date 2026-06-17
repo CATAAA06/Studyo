@@ -2,7 +2,7 @@
    STUDYO — Service Worker (PWA offline shell)
    ============================================= */
 
-const CACHE_VERSION = 'studyo-v3';
+const CACHE_VERSION = 'studyo-v4';
 const APP_SHELL = [
   './',
   './index.html',
@@ -62,6 +62,18 @@ self.addEventListener('fetch', (event) => {
   ];
   if (bypassHosts.some((h) => url.hostname.includes(h))) {
     return; // do not call respondWith → default network behaviour
+  }
+
+  // NEVER intercept media or range requests. Cloning/caching a streamed media
+  // response back-pressures the stream and stalls <audio>/<video> playback.
+  // Let the browser fetch them natively (with proper range streaming).
+  if (
+    req.destination === 'audio' ||
+    req.destination === 'video' ||
+    req.headers.has('range') ||
+    url.pathname.includes('/audio/')
+  ) {
+    return;
   }
 
   // Same-origin assets: NETWORK-FIRST and REVALIDATE so deploys are seen immediately.
