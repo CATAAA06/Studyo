@@ -1447,9 +1447,9 @@ const SOUND_FILES = {
     rain:   'audio/rain.mp3',
     fire:   'audio/fire.mp3',
     cafe:   'audio/cafe.mp3',
-    nature: 'audio/nature2.mp3',   // real birdsong forest
-    white:  'audio/white2.wav',    // clean, seamless generated noise
-    brown:  'audio/brown2.wav'
+    nature: 'audio/nature2.mp3',     // real birdsong forest
+    white:  'audio/waterfall.mp3',   // steady waterfall (MP3, was white noise WAV)
+    brown:  'audio/crickets.mp3'     // night crickets (MP3, was brown noise WAV)
 };
 const audioEls = {};
 
@@ -1920,8 +1920,8 @@ const FOCUS_ROOMS = [
     { id: 'fire',   name: 'Baita sul Fuoco',     emoji: '🔥', sound: 'fire',   theme: 'fire',   desc: 'Il crepitio del camino in una notte fredda.' },
     { id: 'cafe',   name: 'Caffè Letterario',    emoji: '☕', sound: 'cafe',   theme: 'cafe',   desc: 'Il brusio caldo di una caffetteria.' },
     { id: 'forest', name: 'Foresta Silenziosa',  emoji: '🌿', sound: 'nature', theme: 'forest', desc: 'Vento tra le foglie e canto di uccelli.' },
-    { id: 'cosmos', name: 'Notte Stellata',      emoji: '🌌', sound: 'brown',  theme: 'cosmos', desc: 'Sotto un cielo infinito di stelle.' },
-    { id: 'void',   name: 'Concentrazione Pura', emoji: '🤍', sound: 'white',  theme: 'void',   desc: 'Il vuoto bianco. Solo tu e lo studio.' },
+    { id: 'cosmos', name: 'Notte Stellata',      emoji: '🌌', sound: 'brown',  theme: 'cosmos', desc: 'Grilli sotto un cielo infinito di stelle.' },
+    { id: 'void',   name: 'Cascata Zen',         emoji: '💧', sound: 'white',  theme: 'void',   desc: 'Il flusso costante dell\'acqua. Solo tu e lo studio.' },
 ];
 
 const FOCUS_QUOTES = [
