@@ -1312,9 +1312,12 @@ function closeTopModal() {
 
 // Global UX: Esc closes modals, clicking the backdrop closes modals.
 function setupGlobalUX() {
-    // Esc to close the top dismissible modal
+    // Esc to close the top dismissible modal (or Focus Pocus)
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeTopModal();
+        if (e.key !== 'Escape') return;
+        const fp = document.getElementById('focuspocus');
+        if (fp && fp.classList.contains('active')) { closeFocusPocus(); return; }
+        closeTopModal();
     });
 
     // Click on backdrop (the .modal element itself, not its content) to close
@@ -1906,6 +1909,226 @@ function sendFeedback() {
     document.getElementById('feedback-text').value = '';
     showNotification('💬 Feedback inviato! Grazie per aiutarci a migliorare.');
     addXP(25, 'Feedback inviato');
+}
+
+/* =============================================
+   FOCUS POCUS — immersive focus rooms
+   ============================================= */
+
+const FOCUS_ROOMS = [
+    { id: 'rain',   name: 'Biblioteca Piovosa',  emoji: '🌧️', sound: 'rain',   theme: 'rain',   desc: 'Pioggia sulla finestra, libri e silenzio.' },
+    { id: 'fire',   name: 'Baita sul Fuoco',     emoji: '🔥', sound: 'fire',   theme: 'fire',   desc: 'Il crepitio del camino in una notte fredda.' },
+    { id: 'cafe',   name: 'Caffè Letterario',    emoji: '☕', sound: 'cafe',   theme: 'cafe',   desc: 'Il brusio caldo di una caffetteria.' },
+    { id: 'forest', name: 'Foresta Silenziosa',  emoji: '🌿', sound: 'nature', theme: 'forest', desc: 'Vento tra le foglie e canto di uccelli.' },
+    { id: 'cosmos', name: 'Notte Stellata',      emoji: '🌌', sound: 'brown',  theme: 'cosmos', desc: 'Sotto un cielo infinito di stelle.' },
+    { id: 'void',   name: 'Concentrazione Pura', emoji: '🤍', sound: 'white',  theme: 'void',   desc: 'Il vuoto bianco. Solo tu e lo studio.' },
+];
+
+const FOCUS_QUOTES = [
+    'Un capitolo alla volta.',
+    'La concentrazione è un superpotere.',
+    'Stai costruendo il tuo futuro, adesso.',
+    'Respira. Sei esattamente dove devi essere.',
+    'I grandi risultati nascono da piccole sessioni.',
+    'Meno distrazioni, più magia.',
+    'Il momento giusto per studiare è adesso.',
+    'Ogni minuto di focus conta.',
+];
+
+let fpTimer = null, fpRunning = false, fpSeconds = 25 * 60, fpTotal = 25 * 60;
+let fpRoom = null, fpAudioType = null, fpSoundOn = true;
+
+function openFocusPocus() {
+    renderFocusRooms();
+    document.getElementById('fp-picker').style.display = 'flex';
+    document.getElementById('fp-room').style.display = 'none';
+    document.getElementById('focuspocus').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    if (typeof closeMobileSidebar === 'function') closeMobileSidebar();
+}
+
+function closeFocusPocus() {
+    fpStopSound();
+    fpPause();
+    document.getElementById('focuspocus').classList.remove('active');
+    document.body.style.overflow = '';
+    fpRoom = null;
+}
+
+function renderFocusRooms() {
+    const el = document.getElementById('fp-rooms');
+    if (!el) return;
+    el.innerHTML = FOCUS_ROOMS.map(r => `
+        <div class="fp-room-card fp-card-${r.theme}" onclick="enterRoom('${r.id}')">
+            <span class="fp-room-card-emoji">${r.emoji}</span>
+            <span class="fp-room-card-name">${r.name}</span>
+            <span class="fp-room-card-desc">${r.desc}</span>
+        </div>
+    `).join('');
+}
+
+function enterRoom(id) {
+    fpRoom = FOCUS_ROOMS.find(r => r.id === id);
+    if (!fpRoom) return;
+    document.getElementById('fp-picker').style.display = 'none';
+    const room = document.getElementById('fp-room');
+    room.style.display = 'flex';
+    const scene = document.getElementById('fp-scene');
+    scene.className = 'fp-scene fp-scene-' + fpRoom.theme;
+    generateParticles(scene, fpRoom.theme);
+    document.getElementById('fp-room-name').textContent = fpRoom.emoji + '  ' + fpRoom.name;
+    document.getElementById('fp-quote').textContent = '“' + FOCUS_QUOTES[Math.floor(Math.random() * FOCUS_QUOTES.length)] + '”';
+    fpResetTimer();
+    fpSoundOn = true;
+    const sbtn = document.getElementById('fp-sound-btn');
+    if (sbtn) sbtn.textContent = '🔊 Suono';
+    fpPlaySound(fpRoom.sound);
+}
+
+function exitRoom() {
+    fpStopSound();
+    fpPause();
+    document.getElementById('fp-room').style.display = 'none';
+    document.getElementById('fp-picker').style.display = 'flex';
+}
+
+/* --- Focus Pocus sound (reuses the file-based audio players) --- */
+function fpPlaySound(type) {
+    // Stop any lobby ambient sounds to avoid overlap
+    if (typeof audioEls !== 'undefined') {
+        Object.keys(state.activeSounds || {}).forEach(t => { const a = audioEls[t]; if (a) a.pause(); });
+        state.activeSounds = {};
+        document.querySelectorAll('.sound-item.active').forEach(e => e.classList.remove('active'));
+    }
+    fpStopSound();
+    if (!fpSoundOn) return;
+    const a = getAudioEl(type);
+    a.volume = (state.masterVolume != null ? state.masterVolume : 0.65);
+    const p = a.play();
+    if (p && p.catch) p.catch(() => {});
+    fpAudioType = type;
+}
+
+function fpStopSound() {
+    if (fpAudioType && typeof audioEls !== 'undefined') {
+        const a = audioEls[fpAudioType];
+        if (a) a.pause();
+    }
+    fpAudioType = null;
+}
+
+function fpToggleSound() {
+    fpSoundOn = !fpSoundOn;
+    const btn = document.getElementById('fp-sound-btn');
+    if (fpSoundOn && fpRoom) {
+        fpPlaySound(fpRoom.sound);
+        if (btn) btn.textContent = '🔊 Suono';
+    } else {
+        fpStopSound();
+        if (btn) btn.textContent = '🔇 Muto';
+    }
+}
+
+/* --- Focus Pocus timer --- */
+function fpSetTime(min) {
+    if (fpRunning) return;
+    fpTotal = min * 60;
+    fpSeconds = min * 60;
+    fpUpdateDisplay();
+    document.querySelectorAll('.fp-time-btn').forEach(b => b.classList.toggle('active', +b.dataset.min === min));
+}
+
+function fpToggle() { fpRunning ? fpPause() : fpStart(); }
+
+function fpStart() {
+    fpRunning = true;
+    const b = document.getElementById('fp-start');
+    if (b) b.textContent = '⏸ Pausa';
+    document.getElementById('fp-room').classList.add('fp-running');
+    fpTimer = setInterval(() => {
+        fpSeconds--;
+        if (fpSeconds <= 0) { fpComplete(); return; }
+        fpUpdateDisplay();
+    }, 1000);
+}
+
+function fpPause() {
+    fpRunning = false;
+    clearInterval(fpTimer);
+    const b = document.getElementById('fp-start');
+    if (b) b.textContent = '▶ Riprendi';
+    const room = document.getElementById('fp-room');
+    if (room) room.classList.remove('fp-running');
+}
+
+function fpResetTimer() {
+    fpPause();
+    fpSeconds = fpTotal;
+    const b = document.getElementById('fp-start');
+    if (b) b.textContent = '▶ Inizia';
+    fpUpdateDisplay();
+}
+
+function fpUpdateDisplay() {
+    const m = Math.floor(fpSeconds / 60), s = fpSeconds % 60;
+    const el = document.getElementById('fp-timer');
+    if (el) el.textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+}
+
+function fpComplete() {
+    clearInterval(fpTimer);
+    fpRunning = false;
+    const room = document.getElementById('fp-room');
+    if (room) room.classList.remove('fp-running');
+    const min = fpTotal / 60;
+    state.pomodorosCompleted = (state.pomodorosCompleted || 0) + 1;
+    state.studyHours = Math.round((state.studyHours + min / 60) * 100) / 100;
+    if (typeof registerStudyDay === 'function') registerStudyDay();
+    if (typeof bumpDailyStat === 'function') { bumpDailyStat('pomodoros'); bumpDailyStat('minutes', min); }
+    const xp = min >= 25 ? 75 : 30;
+    addXP(xp, `Focus Pocus: ${min} min · ${fpRoom ? fpRoom.name : ''}`);
+    if (typeof celebrate === 'function') celebrate();
+    showNotification(`✨ Sessione completata! +${xp} XP`);
+    fpResetTimer();
+}
+
+/* --- Atmospheric particles per scene --- */
+function generateParticles(scene, theme) {
+    const old = scene.querySelector('.fp-particles');
+    if (old) old.remove();
+    const layer = document.createElement('div');
+    layer.className = 'fp-particles';
+
+    let n = 0, cls = '';
+    if (theme === 'cosmos')      { n = 70; cls = 'fp-star'; }
+    else if (theme === 'fire')   { n = 28; cls = 'fp-ember'; }
+    else if (theme === 'forest') { n = 22; cls = 'fp-firefly'; }
+    else if (theme === 'rain')   { n = 50; cls = 'fp-raindrop'; }
+    else if (theme === 'cafe')   { n = 8;  cls = 'fp-steam'; }
+    else                         { n = 14; cls = 'fp-dust'; }
+
+    for (let i = 0; i < n; i++) {
+        const p = document.createElement('div');
+        p.className = 'fp-particle ' + cls;
+        p.style.left = Math.random() * 100 + '%';
+        if (cls === 'fp-raindrop') {
+            p.style.top = '-10%';
+            p.style.animationDelay = (Math.random() * 1.2) + 's';
+            p.style.animationDuration = (0.5 + Math.random() * 0.5) + 's';
+            p.style.opacity = (0.25 + Math.random() * 0.4).toFixed(2);
+        } else {
+            p.style.top = Math.random() * 100 + '%';
+            p.style.animationDelay = (Math.random() * 6) + 's';
+            p.style.animationDuration = (3 + Math.random() * 6) + 's';
+        }
+        if (cls === 'fp-star') {
+            const s = (1 + Math.random() * 2).toFixed(1);
+            p.style.width = s + 'px';
+            p.style.height = s + 'px';
+        }
+        layer.appendChild(p);
+    }
+    scene.appendChild(layer);
 }
 
 /* =============================================

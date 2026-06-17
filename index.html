@@ -55,6 +55,9 @@
             <div class="server-icon server-uni" id="server-uni-icon" onclick="navigate('home')" title="La tua università" style="display:none">
                 <span>🏛️</span>
             </div>
+            <div class="server-icon server-focus" onclick="openFocusPocus()" title="Focus Pocus — entra in full focus">
+                <span>🔮</span>
+            </div>
             <div class="server-icon" onclick="navigate('profile')" title="Profilo">
                 <span>👤</span>
             </div>
@@ -115,6 +118,16 @@
                 <div class="main-header">
                     <h1>👋 Bentornato, <span class="highlight" id="main-welcome-name">Studente</span></h1>
                     <p class="main-header-sub">Scegli una lobby dalla sidebar o esplora la tua community.</p>
+                </div>
+
+                <!-- Focus Pocus CTA -->
+                <div class="focus-cta" onclick="openFocusPocus()">
+                    <div class="focus-cta-glow"></div>
+                    <div class="focus-cta-text">
+                        <span class="focus-cta-title">🔮 Focus Pocus</span>
+                        <span class="focus-cta-sub">Entra in una stanza immersiva e studia in full focus</span>
+                    </div>
+                    <span class="focus-cta-btn">Entra →</span>
                 </div>
 
                 <!-- Community Section -->
@@ -656,6 +669,45 @@
                 </div>
 
                 <button class="btn btn-primary btn-large" onclick="completeSetup()">🚀 Inizia a studiare!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ FOCUS POCUS ============ -->
+    <div id="focuspocus" class="fp-overlay">
+        <!-- Room picker -->
+        <div class="fp-picker" id="fp-picker">
+            <button class="fp-exit" onclick="closeFocusPocus()" title="Esci">✕</button>
+            <div class="fp-picker-head">
+                <h1 class="fp-title">🔮 Focus Pocus</h1>
+                <p class="fp-sub">Scegli il luogo in cui immaginarti per concentrarti</p>
+            </div>
+            <div class="fp-rooms" id="fp-rooms"><!-- generated --></div>
+        </div>
+
+        <!-- Immersive room -->
+        <div class="fp-room" id="fp-room" style="display:none">
+            <div class="fp-scene" id="fp-scene"></div>
+            <div class="fp-vignette"></div>
+            <div class="fp-room-content">
+                <div class="fp-room-top">
+                    <button class="fp-back" onclick="exitRoom()">← Cambia stanza</button>
+                    <button class="fp-exit-room" onclick="closeFocusPocus()">Esci ✕</button>
+                </div>
+                <div class="fp-center">
+                    <div class="fp-room-name" id="fp-room-name"></div>
+                    <div class="fp-timer" id="fp-timer">25:00</div>
+                    <div class="fp-times">
+                        <button class="fp-time-btn active" data-min="25" onclick="fpSetTime(25)">25 min</button>
+                        <button class="fp-time-btn" data-min="50" onclick="fpSetTime(50)">50 min</button>
+                        <button class="fp-time-btn" data-min="5" onclick="fpSetTime(5)">Pausa 5</button>
+                    </div>
+                    <button class="fp-start" id="fp-start" onclick="fpToggle()">▶ Inizia</button>
+                    <div class="fp-quote" id="fp-quote"></div>
+                </div>
+                <div class="fp-sound-toggle">
+                    <button id="fp-sound-btn" onclick="fpToggleSound()" title="Suono on/off">🔊 Suono</button>
+                </div>
             </div>
         </div>
     </div>
