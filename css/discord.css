@@ -646,3 +646,73 @@
     background: var(--danger);
     color: white;
 }
+
+/* =============================================
+   DESIGN POLISH LAYER — Discord layout
+   (loaded last → wins over base rules above)
+   ============================================= */
+
+/* Channel list items: smooth + modern active state */
+.sidebar-lobby {
+    transition: background 0.18s cubic-bezier(0.16,1,0.3,1),
+                color 0.18s cubic-bezier(0.16,1,0.3,1),
+                transform 0.18s cubic-bezier(0.16,1,0.3,1);
+}
+.sidebar-lobby:hover { transform: translateX(2px); }
+.sidebar-lobby.active {
+    position: relative;
+    background: rgba(108, 92, 231, 0.18);
+    color: #fff;
+    font-weight: 600;
+}
+.sidebar-lobby.active::before {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 62%;
+    border-radius: 0 3px 3px 0;
+    background: linear-gradient(var(--primary-light), var(--accent));
+}
+.sidebar-lobby.active .sidebar-lobby-count {
+    background: rgba(108, 92, 231, 0.4);
+    color: #fff;
+}
+
+/* Home stat cards: depth + hover lift */
+.home-stat-card {
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s cubic-bezier(0.16,1,0.3,1),
+                border-color 0.2s cubic-bezier(0.16,1,0.3,1),
+                box-shadow 0.2s cubic-bezier(0.16,1,0.3,1);
+}
+.home-stat-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(108, 92, 231, 0.5);
+    box-shadow: var(--shadow-md);
+}
+
+/* User card (→ profile): hover affordance */
+.sidebar-user-card {
+    transition: background 0.18s ease, border-color 0.18s ease;
+    border: 1px solid transparent;
+}
+.sidebar-user-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border);
+}
+
+/* Server strip icons: tactile */
+.server-icon {
+    transition: transform 0.18s cubic-bezier(0.16,1,0.3,1), border-radius 0.18s ease, background 0.18s ease;
+}
+.server-icon:hover { transform: translateY(-2px); }
+
+/* Right-side members & chat cards inherit the soft elevation */
+.students-card, .chat-card { box-shadow: var(--shadow-sm); }
+
+@media (prefers-reduced-motion: reduce) {
+    .sidebar-lobby, .home-stat-card, .server-icon { transition: none !important; transform: none !important; }
+}
