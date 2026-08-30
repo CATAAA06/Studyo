@@ -280,8 +280,11 @@ function completeSetup() {
 
     addXP(50, 'Benvenuto su Studyo!');
 
-    // Show feedback welcome for new users after a moment
-    setTimeout(() => showFeedbackWelcome(), 4000);
+    // Guided tour right after setup (first impression)
+    setTimeout(() => startOnboarding(), 500);
+
+    // Show feedback welcome later (skipped while the tour is open)
+    setTimeout(() => showFeedbackWelcome(), 12000);
 }
 
 /* =============================================
@@ -1082,8 +1085,87 @@ function disposeJitsi() {
    AI TUTOR
    ============================================= */
 
+const AI_KEY_STORE = 'studyo_ai_key';
+let aiHistory = [];
+
+function getAIKey() { return localStorage.getItem(AI_KEY_STORE) || ''; }
+
 function openAI() {
     openModal('ai');
+    aiHistory = [];
+    refreshAIMode();
+    renderAISuggestions();
+}
+
+function refreshAIMode() {
+    const hasKey = !!getAIKey();
+    const badge = document.getElementById('ai-mode-badge');
+    const link = document.querySelector('.ai-mode-link');
+    const rm = document.getElementById('ai-key-remove');
+    if (badge) {
+        badge.textContent = hasKey ? '✨ Claude collegato' : 'Modalità base';
+        badge.classList.toggle('live', hasKey);
+    }
+    if (link) link.textContent = hasKey ? 'Gestisci' : "Collega un'AI vera";
+    if (rm) rm.style.display = hasKey ? 'block' : 'none';
+}
+
+function toggleAISettings() {
+    const box = document.getElementById('ai-settings');
+    if (!box) return;
+    box.style.display = box.style.display === 'none' ? 'block' : 'none';
+}
+
+function saveAIKey() {
+    const input = document.getElementById('ai-key-input');
+    const key = (input.value || '').trim();
+    if (!key) return;
+    if (!key.startsWith('sk-')) {
+        showNotification('La chiave non sembra valida (deve iniziare con sk-).');
+        return;
+    }
+    localStorage.setItem(AI_KEY_STORE, key);
+    input.value = '';
+    document.getElementById('ai-settings').style.display = 'none';
+    refreshAIMode();
+    showNotification('✨ AI collegata! Ora le risposte sono generate da Claude.');
+}
+
+function removeAIKey() {
+    localStorage.removeItem(AI_KEY_STORE);
+    refreshAIMode();
+    showNotification('Chiave rimossa. Torni alla modalità base.');
+}
+
+// Suggested questions built from the lobby's real content
+function renderAISuggestions() {
+    const box = document.getElementById('ai-suggest');
+    if (!box) return;
+    const lobby = LOBBIES.find(l => l.id === state.currentLobby);
+    const cards = FLASHCARDS[state.currentLobby] || [];
+    const subject = lobby ? lobby.name : 'questa materia';
+
+    const ideas = [];
+    if (cards.length) ideas.push(cards[0].front);
+    if (cards.length > 1) ideas.push(cards[1].front);
+    ideas.push(`Spiegami ${subject} in parole semplici`);
+    ideas.push(`Cosa devo ripassare per ${subject}?`);
+
+    box.innerHTML = ideas.slice(0, 3).map(q =>
+        `<button class="ai-chip" onclick="askAI(${JSON.stringify(q).replace(/"/g, '&quot;')})">${escapeHTML(q)}</button>`
+    ).join('');
+}
+
+function askAI(q) {
+    const input = document.getElementById('ai-input');
+    if (input) input.value = q;
+    sendAIMessage();
+}
+
+function aiAppend(html) {
+    const chat = document.getElementById('ai-chat');
+    chat.insertAdjacentHTML('beforeend', html);
+    chat.scrollTop = chat.scrollHeight;
 }
 
 function sendAIMessage() {
@@ -1091,24 +1173,112 @@ function sendAIMessage() {
     const text = input.value.trim();
     if (!text) return;
 
-    const chat = document.getElementById('ai-chat');
-    chat.innerHTML += `<div class="ai-message ai-user"><p>${escapeHTML(text)}</p></div>`;
+    aiAppend(`<div class="ai-message ai-user"><p>${escapeHTML(text)}</p></div>`);
     input.value = '';
-    chat.scrollTop = chat.scrollHeight;
 
-    setTimeout(() => {
-        const lobbyId = state.currentLobby;
-        let responses = AI_RESPONSES.default;
-        if (AI_RESPONSES[lobbyId]) {
-            responses = [...AI_RESPONSES[lobbyId], ...AI_RESPONSES.default];
+    const key = getAIKey();
+    if (key) {
+        askClaude(text, key);
+    } else {
+        setTimeout(() => {
+            aiAppend(`<div class="ai-message ai-bot"><p>${localTutorAnswer(text)}</p></div>`);
+            addXP(5, 'Domanda all\'AI Tutor');
+        }, 500 + Math.random() * 700);
+    }
+}
+
+// --- Local tutor: answers from the lobby's real study material ---
+function localTutorAnswer(question) {
+    const lobbyId = state.currentLobby;
+    const lobby = LOBBIES.find(l => l.id === lobbyId);
+    const subject = lobby ? lobby.name : 'questa materia';
+    const q = question.toLowerCase();
+
+    // 1) Try to match a flashcard (real content)
+    const cards = FLASHCARDS[lobbyId] || [];
+    let best = null, bestScore = 0;
+    const words = q.split(/[^a-zàèéìòùA-Z0-9]+/).filter(w => w.length > 3);
+    cards.forEach(c => {
+        const hay = (c.front + ' ' + c.back).toLowerCase();
+        let score = 0;
+        words.forEach(w => { if (hay.includes(w)) score++; });
+        if (score > bestScore) { bestScore = score; best = c; }
+    });
+    if (best && bestScore > 0) {
+        return `<strong>${escapeHTML(best.front)}</strong><br>${escapeHTML(best.back)}
+            <span class="ai-src">dalle flashcard di ${escapeHTML(subject)}</span>`;
+    }
+
+    // 2) Try a quiz question on the same topic
+    const quiz = QUIZZES[lobbyId] || [];
+    const hit = quiz.find(item => words.some(w => item.question.toLowerCase().includes(w)));
+    if (hit) {
+        return `Su questo punto c'è una domanda d'esame tipica:<br><br>
+            <strong>${escapeHTML(hit.question)}</strong><br>
+            Risposta: <strong>${escapeHTML(hit.options[hit.correct])}</strong>
+            <span class="ai-src">dal quiz di ${escapeHTML(subject)}</span>`;
+    }
+
+    // 3) Honest fallback + pointer to what actually exists
+    const tools = [];
+    if (cards.length) tools.push(`${cards.length} flashcard`);
+    if (quiz.length) tools.push(`un quiz da ${quiz.length} domande`);
+    const has = tools.length ? ` Per ${escapeHTML(subject)} ho ${tools.join(' e ')}: aprili dagli strumenti della lobby.` : '';
+
+    return `Su questo non ho materiale pronto in modalità base.${has}
+        <span class="ai-src">Vuoi risposte complete? Collega un'AI vera dal pulsante qui sopra.</span>`;
+}
+
+// --- Real Claude answers (user's own API key, stays on their device) ---
+async function askClaude(question, key) {
+    const lobby = LOBBIES.find(l => l.id === state.currentLobby);
+    const subject = lobby ? lobby.name : 'una materia universitaria';
+    const level = state.playerSchool === 'superiori' ? 'studente di scuola superiore' : 'studente universitario';
+
+    const typingId = 'ai-typing-' + Date.now();
+    aiAppend(`<div class="ai-message ai-bot" id="${typingId}"><p class="ai-typing"><span></span><span></span><span></span></p></div>`);
+
+    aiHistory.push({ role: 'user', content: question });
+
+    try {
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+                'x-api-key': key,
+                'anthropic-version': '2023-06-01',
+                'anthropic-dangerous-direct-browser-access': 'true'
+            },
+            body: JSON.stringify({
+                model: 'claude-sonnet-5',
+                max_tokens: 700,
+                system: `Sei il tutor di Studyo, un'app di studio italiana. Stai aiutando uno ${level} con "${subject}". Rispondi in italiano, in modo chiaro e conciso (max 150 parole), con esempi concreti. Se la domanda è vaga, chiedi una precisazione. Non inventare: se non sai, dillo.`,
+                messages: aiHistory.slice(-8)
+            })
+        });
+
+        const el = document.getElementById(typingId);
+        if (!res.ok) {
+            let msg = 'Errore ' + res.status;
+            if (res.status === 401) msg = 'Chiave non valida o scaduta.';
+            if (res.status === 429) msg = 'Troppe richieste, riprova tra poco.';
+            if (res.status === 400) msg = 'Richiesta non accettata dall\'API.';
+            if (el) el.innerHTML = `<p>⚠️ ${msg}</p>`;
+            return;
         }
-        const response = responses[Math.floor(Math.random() * responses.length)];
 
-        chat.innerHTML += `<div class="ai-message ai-bot"><p>${response}</p></div>`;
-        chat.scrollTop = chat.scrollHeight;
+        const data = await res.json();
+        const answer = (data.content && data.content[0] && data.content[0].text) || 'Nessuna risposta.';
+        aiHistory.push({ role: 'assistant', content: answer });
 
+        if (el) el.innerHTML = `<p>${escapeHTML(answer).replace(/\n/g, '<br>')}</p>`;
+        const chat = document.getElementById('ai-chat');
+        if (chat) chat.scrollTop = chat.scrollHeight;
         addXP(5, 'Domanda all\'AI Tutor');
-    }, 800 + Math.random() * 1200);
+    } catch (e) {
+        const el = document.getElementById(typingId);
+        if (el) el.innerHTML = `<p>⚠️ Connessione non riuscita. Controlla la rete e riprova.</p>`;
+    }
 }
 
 function handleAIKey(e) {
@@ -1794,6 +1964,13 @@ function showFeedbackWelcome() {
     // Don't show if no setup done (user hasn't logged in yet)
     if (!state.setupDone) return;
 
+    // Don't stack on top of the onboarding tour
+    const ob = document.getElementById('onboarding');
+    if (ob && ob.classList.contains('active')) {
+        setTimeout(showFeedbackWelcome, 8000);
+        return;
+    }
+
     const welcome = document.getElementById('feedback-welcome');
     const questionEl = document.getElementById('feedback-welcome-question');
 
@@ -1909,6 +2086,98 @@ function sendFeedback() {
     document.getElementById('feedback-text').value = '';
     showNotification('💬 Feedback inviato! Grazie per aiutarci a migliorare.');
     addXP(25, 'Feedback inviato');
+}
+
+/* =============================================
+   ONBOARDING — primi 60 secondi
+   ============================================= */
+
+const OB_STEPS = [
+    {
+        visual: `<div class="ob-scene ob-scene-lobby">
+            <div class="ob-row on"><span>📐</span> Analisi 1 <b>14</b></div>
+            <div class="ob-row"><span>⚛️</span> Fisica 1 <b>9</b></div>
+            <div class="ob-row"><span>💻</span> Informatica <b>21</b></div>
+        </div>`,
+        title: 'Ogni materia ha la sua lobby',
+        text: 'Nella barra a sinistra trovi gli esami del tuo corso. Il numero accanto dice quante persone ci sono adesso.'
+    },
+    {
+        visual: `<div class="ob-scene ob-scene-people">
+            <div class="ob-person"><span class="ob-av">🎓</span><div><b>Giulia</b><i>sta studiando ora</i></div></div>
+            <div class="ob-person"><span class="ob-av">🧑‍💻</span><div><b>Marco</b><i>sta studiando ora</i></div></div>
+        </div>`,
+        title: 'Non sei da solo',
+        text: 'Vedi in tempo reale chi sta studiando nella tua stessa materia. Potete scrivervi in chat o aprire una videochiamata.'
+    },
+    {
+        visual: `<div class="ob-scene ob-scene-timer">
+            <div class="ob-timer">25:00</div>
+            <div class="ob-bar"><span></span></div>
+            <div class="ob-xp">+75 XP</div>
+        </div>`,
+        title: 'Ogni sessione lascia un segno',
+        text: 'Avvia il timer e studia. Al termine guadagni XP, sali di livello e mantieni viva la streak dei giorni consecutivi.'
+    },
+    {
+        visual: `<div class="ob-scene ob-scene-focus">
+            <div class="ob-stars"></div>
+            <div class="ob-focus-label">🔮 Focus Pocus</div>
+        </div>`,
+        title: 'E quando serve silenzio totale',
+        text: 'Apri Focus Pocus dall\'icona 🔮: schermo intero, atmosfera immersiva e solo il timer. Tutto il resto sparisce.'
+    }
+];
+
+let obIndex = 0;
+
+function obShouldRun() {
+    return !localStorage.getItem('studyo_onboarded');
+}
+
+function startOnboarding() {
+    if (!obShouldRun()) return;
+    obIndex = 0;
+    obRender();
+    document.getElementById('onboarding').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function obRender() {
+    const s = OB_STEPS[obIndex];
+    if (!s) return;
+    document.getElementById('ob-visual').innerHTML = s.visual;
+    document.getElementById('ob-title').textContent = s.title;
+    document.getElementById('ob-text').textContent = s.text;
+    document.getElementById('ob-next').textContent = obIndex === OB_STEPS.length - 1 ? 'Inizia a studiare' : 'Avanti';
+    document.getElementById('ob-dots').innerHTML = OB_STEPS
+        .map((_, i) => `<span class="ob-dot ${i === obIndex ? 'on' : ''}"></span>`).join('');
+
+    // sprinkle stars for the focus step
+    const sky = document.querySelector('.ob-stars');
+    if (sky) {
+        let h = '';
+        for (let i = 0; i < 26; i++) {
+            h += `<span style="left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${(Math.random()*3).toFixed(2)}s"></span>`;
+        }
+        sky.innerHTML = h;
+    }
+}
+
+function obNext() {
+    if (obIndex < OB_STEPS.length - 1) {
+        obIndex++;
+        obRender();
+    } else {
+        obFinish();
+    }
+}
+
+function obFinish() {
+    localStorage.setItem('studyo_onboarded', '1');
+    const el = document.getElementById('onboarding');
+    if (el) el.classList.remove('active');
+    document.body.style.overflow = '';
 }
 
 /* =============================================
@@ -2165,12 +2434,17 @@ function init() {
     // Global UX: Esc / backdrop to close modals
     setupGlobalUX();
 
+    // Returning users who never saw the tour get it once
+    setTimeout(() => {
+        if (state.setupDone) startOnboarding();
+    }, 900);
+
     // Show feedback welcome after a short delay (only if logged in)
     setTimeout(() => {
         if (state.setupDone) {
             showFeedbackWelcome();
         }
-    }, 3000);
+    }, 6000);
 }
 
 init();

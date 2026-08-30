@@ -2349,6 +2349,229 @@ textarea:focus {
 }
 
 /* =============================================
+   AI TUTOR — mode bar, key setup, suggestions
+   ============================================= */
+
+.ai-mode {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin-bottom: 12px;
+}
+.ai-mode-badge {
+    font-size: 11.5px; font-weight: 700; letter-spacing: 0.02em;
+    color: var(--text-muted);
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    padding: 4px 11px; border-radius: 999px;
+}
+.ai-mode-badge.live {
+    color: var(--success);
+    background: rgba(0, 184, 148, 0.12);
+    border-color: rgba(0, 184, 148, 0.35);
+}
+.ai-mode-link {
+    background: none; border: none; cursor: pointer;
+    color: var(--primary-light); font-family: inherit;
+    font-size: 12.5px; font-weight: 600; text-decoration: underline;
+    text-underline-offset: 3px; padding: 0;
+}
+.ai-mode-link:hover { color: var(--text); }
+
+.ai-settings {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px; margin-bottom: 14px;
+}
+.ai-settings-help {
+    font-size: 12.5px; color: var(--text-secondary);
+    line-height: 1.5; margin-bottom: 11px;
+}
+.ai-key-row { display: flex; gap: 8px; }
+.ai-key-row input {
+    flex: 1; min-width: 0;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius-xs); color: var(--text);
+    padding: 9px 12px; font-family: inherit; font-size: 14px; outline: none;
+}
+.ai-key-row input:focus { border-color: var(--primary); box-shadow: var(--ring); }
+.ai-key-remove {
+    background: none; border: none; cursor: pointer;
+    color: var(--danger); font-family: inherit;
+    font-size: 12px; margin-top: 10px; padding: 0; text-decoration: underline;
+}
+
+.ai-suggest { display: flex; flex-wrap: wrap; gap: 7px; margin: 10px 0; }
+.ai-chip {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 6px 12px; border-radius: 999px;
+    font-family: inherit; font-size: 12.5px; cursor: pointer;
+    max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    transition: var(--transition);
+}
+.ai-chip:hover { border-color: var(--primary); color: var(--text); }
+
+.ai-src {
+    display: block; margin-top: 8px;
+    font-size: 11.5px; color: var(--text-muted); font-style: italic;
+}
+
+.ai-typing { display: flex; gap: 4px; align-items: center; height: 18px; }
+.ai-typing span {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--text-muted); animation: aiBlink 1.3s infinite;
+}
+.ai-typing span:nth-child(2) { animation-delay: .18s; }
+.ai-typing span:nth-child(3) { animation-delay: .36s; }
+@keyframes aiBlink { 0%,60%,100% { opacity: .25 } 30% { opacity: 1 } }
+
+/* =============================================
+   ONBOARDING — guided first run
+   ============================================= */
+
+.ob-overlay {
+    position: fixed; inset: 0; z-index: 4000;
+    display: none; align-items: center; justify-content: center;
+    padding: 24px;
+    background: rgba(8, 8, 14, 0.78);
+    backdrop-filter: blur(10px);
+}
+.ob-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+
+.ob-card {
+    position: relative;
+    width: 100%; max-width: 460px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    animation: modalIn 0.35s var(--ease-out);
+}
+
+.ob-skip {
+    position: absolute; top: 14px; right: 16px; z-index: 3;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.14);
+    color: var(--text-secondary);
+    padding: 5px 13px; border-radius: 999px;
+    font-family: inherit; font-size: 12.5px; font-weight: 600;
+    cursor: pointer; transition: var(--transition);
+}
+.ob-skip:hover { background: rgba(255,255,255,0.16); color: var(--text); }
+
+/* --- visual stage --- */
+.ob-visual {
+    height: 190px;
+    display: grid; place-items: center;
+    background: linear-gradient(160deg, #221c44, #171430 60%, #131024);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+}
+.ob-scene { width: 100%; padding: 0 34px; }
+
+/* lobby rows */
+.ob-scene-lobby .ob-row {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid transparent;
+    padding: 9px 13px; border-radius: 9px;
+    font-size: 14px; color: var(--text-secondary);
+    margin-bottom: 7px;
+}
+.ob-scene-lobby .ob-row b {
+    margin-left: auto; font-size: 11.5px; font-weight: 600;
+    color: var(--text-muted);
+    background: rgba(0,0,0,0.3); padding: 2px 8px; border-radius: 999px;
+}
+.ob-scene-lobby .ob-row.on {
+    background: rgba(124,107,240,0.22);
+    border-color: rgba(124,107,240,0.5);
+    color: #fff; font-weight: 600;
+}
+
+/* people */
+.ob-scene-people .ob-person {
+    display: flex; align-items: center; gap: 11px;
+    margin-bottom: 12px;
+}
+.ob-scene-people .ob-av {
+    width: 38px; height: 38px; border-radius: 50%;
+    display: grid; place-items: center; font-size: 19px;
+    background: rgba(255,255,255,0.08);
+}
+.ob-scene-people b { display: block; font-size: 14.5px; }
+.ob-scene-people i {
+    font-style: normal; font-size: 12px; color: var(--success);
+    display: flex; align-items: center; gap: 5px;
+}
+.ob-scene-people i:before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--success); animation: livePulse 1.8s infinite;
+}
+
+/* timer */
+.ob-scene-timer { text-align: center; }
+.ob-timer {
+    font-size: 46px; font-weight: 900; letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+}
+.ob-bar {
+    height: 5px; border-radius: 3px; background: rgba(255,255,255,0.1);
+    margin: 14px auto 0; max-width: 220px; overflow: hidden;
+}
+.ob-bar span {
+    display: block; height: 100%; width: 68%; border-radius: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+}
+.ob-xp {
+    margin-top: 12px; display: inline-block;
+    color: var(--warning); font-weight: 700; font-size: 14px;
+}
+
+/* focus */
+.ob-scene-focus { position: relative; height: 100%; display: grid; place-items: center; }
+.ob-stars { position: absolute; inset: -40px 0; }
+.ob-stars span {
+    position: absolute; width: 2px; height: 2px; border-radius: 50%;
+    background: #fff; animation: twinkleOb 3s infinite ease-in-out;
+}
+@keyframes twinkleOb { 0%,100% { opacity: .18 } 50% { opacity: 1 } }
+.ob-focus-label {
+    position: relative; font-size: 20px; font-weight: 700;
+    letter-spacing: 0.01em;
+    text-shadow: 0 2px 18px rgba(0,0,0,0.6);
+}
+
+/* --- copy + footer --- */
+.ob-body { padding: 26px 28px 20px; }
+.ob-title {
+    font-size: 21px; font-weight: 800; letter-spacing: -0.02em;
+    margin-bottom: 9px; line-height: 1.25;
+}
+.ob-text { color: var(--text-secondary); font-size: 15px; line-height: 1.55; }
+
+.ob-foot {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; padding: 0 28px 26px;
+}
+.ob-dots { display: flex; gap: 7px; }
+.ob-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    transition: var(--transition);
+}
+.ob-dot.on { background: var(--primary-light); width: 22px; border-radius: 4px; }
+
+@media (max-width: 480px) {
+    .ob-visual { height: 160px; }
+    .ob-body { padding: 22px 20px 16px; }
+    .ob-foot { padding: 0 20px 22px; }
+    .ob-title { font-size: 19px; }
+}
+
+/* =============================================
    FOCUS POCUS — immersive focus rooms
    ============================================= */
 

@@ -49,7 +49,13 @@
         <!-- DISCORD-STYLE: Server Strip (left icons) -->
         <div class="server-strip">
             <div class="server-icon server-home active" onclick="navigate('home')" title="Home">
-                <span>📚</span>
+                <svg width="26" height="26" viewBox="0 0 32 32" fill="none" aria-label="Studyo">
+                    <rect width="32" height="32" rx="8" fill="url(#logoG)"/>
+                    <path d="M20.4 11.2c-.9-.85-2.4-1.4-4.1-1.4-2.7 0-4.5 1.3-4.5 3.3 0 1.9 1.4 2.8 3.9 3.4 2.2.5 2.9.9 2.9 1.8 0 .9-.9 1.5-2.4 1.5-1.6 0-3-.6-4-1.6" stroke="#fff" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+                    <defs><linearGradient id="logoG" x1="0" y1="0" x2="32" y2="32">
+                        <stop stop-color="#7C6BF0"/><stop offset="1" stop-color="#FF6B6B"/>
+                    </linearGradient></defs>
+                </svg>
             </div>
             <div class="server-divider"></div>
             <div class="server-icon server-uni" id="server-uni-icon" onclick="navigate('home')" title="La tua università" style="display:none">
@@ -438,9 +444,27 @@
                 <h2>🤖 AI Tutor</h2>
                 <button class="modal-close" onclick="closeModal('ai')">✕</button>
             </div>
-            <div class="ai-chat" id="ai-chat">
-                <div class="ai-message ai-bot"><p>Ciao! Chiedimi qualsiasi cosa sulla materia! 🧠</p></div>
+            <div class="ai-mode" id="ai-mode">
+                <span class="ai-mode-badge" id="ai-mode-badge">Modalità base</span>
+                <button class="ai-mode-link" onclick="toggleAISettings()">Collega un'AI vera</button>
             </div>
+
+            <div class="ai-settings" id="ai-settings" style="display:none">
+                <p class="ai-settings-help">
+                    Incolla una API key di Anthropic per risposte generate da Claude.
+                    Resta salvata solo sul tuo dispositivo e non viene mai inviata ai nostri server.
+                </p>
+                <div class="ai-key-row">
+                    <input type="password" id="ai-key-input" placeholder="sk-ant-..." autocomplete="off">
+                    <button class="btn btn-primary" onclick="saveAIKey()">Salva</button>
+                </div>
+                <button class="ai-key-remove" id="ai-key-remove" onclick="removeAIKey()" style="display:none">Rimuovi chiave</button>
+            </div>
+
+            <div class="ai-chat" id="ai-chat">
+                <div class="ai-message ai-bot"><p>Ciao! Chiedimi qualcosa sulla materia: ti do una mano con definizioni, concetti e ripasso. 🧠</p></div>
+            </div>
+            <div class="ai-suggest" id="ai-suggest"></div>
             <div class="ai-input-area">
                 <input type="text" id="ai-input" placeholder="Chiedi qualcosa..." onkeypress="handleAIKey(event)">
                 <button class="btn btn-primary" onclick="sendAIMessage()">→</button>
@@ -669,6 +693,25 @@
                 </div>
 
                 <button class="btn btn-primary btn-large" onclick="completeSetup()">🚀 Inizia a studiare!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ ONBOARDING ============ -->
+    <div id="onboarding" class="ob-overlay">
+        <div class="ob-card">
+            <button class="ob-skip" onclick="obFinish()">Salta</button>
+
+            <div class="ob-visual" id="ob-visual"></div>
+
+            <div class="ob-body">
+                <h2 class="ob-title" id="ob-title"></h2>
+                <p class="ob-text" id="ob-text"></p>
+            </div>
+
+            <div class="ob-foot">
+                <div class="ob-dots" id="ob-dots"></div>
+                <button class="btn btn-primary" id="ob-next" onclick="obNext()">Avanti</button>
             </div>
         </div>
     </div>
