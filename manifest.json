@@ -2,7 +2,7 @@
   "name": "Studyo — Lo studio diventa multiplayer",
   "short_name": "Studyo",
   "description": "Studia in lobby multiplayer, guadagna XP, mantieni lo streak e sfida i tuoi amici. Lo studio diventa un gioco.",
-  "start_url": "./index.html",
+  "start_url": "./app.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",

@@ -2,10 +2,11 @@
    STUDYO — Service Worker (PWA offline shell)
    ============================================= */
 
-const CACHE_VERSION = 'studyo-v4';
+const CACHE_VERSION = 'studyo-v5';
 const APP_SHELL = [
   './',
   './index.html',
+  './app.html',
   './css/style.css',
   './css/discord.css',
   './js/data.js',

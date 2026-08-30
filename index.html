@@ -1,755 +1,585 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>Studyo — Lo studio diventa multiplayer</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Studyo — Studiare insieme, anche quando siete lontani</title>
 
-    <!-- SEO -->
-    <meta name="description" content="Studyo trasforma lo studio in un'esperienza multiplayer: entra in lobby per materia, guadagna XP, mantieni lo streak e studia insieme agli altri studenti. Università, superiori e preparazione TOLC.">
-    <meta name="keywords" content="studiare, università, superiori, TOLC, quiz, flashcard, pomodoro, studio di gruppo, gamification, studyo">
-    <meta name="author" content="Studyo">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://cataaa06.github.io/Studyo/">
+<meta name="description" content="Studyo è il posto dove gli studenti italiani studiano insieme: lobby per materia, sessioni in video, timer condivisi e progressi che si vedono. Università, superiori e preparazione TOLC. Gratis.">
+<meta name="author" content="Studyo">
+<link rel="canonical" href="https://cataaa06.github.io/Studyo/">
 
-    <!-- Open Graph (Facebook, WhatsApp, LinkedIn) -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Studyo — Lo studio diventa multiplayer">
-    <meta property="og:description" content="Entra in lobby di studio, guadagna XP, mantieni lo streak. Lo studio diventa un gioco. 🎓">
-    <meta property="og:url" content="https://cataaa06.github.io/Studyo/">
-    <meta property="og:image" content="https://cataaa06.github.io/Studyo/icons/icon-512.png">
-    <meta property="og:site_name" content="Studyo">
-    <meta property="og:locale" content="it_IT">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Studyo — Studiare insieme, anche quando siete lontani">
+<meta property="og:description" content="Entra in una lobby della tua materia e trova altri studenti che stanno studiando adesso. Gratis, nato a UNIMORE.">
+<meta property="og:url" content="https://cataaa06.github.io/Studyo/">
+<meta property="og:image" content="https://cataaa06.github.io/Studyo/icons/icon-512.png">
+<meta property="og:locale" content="it_IT">
+<meta name="twitter:card" content="summary">
 
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Studyo — Lo studio diventa multiplayer">
-    <meta name="twitter:description" content="Entra in lobby di studio, guadagna XP, mantieni lo streak. Lo studio diventa un gioco. 🎓">
-    <meta name="twitter:image" content="https://cataaa06.github.io/Studyo/icons/icon-512.png">
+<meta name="theme-color" content="#0F0E17">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
 
-    <!-- PWA -->
-    <meta name="theme-color" content="#6C5CE7">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Studyo">
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-    <link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/discord.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0B0A12;
+  --ink-2:#12111C;
+  --surface:#16151F;
+  --line:#262433;
+  --text:#F5F4F8;
+  --muted:#A3A0B4;
+  --dim:#6F6C82;
+  --violet:#7C6BF0;
+  --violet-soft:#A79CF7;
+  --coral:#FF6B6B;
+  --green:#3DD68C;
+  --maxw:1120px;
+  --r:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--ink);
+  color:var(--text);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{background:rgba(124,107,240,.4)}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.serif{font-family:'Instrument Serif',Georgia,serif;font-weight:400;letter-spacing:-.01em}
+.ital{font-style:italic}
+
+/* ---------- NAV ---------- */
+nav{
+  position:sticky;top:0;z-index:50;
+  background:rgba(11,10,18,.82);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid transparent;
+  transition:border-color .3s ease;
+}
+nav.scrolled{border-bottom-color:var(--line)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:68px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;letter-spacing:-.01em}
+.brand svg{display:block}
+.nav-links{display:flex;align-items:center;gap:30px}
+.nav-links a{color:var(--muted);font-size:14.5px;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  border-radius:999px;font-weight:600;font-family:inherit;
+  cursor:pointer;border:1px solid transparent;
+  transition:transform .18s cubic-bezier(.16,1,.3,1),background .2s,border-color .2s,box-shadow .2s;
+}
+.btn-primary{
+  background:var(--violet);color:#fff;
+  padding:11px 22px;font-size:15px;
+  box-shadow:0 6px 20px rgba(124,107,240,.32);
+}
+.btn-primary:hover{background:#8a7bf5;transform:translateY(-1px);box-shadow:0 10px 28px rgba(124,107,240,.42)}
+.btn-ghost{
+  background:transparent;color:var(--text);
+  border-color:var(--line);padding:11px 22px;font-size:15px;
+}
+.btn-ghost:hover{border-color:#3a3750;background:rgba(255,255,255,.03)}
+.btn-lg{padding:15px 32px;font-size:16.5px}
+.nav-cta{display:flex;align-items:center;gap:14px}
+.menu-btn{display:none;background:none;border:none;color:var(--text);font-size:22px;cursor:pointer}
+
+/* ---------- HERO ---------- */
+header{position:relative;padding:96px 0 84px;overflow:hidden}
+.aura{
+  position:absolute;top:-320px;left:50%;transform:translateX(-50%);
+  width:1000px;height:640px;pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(124,107,240,.22),transparent 62%);
+  filter:blur(10px);
+}
+.hero{position:relative;max-width:790px}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:9px;
+  background:rgba(124,107,240,.1);
+  border:1px solid rgba(124,107,240,.28);
+  color:var(--violet-soft);
+  padding:6px 15px;border-radius:999px;
+  font-size:13px;font-weight:600;margin-bottom:26px;
+}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(61,214,140,.6);animation:p 2s infinite}
+@keyframes p{70%{box-shadow:0 0 0 7px rgba(61,214,140,0)}100%{box-shadow:0 0 0 0 rgba(61,214,140,0)}}
+h1{
+  font-family:'Instrument Serif',Georgia,serif;font-weight:400;
+  font-size:clamp(42px,6.4vw,74px);line-height:1.04;
+  letter-spacing:-.02em;margin-bottom:24px;
+}
+h1 em{font-style:italic;color:var(--violet-soft)}
+.lede{font-size:clamp(17px,2vw,20px);color:var(--muted);max-width:610px;margin-bottom:36px}
+.hero-cta{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.note{font-size:13.5px;color:var(--dim);margin-top:18px}
+
+/* ---------- APP FRAME ---------- */
+.showcase{position:relative;margin-top:72px}
+.frame{
+  border:1px solid var(--line);border-radius:16px;
+  background:var(--ink-2);overflow:hidden;
+  box-shadow:0 40px 90px rgba(0,0,0,.55);
+}
+.frame-bar{
+  display:flex;align-items:center;gap:7px;
+  padding:12px 16px;border-bottom:1px solid var(--line);
+  background:#100F19;
+}
+.tl{width:11px;height:11px;border-radius:50%;background:#2f2c40}
+.frame-url{
+  margin-left:12px;font-size:12.5px;color:var(--dim);
+  background:#0c0b14;border:1px solid var(--line);
+  padding:4px 12px;border-radius:6px;
+}
+.mock{display:grid;grid-template-columns:210px 1fr 250px;min-height:400px}
+.mock-col{padding:18px 16px}
+.mock-side{border-right:1px solid var(--line);background:#131220}
+.mock-h{font-size:10.5px;letter-spacing:.09em;color:var(--dim);font-weight:700;margin:16px 0 10px}
+.mock-h:first-child{margin-top:0}
+.chan{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:7px;font-size:13.5px;color:var(--muted);margin-bottom:2px}
+.chan.on{background:rgba(124,107,240,.16);color:#fff;font-weight:600}
+.chan .n{margin-left:auto;font-size:11px;color:var(--dim);background:rgba(255,255,255,.06);padding:1px 7px;border-radius:20px}
+.mock-main{background:#0f0e18}
+.mock-title{font-size:19px;font-weight:700;letter-spacing:-.01em}
+.mock-sub{font-size:13px;color:var(--dim);display:flex;align-items:center;gap:7px;margin-top:5px}
+.timer-card{
+  margin-top:18px;border:1px solid var(--line);border-radius:12px;
+  background:linear-gradient(160deg,#1a1830,#131120);
+  padding:26px;text-align:center;
+}
+.timer-num{font-size:52px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.timer-lbl{font-size:12.5px;color:var(--dim);margin-top:2px}
+.bar{height:4px;border-radius:3px;background:#221f33;margin-top:18px;overflow:hidden}
+.bar span{display:block;height:100%;width:62%;border-radius:3px;background:linear-gradient(90deg,var(--violet),var(--coral))}
+.pill-row{display:flex;gap:7px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.pill{font-size:11.5px;color:var(--muted);border:1px solid var(--line);padding:4px 12px;border-radius:999px}
+.mock-right{border-left:1px solid var(--line);background:#131220}
+.who{display:flex;align-items:center;gap:9px;margin-bottom:13px}
+.av{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;font-size:13px;background:#221f36}
+.who-n{font-size:13px;font-weight:600}
+.who-s{font-size:11px;color:var(--green);display:flex;align-items:center;gap:5px}
+.who-s.off{color:var(--dim)}
+.mini{width:5px;height:5px;border-radius:50%;background:var(--green)}
+
+/* ---------- SECTIONS ---------- */
+section{padding:96px 0;position:relative}
+.tag{font-size:12.5px;font-weight:700;letter-spacing:.1em;color:var(--violet-soft);margin-bottom:14px}
+h2{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:clamp(32px,4.4vw,46px);line-height:1.14;letter-spacing:-.02em;margin-bottom:18px}
+h2 em{font-style:italic;color:var(--violet-soft)}
+.sec-lede{color:var(--muted);font-size:17px;max-width:640px}
+.center{text-align:center;margin:0 auto}
+.center .sec-lede{margin-inline:auto}
+
+/* origin story */
+.story{border-left:2px solid var(--violet);padding-left:30px;max-width:700px}
+.story p{color:var(--muted);font-size:17.5px;margin-bottom:16px}
+.story p:last-child{margin-bottom:0}
+.story strong{color:var(--text);font-weight:600}
+.sign{display:flex;align-items:center;gap:12px;margin-top:26px;font-size:14px;color:var(--dim)}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:52px}
+.step{position:relative;padding-top:26px;border-top:1px solid var(--line)}
+.step-n{font-family:'Instrument Serif',serif;font-size:34px;color:var(--violet-soft);line-height:1;margin-bottom:12px}
+.step h3{font-size:17.5px;font-weight:700;margin-bottom:9px;letter-spacing:-.01em}
+.step p{color:var(--muted);font-size:15px}
+
+/* features */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:52px}
+.card{
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r);padding:26px;
+  transition:transform .22s cubic-bezier(.16,1,.3,1),border-color .22s;
+}
+.card:hover{transform:translateY(-3px);border-color:#3a3750}
+.card .ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;margin-bottom:16px;background:rgba(124,107,240,.13);font-size:18px}
+.card h3{font-size:16.5px;font-weight:700;margin-bottom:8px;letter-spacing:-.01em}
+.card p{color:var(--muted);font-size:14.5px}
+.span2{grid-column:span 2}
+
+/* focus feature */
+.focus-band{
+  border:1px solid rgba(124,107,240,.3);border-radius:20px;
+  background:linear-gradient(135deg,#1d1638 0%,#241a44 45%,#2e1c3d 100%);
+  padding:56px;position:relative;overflow:hidden;
+}
+.stars{position:absolute;inset:0;pointer-events:none}
+.star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;animation:tw 4s infinite ease-in-out}
+@keyframes tw{0%,100%{opacity:.15}50%{opacity:.9}}
+.focus-in{position:relative;max-width:560px}
+.rooms{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px}
+.room{font-size:13.5px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);padding:7px 15px;border-radius:999px}
+
+/* audience */
+.aud{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:52px}
+.aud-card{border:1px solid var(--line);border-radius:var(--r);padding:28px;background:var(--surface)}
+.aud-card h3{font-size:17px;font-weight:700;margin-bottom:10px}
+.aud-card ul{list-style:none;margin-top:14px}
+.aud-card li{color:var(--muted);font-size:14.5px;padding:6px 0 6px 22px;position:relative}
+.aud-card li:before{content:'';position:absolute;left:0;top:14px;width:7px;height:7px;border-radius:50%;background:var(--violet)}
+
+/* faq */
+.faq{max-width:760px;margin:44px auto 0}
+details{border-bottom:1px solid var(--line)}
+summary{
+  padding:22px 0;font-size:16.5px;font-weight:600;cursor:pointer;
+  list-style:none;display:flex;justify-content:space-between;gap:20px;align-items:center;
+}
+summary::-webkit-details-marker{display:none}
+summary:after{content:'+';color:var(--violet-soft);font-size:22px;font-weight:400;transition:transform .2s}
+details[open] summary:after{transform:rotate(45deg)}
+details p{color:var(--muted);padding-bottom:22px;font-size:15.5px;max-width:660px}
+
+/* cta */
+.final{text-align:center;padding:104px 0}
+.final h2{margin-bottom:20px}
+.final .sec-lede{margin:0 auto 34px}
+
+/* footer */
+footer{border-top:1px solid var(--line);padding:44px 0;color:var(--dim);font-size:14px}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.foot a{color:var(--muted)}
+.foot a:hover{color:var(--text)}
+
+@media(max-width:900px){
+  .mock{grid-template-columns:1fr}
+  .mock-side,.mock-right{display:none}
+  .steps,.grid,.aud{grid-template-columns:1fr}
+  .span2{grid-column:span 1}
+  .nav-links{display:none}
+  section{padding:72px 0}
+  .focus-band{padding:34px}
+  header{padding:64px 0 56px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
 </head>
 <body>
-    <div id="app-discord">
-        <!-- DISCORD-STYLE: Server Strip (left icons) -->
-        <div class="server-strip">
-            <div class="server-icon server-home active" onclick="navigate('home')" title="Home">
-                <span>📚</span>
-            </div>
-            <div class="server-divider"></div>
-            <div class="server-icon server-uni" id="server-uni-icon" onclick="navigate('home')" title="La tua università" style="display:none">
-                <span>🏛️</span>
-            </div>
-            <div class="server-icon server-focus" onclick="openFocusPocus()" title="Focus Pocus — entra in full focus">
-                <span>🔮</span>
-            </div>
-            <div class="server-icon" onclick="navigate('profile')" title="Profilo">
-                <span>👤</span>
-            </div>
-            <div class="server-divider"></div>
-            <div class="server-icon server-feedback" onclick="openFeedbackWidget()" title="Invia Feedback">
-                <span>💬</span>
-            </div>
-        </div>
 
-        <!-- MOBILE: Toggle sidebar button + overlay -->
-        <button class="mobile-sidebar-toggle" id="mobile-sidebar-toggle" onclick="toggleMobileSidebar()">
-            <span class="hamburger-icon" id="hamburger-icon">☰</span>
-        </button>
-        <div class="mobile-sidebar-overlay" id="mobile-sidebar-overlay" onclick="toggleMobileSidebar()"></div>
-
-        <!-- DISCORD-STYLE: Channel Sidebar -->
-        <div class="channel-sidebar">
-            <div class="sidebar-header">
-                <h2 class="sidebar-title">Studyo</h2>
-                <span class="sidebar-sub" id="sidebar-sub">Lo studio diventa multiplayer</span>
-            </div>
-
-            <!-- User card top -->
-            <div class="sidebar-user-card" onclick="navigate('profile')">
-                <span class="sidebar-avatar">🎓</span>
-                <div class="sidebar-user-info">
-                    <span class="sidebar-user-name" id="sidebar-name">Studente</span>
-                    <span class="sidebar-user-xp" id="sidebar-xp">0 XP · 🔥0</span>
-                </div>
-            </div>
-
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">FILTRA</div>
-                <div class="sidebar-filters" id="sidebar-filters">
-                    <!-- Rendered dynamically by updateFilterBar() based on user type -->
-                </div>
-            </div>
-
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">LOBBY</div>
-                <div class="sidebar-lobbies" id="sidebar-lobbies">
-                    <!-- Generated by JS -->
-                </div>
-            </div>
-
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">SFIDE DEL GIORNO</div>
-                <div class="sidebar-challenges" id="sidebar-challenges">
-                    <!-- Generated by JS -->
-                </div>
-            </div>
-        </div>
-
-        <!-- MAIN CONTENT -->
-        <div class="main-content">
-            <!-- HOME PAGE -->
-            <div id="page-home" class="page active">
-                <div class="main-header">
-                    <h1>👋 Bentornato, <span class="highlight" id="main-welcome-name">Studente</span></h1>
-                    <p class="main-header-sub">Scegli una lobby dalla sidebar o esplora la tua community.</p>
-                </div>
-
-                <!-- Focus Pocus CTA -->
-                <div class="focus-cta" onclick="openFocusPocus()">
-                    <div class="focus-cta-glow"></div>
-                    <div class="focus-cta-text">
-                        <span class="focus-cta-title">🔮 Focus Pocus</span>
-                        <span class="focus-cta-sub">Entra in una stanza immersiva e studia in full focus</span>
-                    </div>
-                    <span class="focus-cta-btn">Entra →</span>
-                </div>
-
-                <!-- Community Section -->
-                <div class="community-section" id="community-section" style="display:none">
-                    <div class="community-header">
-                        <h2>🏛️ La tua community</h2>
-                        <span class="community-badge" id="community-name"></span>
-                    </div>
-                    <div class="community-stats-row">
-                        <div class="community-stat">
-                            <span class="community-stat-value" id="comm-online">0</span>
-                            <span class="community-stat-label">Online ora</span>
-                        </div>
-                        <div class="community-stat">
-                            <span class="community-stat-value" id="comm-total">0</span>
-                            <span class="community-stat-label">Membri totali</span>
-                        </div>
-                        <div class="community-stat">
-                            <span class="community-stat-value" id="comm-rank">#1</span>
-                            <span class="community-stat-label">Classifica atenei</span>
-                        </div>
-                    </div>
-                    <div class="community-members" id="community-members"></div>
-                </div>
-
-                <!-- Quick Stats -->
-                <div class="home-stats-grid">
-                    <div class="home-stat-card">
-                        <span class="home-stat-icon">⚡</span>
-                        <span class="home-stat-value" id="home-xp">0</span>
-                        <span class="home-stat-label">XP Totali</span>
-                    </div>
-                    <div class="home-stat-card">
-                        <span class="home-stat-icon">🔥</span>
-                        <span class="home-stat-value" id="home-streak">0</span>
-                        <span class="home-stat-label">Giorni streak</span>
-                    </div>
-                    <div class="home-stat-card">
-                        <span class="home-stat-icon">🧠</span>
-                        <span class="home-stat-value" id="home-quizzes">0</span>
-                        <span class="home-stat-label">Quiz fatti</span>
-                    </div>
-                    <div class="home-stat-card">
-                        <span class="home-stat-icon">🍅</span>
-                        <span class="home-stat-value" id="home-pomodoros">0</span>
-                        <span class="home-stat-label">Pomodori</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- LOBBY PAGE -->
-            <div id="page-lobby" class="page">
-                <div class="main-header lobby-main-header">
-                    <div class="lobby-title-row">
-                        <span class="lobby-icon-big" id="lobby-icon-big"></span>
-                        <div>
-                            <h1 id="lobby-title"></h1>
-                            <div class="lobby-meta">
-                                <span class="online-dot"></span>
-                                <span id="lobby-online">0 online</span>
-                                <span class="lobby-mode-tag">🟢 Sincrona</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="btn btn-video-cta" onclick="openVideoCall()">📹 Videochiamata</button>
-                </div>
-
-                <div class="lobby-layout">
-                    <div class="lobby-main">
-                        <!-- POMODORO / BUILDING -->
-                        <div class="card pomodoro-card">
-                            <div class="card-header">
-                                <h3>🍅 Sessione di Studio</h3>
-                                <div class="pomodoro-controls">
-                                    <button class="pomo-btn" onclick="setPomodoro(25)">25min</button>
-                                    <button class="pomo-btn" onclick="setPomodoro(50)">50min</button>
-                                    <button class="pomo-btn break" onclick="setPomodoro(5)">Pausa 5</button>
-                                </div>
-                            </div>
-                            <div class="build-scene" id="build-scene">
-                                <div class="build-sky">
-                                    <div class="build-star" style="top:10%;left:15%">✦</div>
-                                    <div class="build-star" style="top:20%;left:70%">✦</div>
-                                    <div class="build-star" style="top:5%;left:45%">✧</div>
-                                    <div class="build-star" style="top:25%;left:85%">✦</div>
-                                </div>
-                                <div class="build-tower-container">
-                                    <div class="build-tower" id="build-tower">
-                                        <div class="build-block" data-floor="10"><span>🏆</span></div>
-                                        <div class="build-block" data-floor="9"><span>📚</span></div>
-                                        <div class="build-block" data-floor="8"><span>🧠</span></div>
-                                        <div class="build-block" data-floor="7"><span>✏️</span></div>
-                                        <div class="build-block" data-floor="6"><span>💡</span></div>
-                                        <div class="build-block" data-floor="5"><span>📖</span></div>
-                                        <div class="build-block" data-floor="4"><span>🔬</span></div>
-                                        <div class="build-block" data-floor="3"><span>📐</span></div>
-                                        <div class="build-block" data-floor="2"><span>💪</span></div>
-                                        <div class="build-block" data-floor="1"><span>🚀</span></div>
-                                    </div>
-                                </div>
-                                <div class="build-ground"></div>
-                                <div class="build-timer-small" id="build-timer-small">25:00</div>
-                            </div>
-                            <div class="timer-progress"><div class="timer-bar" id="timer-bar"></div></div>
-                            <div class="timer-actions">
-                                <button class="btn btn-primary" id="timer-start-btn" onclick="toggleTimer()">▶ Inizia a costruire</button>
-                                <button class="btn btn-secondary" onclick="resetTimer()">↺ Reset</button>
-                            </div>
-                            <div class="pomo-stats">
-                                <span>Pomodori: <strong id="pomo-count">0</strong></span>
-                                <span>Tempo: <strong id="pomo-total">0h 0m</strong></span>
-                            </div>
-                        </div>
-
-                        <!-- AMBIENT SOUNDS -->
-                        <div class="card sounds-card">
-                            <div class="card-header">
-                                <h3>🎧 Suoni Ambientali</h3>
-                                <button class="btn btn-secondary btn-sm" id="sound-master-btn" onclick="toggleAllSounds()">🔇 Silenzia</button>
-                            </div>
-                            <div class="sounds-grid">
-                                <div class="sound-item" id="sound-rain" onclick="toggleSound('rain')">
-                                    <span class="sound-icon">🌧️</span><span class="sound-name">Pioggia</span>
-                                    <div class="sound-bar"><div class="sound-level" id="level-rain"></div></div>
-                                </div>
-                                <div class="sound-item" id="sound-fire" onclick="toggleSound('fire')">
-                                    <span class="sound-icon">🔥</span><span class="sound-name">Camino</span>
-                                    <div class="sound-bar"><div class="sound-level" id="level-fire"></div></div>
-                                </div>
-                                <div class="sound-item" id="sound-cafe" onclick="toggleSound('cafe')">
-                                    <span class="sound-icon">☕</span><span class="sound-name">Caffetteria</span>
-                                    <div class="sound-bar"><div class="sound-level" id="level-cafe"></div></div>
-                                </div>
-                                <div class="sound-item" id="sound-nature" onclick="toggleSound('nature')">
-                                    <span class="sound-icon">🌿</span><span class="sound-name">Natura</span>
-                                    <div class="sound-bar"><div class="sound-level" id="level-nature"></div></div>
-                                </div>
-                                <div class="sound-item" id="sound-white" onclick="toggleSound('white')">
-                                    <span class="sound-icon">🌊</span><span class="sound-name">Cascata</span>
-                                    <div class="sound-bar"><div class="sound-level" id="level-white"></div></div>
-                                </div>
-                                <div class="sound-item" id="sound-brown" onclick="toggleSound('brown')">
-                                    <span class="sound-icon">🦗</span><span class="sound-name">Grilli</span>
-                                    <div class="sound-bar"><div class="sound-level" id="level-brown"></div></div>
-                                </div>
-                            </div>
-                            <div class="sound-volume-control">
-                                <span class="sound-vol-label">🔊</span>
-                                <input type="range" id="master-volume" min="0" max="100" value="65" oninput="setMasterVolume(this.value)">
-                            </div>
-                        </div>
-
-                        <!-- QUIZ -->
-                        <div class="card quiz-card">
-                            <div class="card-header">
-                                <h3>⚔️ Zona Sfida</h3>
-                                <button class="btn btn-accent" onclick="startQuiz()">Nuova Sfida</button>
-                            </div>
-                            <div id="quiz-area">
-                                <div class="quiz-placeholder">
-                                    <span class="quiz-placeholder-icon">🧠</span>
-                                    <p>Premi "Nuova Sfida" per iniziare un quiz!</p>
-                                    <p class="quiz-sub">+50 XP per risposta corretta</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- TOOLS -->
-                        <div class="card tools-card">
-                            <div class="card-header"><h3>🛠️ Strumenti</h3></div>
-                            <div class="tools-grid">
-                                <div class="tool-item tool-video" onclick="openVideoCall()">
-                                    <span class="tool-icon">📹</span><span class="tool-name">Videochiamata</span>
-                                    <span class="tool-desc">Studiate in video insieme</span>
-                                </div>
-                                <div class="tool-item" onclick="openFlashcards()">
-                                    <span class="tool-icon">🃏</span><span class="tool-name">Flashcard</span>
-                                    <span class="tool-desc">Ripetizione spaziata</span>
-                                </div>
-                                <div class="tool-item" onclick="openNotes()">
-                                    <span class="tool-icon">📝</span><span class="tool-name">Appunti</span>
-                                    <span class="tool-desc">Note condivise</span>
-                                </div>
-                                <div class="tool-item" onclick="openMindmap()">
-                                    <span class="tool-icon">🗺️</span><span class="tool-name">Mappa</span>
-                                    <span class="tool-desc">Mappa concettuale</span>
-                                </div>
-                                <div class="tool-item" onclick="openAI()">
-                                    <span class="tool-icon">🤖</span><span class="tool-name">AI Tutor</span>
-                                    <span class="tool-desc">Chiedi all'AI</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- RIGHT SIDEBAR: Members + Chat -->
-                    <div class="lobby-sidebar">
-                        <div class="card students-card">
-                            <div class="card-header"><h3>👥 In Lobby</h3></div>
-                            <div class="students-list" id="students-list"></div>
-                        </div>
-                        <div class="card chat-card">
-                            <div class="card-header"><h3>💬 Chat</h3></div>
-                            <div class="chat-messages" id="chat-messages"></div>
-                            <div class="chat-input-area">
-                                <input type="text" id="chat-input" placeholder="Scrivi..." onkeypress="handleChatKey(event)">
-                                <button class="btn btn-primary chat-send" onclick="sendChat()">→</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PROFILE PAGE -->
-            <div id="page-profile" class="page">
-                <div class="main-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
-                    <h1>Il tuo profilo</h1>
-                    <button class="btn-logout" onclick="signOut()">🚪 Esci</button>
-                </div>
-                <div class="profile-header-section">
-                    <div class="profile-big-avatar">🎓</div>
-                    <div class="profile-info">
-                        <h1 id="profile-name">Studente</h1>
-                        <p class="profile-uni-label" id="profile-uni-label"></p>
-                        <p class="profile-course-label" id="profile-course-label"></p>
-                        <div class="profile-level">
-                            <span class="level-badge" id="profile-level">Livello 1</span>
-                            <span class="level-title" id="profile-title">Matricola</span>
-                        </div>
-                        <div class="profile-xp-bar">
-                            <div class="profile-xp-fill" id="profile-xp-fill"></div>
-                            <span class="profile-xp-text" id="profile-xp-text">0 / 500 XP</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="profile-stats-grid">
-                    <div class="stat-card"><span class="stat-value" id="stat-hours">0</span><span class="stat-label">Ore studio</span></div>
-                    <div class="stat-card"><span class="stat-value" id="stat-streak">0</span><span class="stat-label">Streak</span></div>
-                    <div class="stat-card"><span class="stat-value" id="stat-quizzes">0</span><span class="stat-label">Quiz</span></div>
-                    <div class="stat-card"><span class="stat-value" id="stat-pomodoros">0</span><span class="stat-label">Pomodori</span></div>
-                </div>
-                <div class="profile-sections">
-                    <div class="card">
-                        <div class="card-header"><h3>🏆 Badge</h3></div>
-                        <div class="badges-grid" id="badges-grid"></div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header"><h3>📊 Attività recente</h3></div>
-                        <div class="activity-list" id="activity-list"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<nav id="nav">
+  <div class="wrap nav-in">
+    <a href="#" class="brand">
+      <svg width="26" height="26" viewBox="0 0 32 32" fill="none">
+        <rect width="32" height="32" rx="8" fill="url(#g)"/>
+        <path d="M20.4 11.2c-.9-.85-2.4-1.4-4.1-1.4-2.7 0-4.5 1.3-4.5 3.3 0 1.9 1.4 2.8 3.9 3.4 2.2.5 2.9.9 2.9 1.8 0 .9-.9 1.5-2.4 1.5-1.6 0-3-.6-4-1.6" stroke="#fff" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+        <defs><linearGradient id="g" x1="0" y1="0" x2="32" y2="32">
+          <stop stop-color="#7C6BF0"/><stop offset="1" stop-color="#FF6B6B"/>
+        </linearGradient></defs>
+      </svg>
+      Studyo
+    </a>
+    <div class="nav-links">
+      <a href="#come-funziona">Come funziona</a>
+      <a href="#funzioni">Funzioni</a>
+      <a href="#per-chi">Per chi</a>
+      <a href="#faq">FAQ</a>
     </div>
-
-    <!-- ============ MODALS ============ -->
-
-    <!-- VIDEO CALL MODAL -->
-    <div class="modal" id="modal-video">
-        <div class="modal-content modal-video-content">
-            <div class="modal-header">
-                <h2>📹 Videochiamata <span id="video-lobby-name" class="video-lobby-name"></span></h2>
-                <button class="modal-close" onclick="closeModal('video')">✕</button>
-            </div>
-            <div id="jitsi-container" class="jitsi-container">
-                <div class="jitsi-loading">Avvio videochiamata… 🎥</div>
-            </div>
-        </div>
+    <div class="nav-cta">
+      <a href="app.html" class="btn btn-primary">Entra gratis</a>
     </div>
+  </div>
+</nav>
 
-    <!-- FLASHCARD MODAL -->
-    <div class="modal" id="modal-flashcard">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>🃏 Flashcard</h2>
-                <button class="modal-close" onclick="closeModal('flashcard')">✕</button>
-            </div>
-            <div class="flashcard-container">
-                <div class="flashcard" id="flashcard" onclick="flipCard()">
-                    <div class="flashcard-front" id="flashcard-front"><p>Clicca per girare</p></div>
-                    <div class="flashcard-back" id="flashcard-back"><p>Risposta</p></div>
-                </div>
-                <div class="flashcard-actions">
-                    <button class="btn btn-danger" onclick="rateFlashcard('hard')">😰 Difficile</button>
-                    <button class="btn btn-warning" onclick="rateFlashcard('medium')">🤔 Medio</button>
-                    <button class="btn btn-success" onclick="rateFlashcard('easy')">😎 Facile</button>
-                </div>
-                <div class="flashcard-progress">Carta <span id="fc-current">1</span> di <span id="fc-total">0</span></div>
-            </div>
-        </div>
+<header>
+  <div class="aura"></div>
+  <div class="wrap hero">
+    <span class="eyebrow"><span class="dot"></span> Beta aperta · nato all'Università di Modena e Reggio Emilia</span>
+    <h1>Studiare da soli è<br>la parte <em>più difficile</em>.</h1>
+    <p class="lede">Studyo è il posto dove entri in una lobby della tua materia e trovi altri studenti che stanno studiando in questo momento. Timer condivisi, videochiamata, quiz e progressi che si vedono.</p>
+    <div class="hero-cta">
+      <a href="app.html" class="btn btn-primary btn-lg">Inizia a studiare →</a>
+      <a href="#come-funziona" class="btn btn-ghost btn-lg">Come funziona</a>
     </div>
+    <p class="note">Gratis, per sempre. Bastano 30 secondi e il tuo account Google.</p>
+  </div>
 
-    <!-- NOTES MODAL -->
-    <div class="modal" id="modal-notes">
-        <div class="modal-content modal-large">
-            <div class="modal-header">
-                <h2>📝 Appunti Condivisi</h2>
-                <button class="modal-close" onclick="closeModal('notes')">✕</button>
-            </div>
-            <textarea class="notes-editor" id="notes-editor" placeholder="Scrivi i tuoi appunti qui..."></textarea>
+  <div class="wrap showcase">
+    <div class="frame">
+      <div class="frame-bar">
+        <span class="tl"></span><span class="tl"></span><span class="tl"></span>
+        <span class="frame-url">studyo · Analisi Matematica 1</span>
+      </div>
+      <div class="mock">
+        <div class="mock-col mock-side">
+          <div class="mock-h">I TUOI ESAMI</div>
+          <div class="chan on"><span>📐</span> Analisi 1 <span class="n">14</span></div>
+          <div class="chan"><span>⚛️</span> Fisica 1 <span class="n">9</span></div>
+          <div class="chan"><span>💻</span> Informatica <span class="n">21</span></div>
+          <div class="chan"><span>📏</span> Algebra <span class="n">7</span></div>
+          <div class="mock-h">ESPLORA</div>
+          <div class="chan"><span>📊</span> Microecon. <span class="n">12</span></div>
+          <div class="chan"><span>⚖️</span> Dir. Privato <span class="n">15</span></div>
         </div>
-    </div>
-
-    <!-- AI TUTOR MODAL -->
-    <div class="modal" id="modal-ai">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>🤖 AI Tutor</h2>
-                <button class="modal-close" onclick="closeModal('ai')">✕</button>
+        <div class="mock-col mock-main">
+          <div class="mock-title">Analisi Matematica 1</div>
+          <div class="mock-sub"><span class="mini"></span> 14 studenti online adesso</div>
+          <div class="timer-card">
+            <div class="timer-num">18:24</div>
+            <div class="timer-lbl">sessione in corso</div>
+            <div class="bar"><span></span></div>
+            <div class="pill-row">
+              <span class="pill">🎧 Pioggia</span>
+              <span class="pill">📹 Video</span>
+              <span class="pill">🃏 Flashcard</span>
             </div>
-            <div class="ai-chat" id="ai-chat">
-                <div class="ai-message ai-bot"><p>Ciao! Chiedimi qualsiasi cosa sulla materia! 🧠</p></div>
-            </div>
-            <div class="ai-input-area">
-                <input type="text" id="ai-input" placeholder="Chiedi qualcosa..." onkeypress="handleAIKey(event)">
-                <button class="btn btn-primary" onclick="sendAIMessage()">→</button>
-            </div>
+          </div>
         </div>
-    </div>
-
-    <!-- FEEDBACK MODAL -->
-    <div class="modal" id="modal-feedback">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>💬 Invia Feedback</h2>
-                <button class="modal-close" onclick="closeModal('feedback')">✕</button>
-            </div>
-            <p style="color:var(--text-secondary);font-size:14px;margin-bottom:12px">Aiutaci a migliorare Studyo! Ogni feedback conta.</p>
-            <div class="feedback-question-hint" id="feedback-question-hint" style="background:rgba(108,92,231,0.1);border-left:3px solid var(--primary);padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:16px;font-size:13px;color:var(--primary-light);font-style:italic;line-height:1.4"></div>
-            <div class="form-group">
-                <label>Tipo di feedback</label>
-                <select id="feedback-type">
-                    <option value="idea">💡 Ho un'idea</option>
-                    <option value="bug">🐛 Ho trovato un problema</option>
-                    <option value="design">🎨 Suggerimento design</option>
-                    <option value="content">📚 Suggerimento contenuti</option>
-                    <option value="altro">📝 Altro</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Il tuo feedback</label>
-                <textarea id="feedback-text" style="width:100%;min-height:120px;background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:inherit;font-size:14px;padding:12px;outline:none;resize:vertical" placeholder="Descrivi il tuo feedback..."></textarea>
-            </div>
-            <button class="btn btn-primary btn-large" onclick="sendFeedback()">📤 Invia Feedback</button>
+        <div class="mock-col mock-right">
+          <div class="mock-h">IN LOBBY</div>
+          <div class="who"><span class="av">🎓</span><div><div class="who-n">Giulia</div><div class="who-s"><span class="mini"></span> sta studiando</div></div></div>
+          <div class="who"><span class="av">🧑‍💻</span><div><div class="who-n">Marco</div><div class="who-s"><span class="mini"></span> sta studiando</div></div></div>
+          <div class="who"><span class="av">✨</span><div><div class="who-n">Sara</div><div class="who-s"><span class="mini"></span> sta studiando</div></div></div>
+          <div class="who"><span class="av">🔥</span><div><div class="who-n">Andrea</div><div class="who-s off">in pausa</div></div></div>
         </div>
+      </div>
     </div>
+  </div>
+</header>
 
-    <!-- AUTH MODAL (Login/Register) -->
-    <div class="modal active" id="modal-auth">
-        <div class="modal-content setup-modal">
-            <div class="setup-header">
-                <span class="setup-logo">📚</span>
-                <h1>Entra su <span class="highlight">Studyo</span></h1>
-                <p>Lo studio diventa multiplayer.</p>
-            </div>
+<!-- ORIGIN -->
+<section>
+  <div class="wrap">
+    <div class="tag">PERCHÉ ESISTE</div>
+    <h2>Ci siamo stancati di studiare<br>su una <em>chiamata muta</em>.</h2>
+    <div class="story" style="margin-top:34px">
+      <p>Durante le sessioni d'esame passavamo ore su Google Meet, in silenzio, con la webcam accesa. Non parlavamo. Serviva solo a <strong>non sentirci soli</strong> — e a non alzarci dalla scrivania.</p>
+      <p>Funzionava. Ma era un ripiego: nessun timer condiviso, nessun modo per trovare altri del nostro corso, nessuna traccia di quanto avevamo studiato. Solo due facce stanche in una chiamata.</p>
+      <p><strong>Studyo è il posto che ci mancava.</strong> Quello che avremmo voluto aprire alle 9 di mattina di un lunedì di gennaio, con l'esame di Analisi tra sei giorni.</p>
+      <div class="sign">— Francesco e Davide, studenti UNIMORE</div>
+    </div>
+  </div>
+</section>
 
-            <button class="btn btn-google btn-large" onclick="signInWithGoogle()">
-                <svg width="18" height="18" viewBox="0 0 18 18" style="margin-right:8px"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
-                Accedi con Google
-            </button>
+<!-- HOW -->
+<section id="come-funziona">
+  <div class="wrap">
+    <div class="tag">COME FUNZIONA</div>
+    <h2>Tre passaggi, <em>zero attrito</em>.</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n">01</div>
+        <h3>Dici cosa studi</h3>
+        <p>Scegli il tuo ateneo e il corso di laurea (o la scuola superiore). Studyo ti mostra subito le lobby dei tuoi esami, non un elenco infinito.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">02</div>
+        <h3>Entri in una lobby</h3>
+        <p>Ogni materia ha la sua stanza. Vedi chi sta studiando in quel momento, apri la chat o fate una videochiamata insieme.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">03</div>
+        <h3>Studi davvero</h3>
+        <p>Avvii il timer, metti un suono di sottofondo, fai un quiz. Ogni sessione ti dà XP e tiene viva la tua streak.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-            <div class="auth-divider">
-                <span>oppure</span>
-            </div>
+<!-- FEATURES -->
+<section id="funzioni">
+  <div class="wrap">
+    <div class="tag">COSA C'È DENTRO</div>
+    <h2>Gli strumenti che usavi<br>in <em>cinque schede diverse</em>.</h2>
+    <div class="grid">
+      <div class="card">
+        <div class="ic">👥</div>
+        <h3>Presenza in tempo reale</h3>
+        <p>Vedi chi c'è nella lobby mentre studi. Nessuno finge: se il pallino è verde, quella persona è davvero lì.</p>
+      </div>
+      <div class="card">
+        <div class="ic">📹</div>
+        <h3>Videochiamata integrata</h3>
+        <p>Una stanza video per ogni materia, dentro l'app. Nessun link da girare, nessun account in più.</p>
+      </div>
+      <div class="card">
+        <div class="ic">⏱️</div>
+        <h3>Timer con progresso</h3>
+        <p>Pomodoro 25 o 50 minuti. Ogni sessione completata costruisce la tua torre e vale XP.</p>
+      </div>
+      <div class="card">
+        <div class="ic">🎧</div>
+        <h3>Suoni ambientali</h3>
+        <p>Pioggia, camino, caffetteria, bosco, cascata, grilli. Registrazioni vere, non rumore sintetico.</p>
+      </div>
+      <div class="card">
+        <div class="ic">🧠</div>
+        <h3>Quiz e flashcard</h3>
+        <p>Domande per materia e ripetizione spaziata: le carte difficili tornano più spesso, quelle facili spariscono.</p>
+      </div>
+      <div class="card">
+        <div class="ic">🔥</div>
+        <h3>Streak e livelli</h3>
+        <p>Sei livelli da Matricola a Leggenda. La streak conta i giorni consecutivi in cui hai studiato davvero.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" id="auth-email" placeholder="La tua email...">
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" id="auth-password" placeholder="Min 6 caratteri..." onkeypress="if(event.key==='Enter')loginWithEmail()">
-            </div>
-            <button class="btn btn-primary btn-large" onclick="loginWithEmail()">Accedi / Registrati</button>
-            <p style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:12px">Se non hai un account, ne creiamo uno automaticamente.</p>
+<!-- FOCUS POCUS -->
+<section>
+  <div class="wrap">
+    <div class="focus-band">
+      <div class="stars" id="stars"></div>
+      <div class="focus-in">
+        <div class="tag">FOCUS POCUS</div>
+        <h2 style="margin-bottom:16px">Il posto dove ti immagini<br>per <em>concentrarti davvero</em>.</h2>
+        <p class="sec-lede">Schermo intero, tutto il resto sparisce. Scegli il luogo, parte l'atmosfera e il timer: resti solo tu e quello che devi studiare.</p>
+        <div class="rooms">
+          <span class="room">🌧️ Biblioteca Piovosa</span>
+          <span class="room">🔥 Baita sul Fuoco</span>
+          <span class="room">☕ Caffè Letterario</span>
+          <span class="room">🌿 Foresta Silenziosa</span>
+          <span class="room">🌌 Notte Stellata</span>
+          <span class="room">💧 Cascata Zen</span>
         </div>
+        <div style="margin-top:30px"><a href="app.html" class="btn btn-primary">Provalo ora</a></div>
+      </div>
     </div>
+  </div>
+</section>
 
-    <!-- SETUP MODAL -->
-    <div class="modal" id="modal-setup">
-        <div class="modal-content setup-modal">
-            <div class="setup-header">
-                <span class="setup-logo">📚</span>
-                <h1>Benvenuto su <span class="highlight">Studyo</span></h1>
-                <p>Lo studio diventa multiplayer. Configuriamo il tuo profilo!</p>
-            </div>
-            <div class="setup-form" id="setup-step-1">
-                <div class="form-group">
-                    <label>Come ti chiami?</label>
-                    <input type="text" id="setup-name" placeholder="Il tuo nome...">
-                </div>
-                <div class="form-group">
-                    <label>Dove studi?</label>
-                    <select id="setup-school" onchange="toggleSchoolField()">
-                        <option value="universita" selected>Università</option>
-                        <option value="superiori">Scuola Superiore</option>
-                    </select>
-                </div>
-
-                <!-- UNIVERSITY FIELDS -->
-                <div id="setup-uni-group">
-                    <div class="form-group">
-                        <label>La tua università</label>
-                        <input type="text" id="setup-uni" list="uni-list" placeholder="Cerca la tua università...">
-                        <datalist id="uni-list">
-                            <option value="Politecnico di Milano">
-                            <option value="Politecnico di Torino">
-                            <option value="Università Bocconi">
-                            <option value="Università di Bologna - Alma Mater">
-                            <option value="Sapienza - Università di Roma">
-                            <option value="Università di Padova">
-                            <option value="Università di Firenze">
-                            <option value="Università di Napoli Federico II">
-                            <option value="Università di Pisa">
-                            <option value="Università di Torino">
-                            <option value="Università di Milano - Statale">
-                            <option value="Università di Milano-Bicocca">
-                            <option value="Università di Genova">
-                            <option value="Università di Catania">
-                            <option value="Università di Palermo">
-                            <option value="Università di Bari">
-                            <option value="Università di Trento">
-                            <option value="Università Ca' Foscari Venezia">
-                            <option value="Università di Verona">
-                            <option value="Università di Parma">
-                            <option value="LUISS Guido Carli">
-                            <option value="Università Cattolica del Sacro Cuore">
-                            <option value="Università di Salerno">
-                            <option value="Università di Perugia">
-                            <option value="Università di Cagliari">
-                            <option value="Università di Messina">
-                            <option value="Università di Brescia">
-                            <option value="Università di Bergamo">
-                            <option value="Università di Siena">
-                            <option value="Università di Modena e Reggio Emilia">
-                        </datalist>
-                    </div>
-                    <div class="form-group">
-                        <label>Corso di Laurea</label>
-                        <select id="setup-corso">
-                            <option value="">Seleziona il corso...</option>
-                            <optgroup label="Economia e Management">
-                                <option value="Economia e Commercio">Economia e Commercio</option>
-                                <option value="Economia Aziendale">Economia Aziendale</option>
-                                <option value="Management">Management</option>
-                                <option value="Marketing">Marketing</option>
-                                <option value="Finanza">Finanza</option>
-                            </optgroup>
-                            <optgroup label="Ingegneria">
-                                <option value="Ingegneria Informatica">Ingegneria Informatica</option>
-                                <option value="Ingegneria Meccanica">Ingegneria Meccanica</option>
-                                <option value="Ingegneria Civile">Ingegneria Civile</option>
-                                <option value="Ingegneria Elettronica">Ingegneria Elettronica</option>
-                                <option value="Ingegneria Gestionale">Ingegneria Gestionale</option>
-                            </optgroup>
-                            <optgroup label="Scienze">
-                                <option value="Matematica">Matematica</option>
-                                <option value="Fisica">Fisica</option>
-                                <option value="Chimica">Chimica</option>
-                                <option value="Informatica">Informatica</option>
-                                <option value="Biologia">Biologia</option>
-                                <option value="Scienze Naturali">Scienze Naturali</option>
-                            </optgroup>
-                            <optgroup label="Giuridica">
-                                <option value="Giurisprudenza">Giurisprudenza</option>
-                                <option value="Scienze Giuridiche">Scienze Giuridiche</option>
-                            </optgroup>
-                            <optgroup label="Umanistica">
-                                <option value="Lettere">Lettere</option>
-                                <option value="Filosofia">Filosofia</option>
-                                <option value="Storia">Storia</option>
-                                <option value="Lingue">Lingue e Letterature Straniere</option>
-                                <option value="Scienze della Comunicazione">Scienze della Comunicazione</option>
-                                <option value="Psicologia">Psicologia</option>
-                            </optgroup>
-                            <optgroup label="Medicina e Salute">
-                                <option value="Medicina e Chirurgia">Medicina e Chirurgia</option>
-                                <option value="Infermieristica">Infermieristica</option>
-                                <option value="Farmacia">Farmacia</option>
-                                <option value="Scienze Motorie">Scienze Motorie</option>
-                            </optgroup>
-                            <optgroup label="Architettura e Design">
-                                <option value="Architettura">Architettura</option>
-                                <option value="Design">Design</option>
-                            </optgroup>
-                            <optgroup label="Altro">
-                                <option value="Scienze Politiche">Scienze Politiche</option>
-                                <option value="Scienze della Formazione">Scienze della Formazione</option>
-                                <option value="Agraria">Agraria</option>
-                                <option value="Veterinaria">Veterinaria</option>
-                                <option value="Altro">Altro</option>
-                            </optgroup>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- HIGH SCHOOL FIELDS -->
-                <div id="setup-scuola-group" style="display:none">
-                    <div class="form-group">
-                        <label>Tipo di scuola</label>
-                        <select id="setup-tipo-scuola">
-                            <option value="">Seleziona il tipo...</option>
-                            <optgroup label="Licei">
-                                <option value="Liceo Scientifico">Liceo Scientifico</option>
-                                <option value="Liceo Classico">Liceo Classico</option>
-                                <option value="Liceo Linguistico">Liceo Linguistico</option>
-                                <option value="Liceo Artistico">Liceo Artistico</option>
-                                <option value="Liceo delle Scienze Umane">Liceo delle Scienze Umane</option>
-                                <option value="Liceo Musicale e Coreutico">Liceo Musicale e Coreutico</option>
-                                <option value="Liceo Scientifico - Scienze Applicate">Liceo Scientifico - Scienze Applicate</option>
-                            </optgroup>
-                            <optgroup label="Istituti Tecnici">
-                                <option value="ITIS">Istituto Tecnico Industriale</option>
-                                <option value="ITC">Istituto Tecnico Commerciale</option>
-                                <option value="Tecnico Informatico">Tecnico Informatico</option>
-                                <option value="Tecnico Turistico">Tecnico Turistico</option>
-                            </optgroup>
-                            <optgroup label="Istituti Professionali">
-                                <option value="IPSIA">Istituto Professionale Industria e Artigianato</option>
-                                <option value="Alberghiero">Istituto Alberghiero</option>
-                                <option value="Professionale Servizi">Professionale per i Servizi</option>
-                            </optgroup>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Nome della tua scuola</label>
-                        <input type="text" id="setup-scuola" placeholder="Es: Liceo Tassoni, Modena">
-                    </div>
-                    <div class="form-group">
-                        <label>Classe</label>
-                        <select id="setup-classe">
-                            <option value="1">1° anno</option>
-                            <option value="2">2° anno</option>
-                            <option value="3">3° anno</option>
-                            <option value="4">4° anno</option>
-                            <option value="5">5° anno</option>
-                        </select>
-                    </div>
-                </div>
-
-                <button class="btn btn-primary btn-large" onclick="completeSetup()">🚀 Inizia a studiare!</button>
-            </div>
-        </div>
+<!-- AUDIENCE -->
+<section id="per-chi">
+  <div class="wrap">
+    <div class="tag">PER CHI</div>
+    <h2>Che tu sia al primo anno<br>o alla <em>maturità</em>.</h2>
+    <div class="aud">
+      <div class="aud-card">
+        <h3>🎓 Università</h3>
+        <p style="color:var(--muted);font-size:14.5px">Le lobby seguono il tuo piano di studi: apri l'app e trovi già i tuoi esami.</p>
+        <ul>
+          <li>Ingegneria, Economia, Medicina, Giurisprudenza, Umanistiche</li>
+          <li>Materie reali dei corsi italiani</li>
+          <li>Community del tuo ateneo</li>
+        </ul>
+      </div>
+      <div class="aud-card">
+        <h3>📚 Superiori</h3>
+        <p style="color:var(--muted);font-size:14.5px">Materie divise per indirizzo, dal liceo classico all'alberghiero.</p>
+        <ul>
+          <li>Licei, tecnici e professionali</li>
+          <li>Dal latino a sistemi e reti</li>
+          <li>Preparazione maturità</li>
+        </ul>
+      </div>
+      <div class="aud-card">
+        <h3>🎯 TOLC</h3>
+        <p style="color:var(--muted);font-size:14.5px">Se sei in quinta e devi fare il test d'ingresso, hai una sezione dedicata.</p>
+        <ul>
+          <li>TOLC-I, E, MED, SU, F, B, AV</li>
+          <li>Logica, matematica, comprensione</li>
+          <li>Studi con chi affronta il tuo stesso test</li>
+        </ul>
+      </div>
     </div>
+  </div>
+</section>
 
-    <!-- ============ FOCUS POCUS ============ -->
-    <div id="focuspocus" class="fp-overlay">
-        <!-- Room picker -->
-        <div class="fp-picker" id="fp-picker">
-            <button class="fp-exit" onclick="closeFocusPocus()" title="Esci">✕</button>
-            <div class="fp-picker-head">
-                <h1 class="fp-title">🔮 Focus Pocus</h1>
-                <p class="fp-sub">Scegli il luogo in cui immaginarti per concentrarti</p>
-            </div>
-            <div class="fp-rooms" id="fp-rooms"><!-- generated --></div>
-        </div>
-
-        <!-- Immersive room -->
-        <div class="fp-room" id="fp-room" style="display:none">
-            <div class="fp-scene" id="fp-scene"></div>
-            <div class="fp-vignette"></div>
-            <div class="fp-room-content">
-                <div class="fp-room-top">
-                    <button class="fp-back" onclick="exitRoom()">← Cambia stanza</button>
-                    <button class="fp-exit-room" onclick="closeFocusPocus()">Esci ✕</button>
-                </div>
-                <div class="fp-center">
-                    <div class="fp-room-name" id="fp-room-name"></div>
-                    <div class="fp-timer" id="fp-timer">25:00</div>
-                    <div class="fp-times">
-                        <button class="fp-time-btn active" data-min="25" onclick="fpSetTime(25)">25 min</button>
-                        <button class="fp-time-btn" data-min="50" onclick="fpSetTime(50)">50 min</button>
-                        <button class="fp-time-btn" data-min="5" onclick="fpSetTime(5)">Pausa 5</button>
-                    </div>
-                    <button class="fp-start" id="fp-start" onclick="fpToggle()">▶ Inizia</button>
-                    <div class="fp-quote" id="fp-quote"></div>
-                </div>
-                <div class="fp-sound-toggle">
-                    <button id="fp-sound-btn" onclick="fpToggleSound()" title="Suono on/off">🔊 Suono</button>
-                </div>
-            </div>
-        </div>
+<!-- FAQ -->
+<section id="faq">
+  <div class="wrap">
+    <div class="center" style="max-width:640px">
+      <div class="tag">DOMANDE</div>
+      <h2>Le cose che ci chiedono<br><em>più spesso</em>.</h2>
     </div>
-
-    <!-- FLOATING FEEDBACK WIDGET -->
-    <div class="feedback-fab" id="feedback-fab" onclick="openFeedbackWidget()">
-        <span class="feedback-fab-icon">💬</span>
-        <span class="feedback-fab-pulse"></span>
-        <span class="feedback-fab-label">Feedback</span>
-        <span class="feedback-fab-badge">BETA</span>
+    <div class="faq">
+      <details open>
+        <summary>Quanto costa?</summary>
+        <p>Niente. Studyo è gratis e lo resterà nella sua parte principale: lobby, timer, presenza, chat, video, quiz e Focus Pocus. Più avanti valuteremo funzioni extra opzionali, ma quello che c'è oggi resta gratuito.</p>
+      </details>
+      <details>
+        <summary>Serve installare qualcosa?</summary>
+        <p>No, funziona nel browser. Se vuoi, dal telefono puoi aggiungerlo alla schermata home e si comporta come un'app vera (si apre a schermo intero e funziona anche offline per le parti non in tempo reale).</p>
+      </details>
+      <details>
+        <summary>La mia università non c'è / manca il mio esame</summary>
+        <p>Puoi scrivere il nome del tuo ateneo a mano e le lobby delle materie principali ci sono già. Stiamo aggiungendo i piani di studio ateneo per ateneo, partendo da UNIMORE. Se manca il tuo esame, segnalacelo dal pulsante feedback nell'app: è il modo più veloce per farlo aggiungere.</p>
+      </details>
+      <details>
+        <summary>Devo per forza accendere la webcam?</summary>
+        <p>No. La videochiamata è una possibilità, non un obbligo: molti studiano solo con la presenza e la chat. Quando entri in video decidi tu se attivare camera e microfono.</p>
+      </details>
+      <details>
+        <summary>Chi c'è dietro?</summary>
+        <p>Due studenti dell'Università di Modena e Reggio Emilia, Francesco e Davide. Studyo è in beta aperta: lo stiamo costruendo mentre lo usiamo, e i feedback di chi lo prova finiscono davvero nelle versioni successive.</p>
+      </details>
+      <details>
+        <summary>I miei dati sono al sicuro?</summary>
+        <p>L'accesso avviene tramite Google o email con Firebase Authentication. Salviamo solo quello che serve a far funzionare l'app: nome, ateneo o scuola, corso e i tuoi progressi di studio. Niente pubblicità e nessuna vendita di dati a terzi.</p>
+      </details>
     </div>
+  </div>
+</section>
 
-    <!-- FEEDBACK WELCOME BANNER (appears on first visit) -->
-    <div class="feedback-welcome" id="feedback-welcome" style="display:none">
-        <div class="feedback-welcome-content">
-            <button class="feedback-welcome-close" onclick="closeFeedbackWelcome()">&times;</button>
-            <div class="feedback-welcome-emoji">🙏</div>
-            <p class="feedback-welcome-title">Grazie per provare Studyo!</p>
-            <p class="feedback-welcome-text" id="feedback-welcome-text">Siamo in fase beta e il tuo feedback vale tantissimo.</p>
-            <p class="feedback-welcome-question" id="feedback-welcome-question"></p>
-            <button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="closeFeedbackWelcome();openFeedbackWidget()">💬 Lascia un feedback</button>
-        </div>
+<!-- FINAL CTA -->
+<section class="final">
+  <div class="wrap">
+    <h2>La prossima sessione<br>non farla <em>da solo</em>.</h2>
+    <p class="sec-lede center">Entra, scegli la tua materia e vedi chi c'è. Ci vogliono trenta secondi.</p>
+    <a href="app.html" class="btn btn-primary btn-lg">Entra su Studyo →</a>
+    <p class="note" style="margin-top:22px">Gratis · Nessuna carta richiesta · Beta aperta</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <div style="display:flex;align-items:center;gap:9px">
+      <svg width="20" height="20" viewBox="0 0 32 32" fill="none">
+        <rect width="32" height="32" rx="8" fill="url(#g2)"/>
+        <path d="M20.4 11.2c-.9-.85-2.4-1.4-4.1-1.4-2.7 0-4.5 1.3-4.5 3.3 0 1.9 1.4 2.8 3.9 3.4 2.2.5 2.9.9 2.9 1.8 0 .9-.9 1.5-2.4 1.5-1.6 0-3-.6-4-1.6" stroke="#fff" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+        <defs><linearGradient id="g2" x1="0" y1="0" x2="32" y2="32">
+          <stop stop-color="#7C6BF0"/><stop offset="1" stop-color="#FF6B6B"/>
+        </linearGradient></defs>
+      </svg>
+      <span>Studyo — Modena, Italia</span>
     </div>
+    <div style="display:flex;gap:24px">
+      <a href="app.html">Entra</a>
+      <a href="https://github.com/CATAAA06/Studyo" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</footer>
 
-    <!-- Firebase SDK (CDN) -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+// nav border on scroll
+const nav = document.getElementById('nav');
+addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 8), {passive:true});
 
-    <script src="js/data.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/firebase-config.js"></script>
+// starfield in the Focus Pocus band
+const sky = document.getElementById('stars');
+if (sky) {
+  let html = '';
+  for (let i = 0; i < 44; i++) {
+    html += `<span class="star" style="left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${(Math.random()*4).toFixed(2)}s"></span>`;
+  }
+  sky.innerHTML = html;
+}
 
-    <!-- PWA: register service worker (offline support + installability) -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('[Studyo] Service worker registrato:', reg.scope))
-                    .catch(err => console.warn('[Studyo] Service worker non registrato:', err));
-            });
-        }
-    </script>
+// reveal on scroll
+const io = new IntersectionObserver((es) => {
+  es.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'none';
+      io.unobserve(e.target);
+    }
+  });
+}, {threshold: .12});
+document.querySelectorAll('section .card, section .step, section .aud-card').forEach((el, i) => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(14px)';
+  el.style.transition = `opacity .5s ease ${(i%3)*70}ms, transform .5s cubic-bezier(.16,1,.3,1) ${(i%3)*70}ms`;
+  io.observe(el);
+});
+</script>
 </body>
 </html>
