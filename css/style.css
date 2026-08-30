@@ -3,35 +3,41 @@
    ============================================= */
 
 :root {
-    --primary: #6C5CE7;
-    --primary-light: #A29BFE;
-    --primary-dark: #5A4BD1;
-    --accent: #FF6B6B;
-    --accent-light: #FF8E8E;
-    --success: #00B894;
-    --warning: #FDCB6E;
-    --danger: #E17055;
-    --bg: #0F0E17;
-    --bg-card: #1A1929;
-    --bg-card-hover: #222137;
-    --bg-input: #252438;
-    --text: #FFFFFE;
-    --text-secondary: #A7A7BE;
-    --text-muted: #6B6B80;
-    --border: #2D2B42;
-    --glow: rgba(108, 92, 231, 0.3);
-    --radius: 16px;
-    --radius-sm: 10px;
-    --radius-xs: 8px;
-    --shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
-    /* Layered shadow scale for depth */
-    --shadow-sm: 0 1px 2px rgba(0,0,0,0.25), 0 2px 6px rgba(0,0,0,0.18);
-    --shadow-md: 0 4px 12px rgba(0,0,0,0.28), 0 8px 24px rgba(0,0,0,0.22);
-    --shadow-lg: 0 12px 28px rgba(0,0,0,0.34), 0 20px 48px rgba(0,0,0,0.28);
-    --shadow-primary: 0 8px 24px rgba(108, 92, 231, 0.35);
-    --ring: 0 0 0 3px rgba(108, 92, 231, 0.35);
-    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Electric lime on true black — high contrast, keeps you awake.
+       Deliberately NOT the indigo/violet palette every generator produces. */
+    --primary: #C8F031;
+    --primary-light: #DDFF70;
+    --primary-dark: #A5C920;
+    --on-primary: #0A0A0B;          /* text that sits ON the lime */
+    --accent: #FF5A1F;
+    --accent-light: #FF7A45;
+    --success: #22C55E;
+    --warning: #FFB020;
+    --danger: #FF4D4D;
+    --bg: #0A0A0B;                  /* neutral black, no blue/violet cast */
+    --bg-card: #141416;
+    --bg-card-hover: #1C1C20;
+    --bg-input: #1A1A1D;
+    --text: #FFFFFF;
+    --text-secondary: #A1A1A6;      /* neutral grey, not lavender */
+    --text-muted: #6E6E73;
+    --border: #2A2A2E;
+    --border-strong: #3A3A40;
+    --glow: rgba(200, 240, 49, 0.22);
+    /* Tighter radii — less "bubbly template", more product */
+    --radius: 10px;
+    --radius-sm: 8px;
+    --radius-xs: 6px;
+    --shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.5);
+    --shadow-md: 0 4px 14px rgba(0,0,0,0.55);
+    --shadow-lg: 0 16px 40px rgba(0,0,0,0.65);
+    --shadow-primary: 0 4px 16px rgba(200, 240, 49, 0.22);
+    --ring: 0 0 0 3px rgba(200, 240, 49, 0.4);
+    --transition: all 0.16s cubic-bezier(0.4, 0, 0.2, 1);
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --font-display: 'Bricolage Grotesque', 'Manrope', sans-serif;
+    --font-body: 'Manrope', -apple-system, sans-serif;
 }
 
 * {
@@ -43,7 +49,7 @@
 html { scroll-behavior: smooth; }
 
 body {
-    font-family: 'Inter', -apple-system, sans-serif;
+    font-family: var(--font-body);
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
@@ -55,8 +61,8 @@ body {
 
 /* Branded text selection */
 ::selection {
-    background: rgba(108, 92, 231, 0.4);
-    color: #fff;
+    background: var(--primary);
+    color: var(--on-primary);
 }
 
 /* Consistent, accessible focus rings (keyboard only) */
@@ -2346,6 +2352,160 @@ textarea:focus {
 
 @media (prefers-reduced-motion: reduce) {
     .page, .card, .btn, .stat-card, .tool-item { animation: none !important; transition: none !important; }
+}
+
+/* =============================================
+   IDENTITY LAYER
+   Removes the generic "AI template" signals:
+   violet gradients, gradient text, soft glows,
+   uniform pill-shaped everything.
+   ============================================= */
+
+/* Display type with actual character */
+h1, h2, h3, .sidebar-title, .fp-title, .ob-title,
+.timer-num, .fp-timer, .stat-value, .home-stat-value {
+    font-family: var(--font-display);
+    letter-spacing: -0.03em;
+    font-weight: 800;
+}
+
+/* Gradient text → solid lime. Gradient-clipped headings are THE tell. */
+.highlight,
+.logo-text {
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    -webkit-text-fill-color: currentColor !important;
+    color: var(--primary) !important;
+}
+
+/* Primary button: solid lime block, dark text, no glow-blur */
+.btn-primary,
+.btn.btn-primary {
+    background: var(--primary) !important;
+    color: var(--on-primary) !important;
+    font-weight: 700;
+    border: 1px solid var(--primary);
+    box-shadow: none !important;
+}
+.btn-primary:hover,
+.btn.btn-primary:hover {
+    background: var(--primary-light) !important;
+    border-color: var(--primary-light);
+    transform: translateY(-1px);
+}
+.btn-accent { background: var(--accent); color: #fff; }
+.btn-accent:hover { background: var(--accent-light); }
+
+/* Cards: crisp edges, no inner sheen gradient */
+.card {
+    background-image: none !important;
+    border-color: var(--border);
+}
+.card:hover { border-color: var(--border-strong); }
+
+/* Active channel: solid lime marker instead of violet wash */
+.sidebar-lobby.active {
+    background: rgba(200, 240, 49, 0.14) !important;
+    color: #fff !important;
+}
+.sidebar-lobby.active::before {
+    background: var(--primary) !important;
+}
+.sidebar-lobby.active .sidebar-lobby-count {
+    background: var(--primary) !important;
+    color: var(--on-primary) !important;
+    font-weight: 700;
+}
+.sidebar-filter.active {
+    background: var(--primary) !important;
+    color: var(--on-primary) !important;
+    border-color: var(--primary) !important;
+    font-weight: 700;
+}
+
+/* Section labels: lime, uppercase, tracked */
+.sidebar-section-label { color: var(--primary) !important; }
+.sidebar-corso-label { color: var(--primary) !important; }
+
+/* Level / XP */
+.level-badge {
+    background: var(--primary);
+    color: var(--on-primary);
+    font-weight: 700;
+    border-radius: 6px;
+}
+.profile-xp-fill,
+.timer-bar,
+.sidebar-challenge-fill,
+.ob-bar span {
+    background: var(--primary) !important;
+}
+.profile-xp-text { color: var(--on-primary); text-shadow: none; }
+.stat-value, .home-stat-value { color: var(--primary) !important; }
+.activity-xp, .sidebar-challenge-reward { color: var(--primary) !important; }
+
+/* Focus CTA: flat lime block, no aurora glow */
+.focus-cta {
+    background: var(--primary) !important;
+    border: 1px solid var(--primary) !important;
+    color: var(--on-primary);
+    box-shadow: none !important;
+}
+.focus-cta-glow { display: none !important; }
+.focus-cta-sub { color: rgba(10,10,11,.72) !important; }
+.focus-cta-btn {
+    background: var(--on-primary) !important;
+    color: var(--primary) !important;
+    border: none !important;
+    font-weight: 700;
+}
+.focus-cta:hover .focus-cta-btn { background: #000 !important; }
+
+/* Badges earned */
+.badge-item.earned {
+    background: rgba(200, 240, 49, 0.12);
+    box-shadow: inset 0 0 0 1px rgba(200, 240, 49, 0.35);
+}
+
+/* Feedback FAB: lime, flat */
+.feedback-fab {
+    background: var(--primary) !important;
+    color: var(--on-primary) !important;
+}
+.feedback-fab-badge { background: var(--accent) !important; color: #fff !important; }
+
+/* Video CTA uses the warm accent, not a violet gradient */
+.btn-video-cta {
+    background: var(--accent) !important;
+    border: 1px solid var(--accent) !important;
+    box-shadow: none !important;
+}
+.btn-video-cta:hover { background: var(--accent-light) !important; }
+
+/* Onboarding + Focus picker chrome */
+.ob-visual { background: #111113 !important; }
+.ob-dot.on { background: var(--primary); }
+.ob-scene-lobby .ob-row.on {
+    background: rgba(200,240,49,.16) !important;
+    border-color: rgba(200,240,49,.45) !important;
+}
+.fp-title {
+    background: none !important;
+    -webkit-text-fill-color: currentColor !important;
+    color: var(--primary) !important;
+}
+.tag, .fp-sub strong { color: var(--primary) !important; }
+
+/* Quiz correct state */
+.quiz-option.correct {
+    border-color: var(--primary) !important;
+    background: rgba(200, 240, 49, 0.14) !important;
+}
+
+/* Live presence dot stays green (semantic), everything else neutral */
+.student-you {
+    background: var(--primary) !important;
+    color: var(--on-primary) !important;
 }
 
 /* =============================================

@@ -1534,7 +1534,7 @@ function setupGlobalUX() {
    ============================================= */
 
 function celebrate() {
-    const colors = ['#6C5CE7', '#A29BFE', '#FF6B6B', '#FDCB6E', '#00B894'];
+    const colors = ['#C8F031', '#DDFF70', '#FF5A1F', '#FFB020', '#FFFFFF'];
     const container = document.createElement('div');
     container.className = 'confetti-container';
     document.body.appendChild(container);

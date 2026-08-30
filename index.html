@@ -6,7 +6,6 @@
 <title>Studyo — Studiare insieme, anche quando siete lontani</title>
 
 <meta name="description" content="Studyo è il posto dove gli studenti italiani studiano insieme: lobby per materia, sessioni in video, timer condivisi e progressi che si vedono. Università, superiori e preparazione TOLC. Gratis.">
-<meta name="author" content="Studyo">
 <link rel="canonical" href="https://cataaa06.github.io/Studyo/">
 
 <meta property="og:type" content="website">
@@ -17,248 +16,191 @@
 <meta property="og:locale" content="it_IT">
 <meta name="twitter:card" content="summary">
 
-<meta name="theme-color" content="#0F0E17">
+<meta name="theme-color" content="#0A0A0B">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --ink:#0B0A12;
-  --ink-2:#12111C;
-  --surface:#16151F;
-  --line:#262433;
-  --text:#F5F4F8;
-  --muted:#A3A0B4;
-  --dim:#6F6C82;
-  --violet:#7C6BF0;
-  --violet-soft:#A79CF7;
-  --coral:#FF6B6B;
-  --green:#3DD68C;
-  --maxw:1120px;
-  --r:14px;
+  --ink:#0A0A0B;
+  --ink-2:#141416;
+  --surface:#161619;
+  --line:#26262B;
+  --line-2:#37373E;
+  --text:#FFFFFF;
+  --muted:#A1A1A6;
+  --dim:#6E6E73;
+  --lime:#C8F031;
+  --lime-2:#DDFF70;
+  --orange:#FF5A1F;
+  --maxw:1140px;
+  --display:'Bricolage Grotesque','Manrope',sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
-  background:var(--ink);
-  color:var(--text);
-  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
-  line-height:1.6;
-  -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
+  background:var(--ink);color:var(--text);
+  font-family:'Manrope',-apple-system,sans-serif;
+  line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;
 }
-::selection{background:rgba(124,107,240,.4)}
+::selection{background:var(--lime);color:var(--ink)}
 a{color:inherit;text-decoration:none}
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
-.serif{font-family:'Instrument Serif',Georgia,serif;font-weight:400;letter-spacing:-.01em}
-.ital{font-style:italic}
+h1,h2,h3,.disp{font-family:var(--display);font-weight:800;letter-spacing:-.035em;line-height:1.02}
 
 /* ---------- NAV ---------- */
-nav{
-  position:sticky;top:0;z-index:50;
-  background:rgba(11,10,18,.82);
-  backdrop-filter:blur(14px);
-  border-bottom:1px solid transparent;
-  transition:border-color .3s ease;
-}
-nav.scrolled{border-bottom-color:var(--line)}
-.nav-in{display:flex;align-items:center;justify-content:space-between;height:68px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;letter-spacing:-.01em}
-.brand svg{display:block}
-.nav-links{display:flex;align-items:center;gap:30px}
-.nav-links a{color:var(--muted);font-size:14.5px;font-weight:500;transition:color .2s}
-.nav-links a:hover{color:var(--text)}
-.btn{
-  display:inline-flex;align-items:center;gap:8px;
-  border-radius:999px;font-weight:600;font-family:inherit;
-  cursor:pointer;border:1px solid transparent;
-  transition:transform .18s cubic-bezier(.16,1,.3,1),background .2s,border-color .2s,box-shadow .2s;
-}
-.btn-primary{
-  background:var(--violet);color:#fff;
-  padding:11px 22px;font-size:15px;
-  box-shadow:0 6px 20px rgba(124,107,240,.32);
-}
-.btn-primary:hover{background:#8a7bf5;transform:translateY(-1px);box-shadow:0 10px 28px rgba(124,107,240,.42)}
-.btn-ghost{
-  background:transparent;color:var(--text);
-  border-color:var(--line);padding:11px 22px;font-size:15px;
-}
-.btn-ghost:hover{border-color:#3a3750;background:rgba(255,255,255,.03)}
-.btn-lg{padding:15px 32px;font-size:16.5px}
-.nav-cta{display:flex;align-items:center;gap:14px}
-.menu-btn{display:none;background:none;border:none;color:var(--text);font-size:22px;cursor:pointer}
+nav{position:sticky;top:0;z-index:60;background:rgba(10,10,11,.9);backdrop-filter:blur(10px);border-bottom:1px solid transparent;transition:border-color .25s}
+nav.on{border-bottom-color:var(--line)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:70px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;font-size:19px;letter-spacing:-.03em}
+.nav-links{display:flex;gap:30px}
+.nav-links a{color:var(--muted);font-size:15px;font-weight:600;transition:color .18s}
+.nav-links a:hover{color:var(--lime)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Manrope',sans-serif;font-weight:700;cursor:pointer;border:1px solid transparent;transition:transform .16s,background .18s,color .18s,border-color .18s}
+.btn-lime{background:var(--lime);color:var(--ink);padding:12px 22px;font-size:15px;border-radius:8px;border-color:var(--lime)}
+.btn-lime:hover{background:var(--lime-2);border-color:var(--lime-2);transform:translateY(-1px)}
+.btn-out{background:transparent;color:var(--text);border-color:var(--line-2);padding:12px 22px;font-size:15px;border-radius:8px}
+.btn-out:hover{border-color:var(--lime);color:var(--lime)}
+.btn-xl{padding:17px 34px;font-size:17px;border-radius:9px}
 
 /* ---------- HERO ---------- */
-header{position:relative;padding:96px 0 84px;overflow:hidden}
-.aura{
-  position:absolute;top:-320px;left:50%;transform:translateX(-50%);
-  width:1000px;height:640px;pointer-events:none;
-  background:radial-gradient(ellipse at center,rgba(124,107,240,.22),transparent 62%);
-  filter:blur(10px);
-}
-.hero{position:relative;max-width:790px}
-.eyebrow{
-  display:inline-flex;align-items:center;gap:9px;
-  background:rgba(124,107,240,.1);
-  border:1px solid rgba(124,107,240,.28);
-  color:var(--violet-soft);
-  padding:6px 15px;border-radius:999px;
-  font-size:13px;font-weight:600;margin-bottom:26px;
-}
-.dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(61,214,140,.6);animation:p 2s infinite}
-@keyframes p{70%{box-shadow:0 0 0 7px rgba(61,214,140,0)}100%{box-shadow:0 0 0 0 rgba(61,214,140,0)}}
-h1{
-  font-family:'Instrument Serif',Georgia,serif;font-weight:400;
-  font-size:clamp(42px,6.4vw,74px);line-height:1.04;
-  letter-spacing:-.02em;margin-bottom:24px;
-}
-h1 em{font-style:italic;color:var(--violet-soft)}
-.lede{font-size:clamp(17px,2vw,20px);color:var(--muted);max-width:610px;margin-bottom:36px}
-.hero-cta{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
-.note{font-size:13.5px;color:var(--dim);margin-top:18px}
+header{padding:88px 0 56px;position:relative}
+.kicker{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line-2);color:var(--muted);padding:6px 14px;border-radius:6px;font-size:13px;font-weight:700;margin-bottom:30px;letter-spacing:.01em}
+.live{width:7px;height:7px;border-radius:50%;background:var(--lime);animation:b 1.8s infinite}
+@keyframes b{0%,100%{opacity:1}50%{opacity:.25}}
+h1{font-size:clamp(48px,8.6vw,104px);margin-bottom:26px}
+.h1-lime{color:var(--lime)}
+.lede{font-size:clamp(17px,2vw,20px);color:var(--muted);max-width:600px;margin-bottom:34px}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.micro{font-size:13.5px;color:var(--dim);margin-top:16px}
 
-/* ---------- APP FRAME ---------- */
-.showcase{position:relative;margin-top:72px}
-.frame{
-  border:1px solid var(--line);border-radius:16px;
-  background:var(--ink-2);overflow:hidden;
-  box-shadow:0 40px 90px rgba(0,0,0,.55);
-}
-.frame-bar{
-  display:flex;align-items:center;gap:7px;
-  padding:12px 16px;border-bottom:1px solid var(--line);
-  background:#100F19;
-}
-.tl{width:11px;height:11px;border-radius:50%;background:#2f2c40}
-.frame-url{
-  margin-left:12px;font-size:12.5px;color:var(--dim);
-  background:#0c0b14;border:1px solid var(--line);
-  padding:4px 12px;border-radius:6px;
-}
-.mock{display:grid;grid-template-columns:210px 1fr 250px;min-height:400px}
-.mock-col{padding:18px 16px}
-.mock-side{border-right:1px solid var(--line);background:#131220}
-.mock-h{font-size:10.5px;letter-spacing:.09em;color:var(--dim);font-weight:700;margin:16px 0 10px}
-.mock-h:first-child{margin-top:0}
-.chan{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:7px;font-size:13.5px;color:var(--muted);margin-bottom:2px}
-.chan.on{background:rgba(124,107,240,.16);color:#fff;font-weight:600}
-.chan .n{margin-left:auto;font-size:11px;color:var(--dim);background:rgba(255,255,255,.06);padding:1px 7px;border-radius:20px}
-.mock-main{background:#0f0e18}
-.mock-title{font-size:19px;font-weight:700;letter-spacing:-.01em}
-.mock-sub{font-size:13px;color:var(--dim);display:flex;align-items:center;gap:7px;margin-top:5px}
-.timer-card{
-  margin-top:18px;border:1px solid var(--line);border-radius:12px;
-  background:linear-gradient(160deg,#1a1830,#131120);
-  padding:26px;text-align:center;
-}
-.timer-num{font-size:52px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
-.timer-lbl{font-size:12.5px;color:var(--dim);margin-top:2px}
-.bar{height:4px;border-radius:3px;background:#221f33;margin-top:18px;overflow:hidden}
-.bar span{display:block;height:100%;width:62%;border-radius:3px;background:linear-gradient(90deg,var(--violet),var(--coral))}
-.pill-row{display:flex;gap:7px;justify-content:center;margin-top:16px;flex-wrap:wrap}
-.pill{font-size:11.5px;color:var(--muted);border:1px solid var(--line);padding:4px 12px;border-radius:999px}
-.mock-right{border-left:1px solid var(--line);background:#131220}
-.who{display:flex;align-items:center;gap:9px;margin-bottom:13px}
-.av{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;font-size:13px;background:#221f36}
-.who-n{font-size:13px;font-weight:600}
-.who-s{font-size:11px;color:var(--green);display:flex;align-items:center;gap:5px}
-.who-s.off{color:var(--dim)}
-.mini{width:5px;height:5px;border-radius:50%;background:var(--green)}
+/* metrics strip */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:12px;margin-top:60px;overflow:hidden;background:var(--ink-2)}
+.metric{padding:24px;border-right:1px solid var(--line)}
+.metric:last-child{border-right:none}
+.metric b{display:block;font-family:var(--display);font-size:34px;font-weight:800;letter-spacing:-.04em;color:var(--lime);line-height:1}
+.metric span{display:block;font-size:13px;color:var(--dim);margin-top:7px;font-weight:600}
+
+/* ---------- APP SHOT ---------- */
+.shot{margin-top:26px}
+.frame{border:1px solid var(--line);border-radius:12px;background:var(--ink-2);overflow:hidden}
+.fbar{display:flex;align-items:center;gap:7px;padding:12px 16px;border-bottom:1px solid var(--line);background:#0F0F11}
+.tl{width:10px;height:10px;border-radius:50%;background:#2c2c33}
+.furl{margin-left:10px;font-size:12.5px;color:var(--dim);font-weight:600}
+.mock{display:grid;grid-template-columns:196px 1fr 234px;min-height:380px}
+.mc{padding:16px}
+.mside{border-right:1px solid var(--line);background:#111113}
+.mh{font-size:10.5px;letter-spacing:.11em;color:var(--dim);font-weight:800;margin:14px 0 9px}
+.mh:first-child{margin-top:0}
+.ch{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:6px;font-size:13.5px;color:var(--muted);margin-bottom:2px;font-weight:600}
+.ch.on{background:rgba(200,240,49,.14);color:#fff;position:relative}
+.ch.on:before{content:'';position:absolute;left:0;top:20%;height:60%;width:3px;background:var(--lime);border-radius:0 3px 3px 0}
+.ch b{margin-left:auto;font-size:11px;background:rgba(255,255,255,.07);padding:1px 7px;border-radius:20px;color:var(--dim)}
+.ch.on b{background:var(--lime);color:var(--ink)}
+.mmain{background:#0C0C0E}
+.mtitle{font-family:var(--display);font-size:22px;font-weight:800;letter-spacing:-.03em}
+.msub{font-size:13px;color:var(--dim);display:flex;align-items:center;gap:7px;margin-top:6px;font-weight:600}
+.gdot{width:6px;height:6px;border-radius:50%;background:#22C55E}
+.tcard{margin-top:16px;border:1px solid var(--line);border-radius:10px;background:#111113;padding:26px;text-align:center}
+.tnum{font-family:var(--display);font-size:56px;font-weight:800;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums}
+.tlbl{font-size:12px;color:var(--dim);margin-top:4px;font-weight:600;letter-spacing:.04em}
+.tbar{height:4px;background:#232328;border-radius:2px;margin-top:18px;overflow:hidden}
+.tbar span{display:block;height:100%;width:64%;background:var(--lime)}
+.chips{display:flex;gap:6px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.chip{font-size:11.5px;color:var(--muted);border:1px solid var(--line);padding:4px 11px;border-radius:6px;font-weight:600}
+.mright{border-left:1px solid var(--line);background:#111113}
+.pr{display:flex;align-items:center;gap:9px;margin-bottom:13px}
+.pav{width:28px;height:28px;border-radius:7px;display:grid;place-items:center;font-size:13px;background:#1e1e23}
+.pn{font-size:13px;font-weight:700}
+.ps{font-size:11px;color:#22C55E;display:flex;align-items:center;gap:5px;font-weight:600}
+.ps.off{color:var(--dim)}
 
 /* ---------- SECTIONS ---------- */
-section{padding:96px 0;position:relative}
-.tag{font-size:12.5px;font-weight:700;letter-spacing:.1em;color:var(--violet-soft);margin-bottom:14px}
-h2{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:clamp(32px,4.4vw,46px);line-height:1.14;letter-spacing:-.02em;margin-bottom:18px}
-h2 em{font-style:italic;color:var(--violet-soft)}
-.sec-lede{color:var(--muted);font-size:17px;max-width:640px}
-.center{text-align:center;margin:0 auto}
-.center .sec-lede{margin-inline:auto}
+section{padding:104px 0}
+.tag{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--lime);margin-bottom:16px}
+h2{font-size:clamp(34px,5.2vw,60px);margin-bottom:20px}
+.slede{color:var(--muted);font-size:17.5px;max-width:620px}
 
-/* origin story */
-.story{border-left:2px solid var(--violet);padding-left:30px;max-width:700px}
-.story p{color:var(--muted);font-size:17.5px;margin-bottom:16px}
-.story p:last-child{margin-bottom:0}
-.story strong{color:var(--text);font-weight:600}
-.sign{display:flex;align-items:center;gap:12px;margin-top:26px;font-size:14px;color:var(--dim)}
+/* story */
+.story{max-width:760px}
+.story p{font-size:19px;color:var(--muted);margin-bottom:18px}
+.story p strong{color:var(--text);font-weight:700}
+.quote{border-left:3px solid var(--lime);padding-left:24px;margin:32px 0;font-family:var(--display);font-size:24px;font-weight:600;letter-spacing:-.02em;line-height:1.3;color:var(--text)}
+.byline{font-size:14px;color:var(--dim);font-weight:600}
 
 /* steps */
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:52px}
-.step{position:relative;padding-top:26px;border-top:1px solid var(--line)}
-.step-n{font-family:'Instrument Serif',serif;font-size:34px;color:var(--violet-soft);line-height:1;margin-bottom:12px}
-.step h3{font-size:17.5px;font-weight:700;margin-bottom:9px;letter-spacing:-.01em}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:54px}
+.step{background:var(--ink);padding:34px 28px}
+.sn{font-family:var(--display);font-size:15px;font-weight:800;color:var(--lime);margin-bottom:16px;letter-spacing:.06em}
+.step h3{font-size:21px;margin-bottom:10px}
 .step p{color:var(--muted);font-size:15px}
 
 /* features */
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:52px}
-.card{
-  background:var(--surface);border:1px solid var(--line);
-  border-radius:var(--r);padding:26px;
-  transition:transform .22s cubic-bezier(.16,1,.3,1),border-color .22s;
-}
-.card:hover{transform:translateY(-3px);border-color:#3a3750}
-.card .ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;margin-bottom:16px;background:rgba(124,107,240,.13);font-size:18px}
-.card h3{font-size:16.5px;font-weight:700;margin-bottom:8px;letter-spacing:-.01em}
-.card p{color:var(--muted);font-size:14.5px}
-.span2{grid-column:span 2}
+.feats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:54px}
+.feat{border:1px solid var(--line);border-radius:12px;padding:28px;background:var(--surface);transition:border-color .2s,transform .2s}
+.feat:hover{border-color:var(--line-2);transform:translateY(-2px)}
+.feat h3{font-size:18px;margin-bottom:9px;letter-spacing:-.02em}
+.feat p{color:var(--muted);font-size:14.5px}
+.fnum{font-family:var(--display);font-size:13px;font-weight:800;color:var(--lime);letter-spacing:.08em;margin-bottom:14px}
 
-/* focus feature */
-.focus-band{
-  border:1px solid rgba(124,107,240,.3);border-radius:20px;
-  background:linear-gradient(135deg,#1d1638 0%,#241a44 45%,#2e1c3d 100%);
-  padding:56px;position:relative;overflow:hidden;
-}
-.stars{position:absolute;inset:0;pointer-events:none}
-.star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;animation:tw 4s infinite ease-in-out}
-@keyframes tw{0%,100%{opacity:.15}50%{opacity:.9}}
-.focus-in{position:relative;max-width:560px}
-.rooms{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px}
-.room{font-size:13.5px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);padding:7px 15px;border-radius:999px}
+/* focus band */
+.band{border:1px solid var(--line);border-radius:14px;background:#0E0E10;padding:0;overflow:hidden;display:grid;grid-template-columns:1.1fr .9fr}
+.band-l{padding:52px}
+.band-r{position:relative;background:linear-gradient(165deg,#12131c,#0a0a0f);border-left:1px solid var(--line);min-height:320px}
+.sky{position:absolute;inset:0}
+.sky span{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;animation:tw 3.5s infinite}
+@keyframes tw{0%,100%{opacity:.14}50%{opacity:.95}}
+.band-timer{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.band-timer b{display:block;font-family:var(--display);font-size:56px;font-weight:800;letter-spacing:-.05em}
+.band-timer span{font-size:12.5px;color:var(--dim);font-weight:600;letter-spacing:.06em}
+.rooms{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.room{font-size:13.5px;border:1px solid var(--line-2);padding:7px 13px;border-radius:6px;color:var(--muted);font-weight:600}
 
 /* audience */
-.aud{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:52px}
-.aud-card{border:1px solid var(--line);border-radius:var(--r);padding:28px;background:var(--surface)}
-.aud-card h3{font-size:17px;font-weight:700;margin-bottom:10px}
-.aud-card ul{list-style:none;margin-top:14px}
-.aud-card li{color:var(--muted);font-size:14.5px;padding:6px 0 6px 22px;position:relative}
-.aud-card li:before{content:'';position:absolute;left:0;top:14px;width:7px;height:7px;border-radius:50%;background:var(--violet)}
+.auds{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:54px}
+.aud{border:1px solid var(--line);border-radius:12px;padding:30px;background:var(--surface)}
+.aud h3{font-size:20px;margin-bottom:10px}
+.aud>p{color:var(--muted);font-size:14.5px}
+.aud ul{list-style:none;margin-top:16px}
+.aud li{color:var(--muted);font-size:14.5px;padding:7px 0 7px 20px;position:relative;font-weight:500}
+.aud li:before{content:'';position:absolute;left:0;top:15px;width:8px;height:2px;background:var(--lime)}
 
 /* faq */
-.faq{max-width:760px;margin:44px auto 0}
+.faq{max-width:780px;margin:48px auto 0}
 details{border-bottom:1px solid var(--line)}
-summary{
-  padding:22px 0;font-size:16.5px;font-weight:600;cursor:pointer;
-  list-style:none;display:flex;justify-content:space-between;gap:20px;align-items:center;
-}
+summary{padding:24px 0;font-size:17.5px;font-weight:700;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:20px;align-items:center;font-family:var(--display);letter-spacing:-.02em}
 summary::-webkit-details-marker{display:none}
-summary:after{content:'+';color:var(--violet-soft);font-size:22px;font-weight:400;transition:transform .2s}
-details[open] summary:after{transform:rotate(45deg)}
-details p{color:var(--muted);padding-bottom:22px;font-size:15.5px;max-width:660px}
+summary:after{content:'';width:12px;height:2px;background:var(--lime);flex-shrink:0;transition:transform .2s}
+details[open] summary:after{transform:rotate(90deg)}
+details p{color:var(--muted);padding-bottom:24px;font-size:16px;max-width:660px}
 
-/* cta */
-.final{text-align:center;padding:104px 0}
-.final h2{margin-bottom:20px}
-.final .sec-lede{margin:0 auto 34px}
+/* final */
+.final{text-align:center;padding:110px 0;border-top:1px solid var(--line)}
+.final h2{margin-bottom:22px}
+.final .slede{margin:0 auto 34px}
 
-/* footer */
-footer{border-top:1px solid var(--line);padding:44px 0;color:var(--dim);font-size:14px}
-.foot{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+footer{border-top:1px solid var(--line);padding:40px 0;color:var(--dim);font-size:14px}
+.foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center;font-weight:600}
 .foot a{color:var(--muted)}
-.foot a:hover{color:var(--text)}
+.foot a:hover{color:var(--lime)}
 
-@media(max-width:900px){
-  .mock{grid-template-columns:1fr}
-  .mock-side,.mock-right{display:none}
-  .steps,.grid,.aud{grid-template-columns:1fr}
-  .span2{grid-column:span 1}
+@media(max-width:980px){
+  .mock{grid-template-columns:1fr}.mside,.mright{display:none}
+  .band{grid-template-columns:1fr}.band-r{min-height:240px;border-left:none;border-top:1px solid var(--line)}
+  .band-l{padding:34px}
+}
+@media(max-width:820px){
+  .steps,.feats,.auds{grid-template-columns:1fr}
+  .metrics{grid-template-columns:repeat(2,1fr)}
+  .metric:nth-child(2){border-right:none}
+  .metric:nth-child(1),.metric:nth-child(2){border-bottom:1px solid var(--line)}
   .nav-links{display:none}
-  section{padding:72px 0}
-  .focus-band{padding:34px}
-  header{padding:64px 0 56px}
+  section{padding:74px 0}
+  header{padding:56px 0 40px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -269,211 +211,213 @@ footer{border-top:1px solid var(--line);padding:44px 0;color:var(--dim);font-siz
   <div class="wrap nav-in">
     <a href="#" class="brand">
       <svg width="26" height="26" viewBox="0 0 32 32" fill="none">
-        <rect width="32" height="32" rx="8" fill="url(#g)"/>
-        <path d="M20.4 11.2c-.9-.85-2.4-1.4-4.1-1.4-2.7 0-4.5 1.3-4.5 3.3 0 1.9 1.4 2.8 3.9 3.4 2.2.5 2.9.9 2.9 1.8 0 .9-.9 1.5-2.4 1.5-1.6 0-3-.6-4-1.6" stroke="#fff" stroke-width="2.4" stroke-linecap="round" fill="none"/>
-        <defs><linearGradient id="g" x1="0" y1="0" x2="32" y2="32">
-          <stop stop-color="#7C6BF0"/><stop offset="1" stop-color="#FF6B6B"/>
-        </linearGradient></defs>
+        <rect width="32" height="32" rx="7" fill="#C8F031"/>
+        <path d="M20.6 11c-.95-.9-2.5-1.45-4.25-1.45-2.8 0-4.65 1.35-4.65 3.4 0 1.95 1.45 2.9 4.05 3.5 2.3.55 3 .95 3 1.9 0 .95-.95 1.55-2.5 1.55-1.65 0-3.1-.6-4.15-1.65" stroke="#0A0A0B" stroke-width="2.6" stroke-linecap="round" fill="none"/>
       </svg>
       Studyo
     </a>
     <div class="nav-links">
-      <a href="#come-funziona">Come funziona</a>
-      <a href="#funzioni">Funzioni</a>
-      <a href="#per-chi">Per chi</a>
+      <a href="#come">Come funziona</a>
+      <a href="#dentro">Cosa c'è dentro</a>
+      <a href="#perchi">Per chi</a>
       <a href="#faq">FAQ</a>
     </div>
-    <div class="nav-cta">
-      <a href="app.html" class="btn btn-primary">Entra gratis</a>
-    </div>
+    <a href="app.html" class="btn btn-lime">Entra gratis</a>
   </div>
 </nav>
 
 <header>
-  <div class="aura"></div>
-  <div class="wrap hero">
-    <span class="eyebrow"><span class="dot"></span> Beta aperta · nato all'Università di Modena e Reggio Emilia</span>
-    <h1>Studiare da soli è<br>la parte <em>più difficile</em>.</h1>
-    <p class="lede">Studyo è il posto dove entri in una lobby della tua materia e trovi altri studenti che stanno studiando in questo momento. Timer condivisi, videochiamata, quiz e progressi che si vedono.</p>
-    <div class="hero-cta">
-      <a href="app.html" class="btn btn-primary btn-lg">Inizia a studiare →</a>
-      <a href="#come-funziona" class="btn btn-ghost btn-lg">Come funziona</a>
+  <div class="wrap">
+    <span class="kicker"><span class="live"></span> BETA APERTA · NATO A UNIMORE</span>
+    <h1>Studiare da soli<br>è la parte<br><span class="h1-lime">più difficile.</span></h1>
+    <p class="lede">Entra nella lobby della tua materia e trova altri studenti che stanno studiando <em>in questo momento</em>. Timer condivisi, video, quiz e progressi che si vedono.</p>
+    <div class="cta-row">
+      <a href="app.html" class="btn btn-lime btn-xl">Inizia a studiare</a>
+      <a href="#come" class="btn btn-out btn-xl">Come funziona</a>
     </div>
-    <p class="note">Gratis, per sempre. Bastano 30 secondi e il tuo account Google.</p>
-  </div>
+    <p class="micro">Gratis, per sempre. Trenta secondi e il tuo account Google.</p>
 
-  <div class="wrap showcase">
-    <div class="frame">
-      <div class="frame-bar">
-        <span class="tl"></span><span class="tl"></span><span class="tl"></span>
-        <span class="frame-url">studyo · Analisi Matematica 1</span>
-      </div>
-      <div class="mock">
-        <div class="mock-col mock-side">
-          <div class="mock-h">I TUOI ESAMI</div>
-          <div class="chan on"><span>📐</span> Analisi 1 <span class="n">14</span></div>
-          <div class="chan"><span>⚛️</span> Fisica 1 <span class="n">9</span></div>
-          <div class="chan"><span>💻</span> Informatica <span class="n">21</span></div>
-          <div class="chan"><span>📏</span> Algebra <span class="n">7</span></div>
-          <div class="mock-h">ESPLORA</div>
-          <div class="chan"><span>📊</span> Microecon. <span class="n">12</span></div>
-          <div class="chan"><span>⚖️</span> Dir. Privato <span class="n">15</span></div>
+    <div class="metrics">
+      <div class="metric"><b>100+</b><span>Materie e lobby</span></div>
+      <div class="metric"><b>6</b><span>Stanze Focus Pocus</span></div>
+      <div class="metric"><b>8</b><span>Percorsi TOLC</span></div>
+      <div class="metric"><b>0€</b><span>Costo, sempre</span></div>
+    </div>
+
+    <div class="shot">
+      <div class="frame">
+        <div class="fbar">
+          <span class="tl"></span><span class="tl"></span><span class="tl"></span>
+          <span class="furl">studyo / analisi-matematica-1</span>
         </div>
-        <div class="mock-col mock-main">
-          <div class="mock-title">Analisi Matematica 1</div>
-          <div class="mock-sub"><span class="mini"></span> 14 studenti online adesso</div>
-          <div class="timer-card">
-            <div class="timer-num">18:24</div>
-            <div class="timer-lbl">sessione in corso</div>
-            <div class="bar"><span></span></div>
-            <div class="pill-row">
-              <span class="pill">🎧 Pioggia</span>
-              <span class="pill">📹 Video</span>
-              <span class="pill">🃏 Flashcard</span>
+        <div class="mock">
+          <div class="mc mside">
+            <div class="mh">I TUOI ESAMI</div>
+            <div class="ch on"><span>📐</span> Analisi 1 <b>14</b></div>
+            <div class="ch"><span>⚛️</span> Fisica 1 <b>9</b></div>
+            <div class="ch"><span>💻</span> Informatica <b>21</b></div>
+            <div class="ch"><span>📏</span> Algebra <b>7</b></div>
+            <div class="mh">ESPLORA</div>
+            <div class="ch"><span>📊</span> Microecon. <b>12</b></div>
+            <div class="ch"><span>⚖️</span> Dir. Privato <b>15</b></div>
+          </div>
+          <div class="mc mmain">
+            <div class="mtitle">Analisi Matematica 1</div>
+            <div class="msub"><span class="gdot"></span> 14 studenti online adesso</div>
+            <div class="tcard">
+              <div class="tnum">18:24</div>
+              <div class="tlbl">SESSIONE IN CORSO</div>
+              <div class="tbar"><span></span></div>
+              <div class="chips">
+                <span class="chip">🎧 Pioggia</span>
+                <span class="chip">📹 Video</span>
+                <span class="chip">🃏 Flashcard</span>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="mock-col mock-right">
-          <div class="mock-h">IN LOBBY</div>
-          <div class="who"><span class="av">🎓</span><div><div class="who-n">Giulia</div><div class="who-s"><span class="mini"></span> sta studiando</div></div></div>
-          <div class="who"><span class="av">🧑‍💻</span><div><div class="who-n">Marco</div><div class="who-s"><span class="mini"></span> sta studiando</div></div></div>
-          <div class="who"><span class="av">✨</span><div><div class="who-n">Sara</div><div class="who-s"><span class="mini"></span> sta studiando</div></div></div>
-          <div class="who"><span class="av">🔥</span><div><div class="who-n">Andrea</div><div class="who-s off">in pausa</div></div></div>
+          <div class="mc mright">
+            <div class="mh">IN LOBBY</div>
+            <div class="pr"><span class="pav">🎓</span><div><div class="pn">Giulia</div><div class="ps"><span class="gdot"></span> sta studiando</div></div></div>
+            <div class="pr"><span class="pav">🧑‍💻</span><div><div class="pn">Marco</div><div class="ps"><span class="gdot"></span> sta studiando</div></div></div>
+            <div class="pr"><span class="pav">✨</span><div><div class="pn">Sara</div><div class="ps"><span class="gdot"></span> sta studiando</div></div></div>
+            <div class="pr"><span class="pav">🔥</span><div><div class="pn">Andrea</div><div class="ps off">in pausa</div></div></div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </header>
 
-<!-- ORIGIN -->
+<!-- STORY -->
 <section>
-  <div class="wrap">
-    <div class="tag">PERCHÉ ESISTE</div>
-    <h2>Ci siamo stancati di studiare<br>su una <em>chiamata muta</em>.</h2>
-    <div class="story" style="margin-top:34px">
-      <p>Durante le sessioni d'esame passavamo ore su Google Meet, in silenzio, con la webcam accesa. Non parlavamo. Serviva solo a <strong>non sentirci soli</strong> — e a non alzarci dalla scrivania.</p>
-      <p>Funzionava. Ma era un ripiego: nessun timer condiviso, nessun modo per trovare altri del nostro corso, nessuna traccia di quanto avevamo studiato. Solo due facce stanche in una chiamata.</p>
-      <p><strong>Studyo è il posto che ci mancava.</strong> Quello che avremmo voluto aprire alle 9 di mattina di un lunedì di gennaio, con l'esame di Analisi tra sei giorni.</p>
-      <div class="sign">— Francesco e Davide, studenti UNIMORE</div>
-    </div>
+  <div class="wrap story">
+    <span class="tag">PERCHÉ ESISTE</span>
+    <h2>Ci siamo stancati di<br>studiare su una<br>chiamata muta.</h2>
+    <p style="margin-top:30px">Durante le sessioni d'esame passavamo ore su Google Meet, in silenzio, con la webcam accesa. Non parlavamo. Serviva solo a <strong>non sentirci soli</strong> — e a non alzarci dalla scrivania.</p>
+    <p>Funzionava. Ma era un ripiego: nessun timer condiviso, nessun modo per trovare altri del nostro corso, nessuna traccia di quanto avevamo studiato. Solo due facce stanche in una chiamata.</p>
+    <div class="quote">Studyo è il posto che ci mancava. Quello che avremmo voluto aprire alle 9 di un lunedì di gennaio, con Analisi tra sei giorni.</div>
+    <p class="byline">— Francesco e Davide, studenti UNIMORE</p>
   </div>
 </section>
 
 <!-- HOW -->
-<section id="come-funziona">
+<section id="come">
   <div class="wrap">
-    <div class="tag">COME FUNZIONA</div>
-    <h2>Tre passaggi, <em>zero attrito</em>.</h2>
+    <span class="tag">COME FUNZIONA</span>
+    <h2>Tre passaggi.<br>Zero attrito.</h2>
     <div class="steps">
       <div class="step">
-        <div class="step-n">01</div>
+        <div class="sn">01 —</div>
         <h3>Dici cosa studi</h3>
-        <p>Scegli il tuo ateneo e il corso di laurea (o la scuola superiore). Studyo ti mostra subito le lobby dei tuoi esami, non un elenco infinito.</p>
+        <p>Scegli ateneo e corso di laurea, o la tua scuola. Studyo ti apre direttamente le lobby dei tuoi esami, non un elenco infinito.</p>
       </div>
       <div class="step">
-        <div class="step-n">02</div>
+        <div class="sn">02 —</div>
         <h3>Entri in una lobby</h3>
-        <p>Ogni materia ha la sua stanza. Vedi chi sta studiando in quel momento, apri la chat o fate una videochiamata insieme.</p>
+        <p>Ogni materia ha la sua stanza. Vedi chi sta studiando in quel momento, scrivete in chat o aprite una videochiamata.</p>
       </div>
       <div class="step">
-        <div class="step-n">03</div>
+        <div class="sn">03 —</div>
         <h3>Studi davvero</h3>
-        <p>Avvii il timer, metti un suono di sottofondo, fai un quiz. Ogni sessione ti dà XP e tiene viva la tua streak.</p>
+        <p>Avvii il timer, metti un suono di sottofondo, fai un quiz. Ogni sessione vale XP e tiene viva la streak.</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- FEATURES -->
-<section id="funzioni">
+<section id="dentro">
   <div class="wrap">
-    <div class="tag">COSA C'È DENTRO</div>
-    <h2>Gli strumenti che usavi<br>in <em>cinque schede diverse</em>.</h2>
-    <div class="grid">
-      <div class="card">
-        <div class="ic">👥</div>
-        <h3>Presenza in tempo reale</h3>
-        <p>Vedi chi c'è nella lobby mentre studi. Nessuno finge: se il pallino è verde, quella persona è davvero lì.</p>
+    <span class="tag">COSA C'È DENTRO</span>
+    <h2>Gli strumenti che tenevi<br>in cinque schede diverse.</h2>
+    <div class="feats">
+      <div class="feat">
+        <div class="fnum">PRESENZA</div>
+        <h3>Vedi chi c'è davvero</h3>
+        <p>La lista degli studenti in lobby è in tempo reale. Se il pallino è verde, quella persona sta studiando adesso.</p>
       </div>
-      <div class="card">
-        <div class="ic">📹</div>
+      <div class="feat">
+        <div class="fnum">VIDEO</div>
         <h3>Videochiamata integrata</h3>
         <p>Una stanza video per ogni materia, dentro l'app. Nessun link da girare, nessun account in più.</p>
       </div>
-      <div class="card">
-        <div class="ic">⏱️</div>
-        <h3>Timer con progresso</h3>
-        <p>Pomodoro 25 o 50 minuti. Ogni sessione completata costruisce la tua torre e vale XP.</p>
+      <div class="feat">
+        <div class="fnum">TIMER</div>
+        <h3>Sessioni che contano</h3>
+        <p>Pomodoro da 25 o 50 minuti. Ogni sessione completata costruisce la tua torre e vale XP.</p>
       </div>
-      <div class="card">
-        <div class="ic">🎧</div>
-        <h3>Suoni ambientali</h3>
+      <div class="feat">
+        <div class="fnum">AUDIO</div>
+        <h3>Sei ambienti sonori</h3>
         <p>Pioggia, camino, caffetteria, bosco, cascata, grilli. Registrazioni vere, non rumore sintetico.</p>
       </div>
-      <div class="card">
-        <div class="ic">🧠</div>
+      <div class="feat">
+        <div class="fnum">RIPASSO</div>
         <h3>Quiz e flashcard</h3>
-        <p>Domande per materia e ripetizione spaziata: le carte difficili tornano più spesso, quelle facili spariscono.</p>
+        <p>Ripetizione spaziata: le carte difficili tornano più spesso, quelle che sai spariscono dal mazzo.</p>
       </div>
-      <div class="card">
-        <div class="ic">🔥</div>
+      <div class="feat">
+        <div class="fnum">PROGRESSI</div>
         <h3>Streak e livelli</h3>
-        <p>Sei livelli da Matricola a Leggenda. La streak conta i giorni consecutivi in cui hai studiato davvero.</p>
+        <p>Sei livelli, da Matricola a Leggenda. La streak conta i giorni consecutivi in cui hai studiato davvero.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FOCUS POCUS -->
+<!-- FOCUS -->
 <section>
   <div class="wrap">
-    <div class="focus-band">
-      <div class="stars" id="stars"></div>
-      <div class="focus-in">
-        <div class="tag">FOCUS POCUS</div>
-        <h2 style="margin-bottom:16px">Il posto dove ti immagini<br>per <em>concentrarti davvero</em>.</h2>
-        <p class="sec-lede">Schermo intero, tutto il resto sparisce. Scegli il luogo, parte l'atmosfera e il timer: resti solo tu e quello che devi studiare.</p>
+    <div class="band">
+      <div class="band-l">
+        <span class="tag">FOCUS POCUS</span>
+        <h2 style="font-size:clamp(30px,3.6vw,42px)">Il posto dove ti immagini per concentrarti.</h2>
+        <p class="slede" style="margin-top:16px">Schermo intero, tutto il resto sparisce. Scegli il luogo, parte l'atmosfera e il timer: restate solo tu e quello che devi studiare.</p>
         <div class="rooms">
-          <span class="room">🌧️ Biblioteca Piovosa</span>
-          <span class="room">🔥 Baita sul Fuoco</span>
-          <span class="room">☕ Caffè Letterario</span>
-          <span class="room">🌿 Foresta Silenziosa</span>
-          <span class="room">🌌 Notte Stellata</span>
-          <span class="room">💧 Cascata Zen</span>
+          <span class="room">Biblioteca Piovosa</span>
+          <span class="room">Baita sul Fuoco</span>
+          <span class="room">Caffè Letterario</span>
+          <span class="room">Foresta Silenziosa</span>
+          <span class="room">Notte Stellata</span>
+          <span class="room">Cascata Zen</span>
         </div>
-        <div style="margin-top:30px"><a href="app.html" class="btn btn-primary">Provalo ora</a></div>
+        <div style="margin-top:30px"><a href="app.html" class="btn btn-lime">Provalo ora</a></div>
+      </div>
+      <div class="band-r">
+        <div class="sky" id="sky"></div>
+        <div class="band-timer"><b>24:31</b><span>NOTTE STELLATA</span></div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- AUDIENCE -->
-<section id="per-chi">
+<section id="perchi">
   <div class="wrap">
-    <div class="tag">PER CHI</div>
-    <h2>Che tu sia al primo anno<br>o alla <em>maturità</em>.</h2>
-    <div class="aud">
-      <div class="aud-card">
-        <h3>🎓 Università</h3>
-        <p style="color:var(--muted);font-size:14.5px">Le lobby seguono il tuo piano di studi: apri l'app e trovi già i tuoi esami.</p>
+    <span class="tag">PER CHI</span>
+    <h2>Dal primo anno<br>alla maturità.</h2>
+    <div class="auds">
+      <div class="aud">
+        <h3>Università</h3>
+        <p>Le lobby seguono il tuo piano di studi: apri l'app e trovi già i tuoi esami.</p>
         <ul>
           <li>Ingegneria, Economia, Medicina, Giurisprudenza, Umanistiche</li>
           <li>Materie reali dei corsi italiani</li>
           <li>Community del tuo ateneo</li>
         </ul>
       </div>
-      <div class="aud-card">
-        <h3>📚 Superiori</h3>
-        <p style="color:var(--muted);font-size:14.5px">Materie divise per indirizzo, dal liceo classico all'alberghiero.</p>
+      <div class="aud">
+        <h3>Superiori</h3>
+        <p>Materie divise per indirizzo, dal liceo classico all'alberghiero.</p>
         <ul>
           <li>Licei, tecnici e professionali</li>
           <li>Dal latino a sistemi e reti</li>
           <li>Preparazione maturità</li>
         </ul>
       </div>
-      <div class="aud-card">
-        <h3>🎯 TOLC</h3>
-        <p style="color:var(--muted);font-size:14.5px">Se sei in quinta e devi fare il test d'ingresso, hai una sezione dedicata.</p>
+      <div class="aud">
+        <h3>TOLC</h3>
+        <p>Se sei in quinta e devi fare il test d'ingresso, hai una sezione dedicata.</p>
         <ul>
           <li>TOLC-I, E, MED, SU, F, B, AV</li>
           <li>Logica, matematica, comprensione</li>
@@ -487,10 +431,8 @@ footer{border-top:1px solid var(--line);padding:44px 0;color:var(--dim);font-siz
 <!-- FAQ -->
 <section id="faq">
   <div class="wrap">
-    <div class="center" style="max-width:640px">
-      <div class="tag">DOMANDE</div>
-      <h2>Le cose che ci chiedono<br><em>più spesso</em>.</h2>
-    </div>
+    <span class="tag">DOMANDE</span>
+    <h2>Quello che ci<br>chiedono più spesso.</h2>
     <div class="faq">
       <details open>
         <summary>Quanto costa?</summary>
@@ -498,35 +440,34 @@ footer{border-top:1px solid var(--line);padding:44px 0;color:var(--dim);font-siz
       </details>
       <details>
         <summary>Serve installare qualcosa?</summary>
-        <p>No, funziona nel browser. Se vuoi, dal telefono puoi aggiungerlo alla schermata home e si comporta come un'app vera (si apre a schermo intero e funziona anche offline per le parti non in tempo reale).</p>
+        <p>No, funziona nel browser. Dal telefono puoi aggiungerlo alla schermata home e si comporta come un'app vera: si apre a schermo intero e continua a funzionare offline per le parti non in tempo reale.</p>
       </details>
       <details>
-        <summary>La mia università non c'è / manca il mio esame</summary>
-        <p>Puoi scrivere il nome del tuo ateneo a mano e le lobby delle materie principali ci sono già. Stiamo aggiungendo i piani di studio ateneo per ateneo, partendo da UNIMORE. Se manca il tuo esame, segnalacelo dal pulsante feedback nell'app: è il modo più veloce per farlo aggiungere.</p>
+        <summary>La mia università non c'è, o manca il mio esame</summary>
+        <p>Puoi scrivere il nome del tuo ateneo a mano e le materie principali ci sono già. Stiamo aggiungendo i piani di studio ateneo per ateneo, partendo da UNIMORE. Se manca un esame, segnalacelo dal pulsante feedback dentro l'app: è il modo più veloce per farlo aggiungere.</p>
       </details>
       <details>
-        <summary>Devo per forza accendere la webcam?</summary>
-        <p>No. La videochiamata è una possibilità, non un obbligo: molti studiano solo con la presenza e la chat. Quando entri in video decidi tu se attivare camera e microfono.</p>
+        <summary>Devo accendere per forza la webcam?</summary>
+        <p>No. La videochiamata è una possibilità, non un obbligo: molti usano solo la presenza e la chat. Quando entri in video decidi tu se attivare camera e microfono.</p>
       </details>
       <details>
         <summary>Chi c'è dietro?</summary>
-        <p>Due studenti dell'Università di Modena e Reggio Emilia, Francesco e Davide. Studyo è in beta aperta: lo stiamo costruendo mentre lo usiamo, e i feedback di chi lo prova finiscono davvero nelle versioni successive.</p>
+        <p>Due studenti dell'Università di Modena e Reggio Emilia, Francesco e Davide. Studyo è in beta aperta: lo costruiamo mentre lo usiamo, e i feedback di chi lo prova finiscono davvero nelle versioni successive.</p>
       </details>
       <details>
         <summary>I miei dati sono al sicuro?</summary>
-        <p>L'accesso avviene tramite Google o email con Firebase Authentication. Salviamo solo quello che serve a far funzionare l'app: nome, ateneo o scuola, corso e i tuoi progressi di studio. Niente pubblicità e nessuna vendita di dati a terzi.</p>
+        <p>L'accesso avviene con Google o email tramite Firebase Authentication. Salviamo solo quello che serve a far funzionare l'app: nome, ateneo o scuola, corso e i tuoi progressi. Niente pubblicità, nessuna vendita di dati a terzi.</p>
       </details>
     </div>
   </div>
 </section>
 
-<!-- FINAL CTA -->
 <section class="final">
   <div class="wrap">
-    <h2>La prossima sessione<br>non farla <em>da solo</em>.</h2>
-    <p class="sec-lede center">Entra, scegli la tua materia e vedi chi c'è. Ci vogliono trenta secondi.</p>
-    <a href="app.html" class="btn btn-primary btn-lg">Entra su Studyo →</a>
-    <p class="note" style="margin-top:22px">Gratis · Nessuna carta richiesta · Beta aperta</p>
+    <h2>La prossima sessione<br>non farla da solo.</h2>
+    <p class="slede" style="text-align:center">Entra, scegli la materia, guarda chi c'è. Trenta secondi.</p>
+    <a href="app.html" class="btn btn-lime btn-xl">Entra su Studyo</a>
+    <p class="micro">Gratis · Nessuna carta richiesta · Beta aperta</p>
   </div>
 </section>
 
@@ -534,11 +475,8 @@ footer{border-top:1px solid var(--line);padding:44px 0;color:var(--dim);font-siz
   <div class="wrap foot">
     <div style="display:flex;align-items:center;gap:9px">
       <svg width="20" height="20" viewBox="0 0 32 32" fill="none">
-        <rect width="32" height="32" rx="8" fill="url(#g2)"/>
-        <path d="M20.4 11.2c-.9-.85-2.4-1.4-4.1-1.4-2.7 0-4.5 1.3-4.5 3.3 0 1.9 1.4 2.8 3.9 3.4 2.2.5 2.9.9 2.9 1.8 0 .9-.9 1.5-2.4 1.5-1.6 0-3-.6-4-1.6" stroke="#fff" stroke-width="2.4" stroke-linecap="round" fill="none"/>
-        <defs><linearGradient id="g2" x1="0" y1="0" x2="32" y2="32">
-          <stop stop-color="#7C6BF0"/><stop offset="1" stop-color="#FF6B6B"/>
-        </linearGradient></defs>
+        <rect width="32" height="32" rx="7" fill="#C8F031"/>
+        <path d="M20.6 11c-.95-.9-2.5-1.45-4.25-1.45-2.8 0-4.65 1.35-4.65 3.4 0 1.95 1.45 2.9 4.05 3.5 2.3.55 3 .95 3 1.9 0 .95-.95 1.55-2.5 1.55-1.65 0-3.1-.6-4.15-1.65" stroke="#0A0A0B" stroke-width="2.6" stroke-linecap="round" fill="none"/>
       </svg>
       <span>Studyo — Modena, Italia</span>
     </div>
@@ -550,34 +488,26 @@ footer{border-top:1px solid var(--line);padding:44px 0;color:var(--dim);font-siz
 </footer>
 
 <script>
-// nav border on scroll
 const nav = document.getElementById('nav');
-addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 8), {passive:true});
+addEventListener('scroll', () => nav.classList.toggle('on', scrollY > 8), {passive:true});
 
-// starfield in the Focus Pocus band
-const sky = document.getElementById('stars');
+const sky = document.getElementById('sky');
 if (sky) {
-  let html = '';
-  for (let i = 0; i < 44; i++) {
-    html += `<span class="star" style="left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${(Math.random()*4).toFixed(2)}s"></span>`;
+  let h = '';
+  for (let i = 0; i < 40; i++) {
+    h += `<span style="left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${(Math.random()*3.5).toFixed(2)}s"></span>`;
   }
-  sky.innerHTML = html;
+  sky.innerHTML = h;
 }
 
-// reveal on scroll
-const io = new IntersectionObserver((es) => {
+const io = new IntersectionObserver(es => {
   es.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.style.opacity = '1';
-      e.target.style.transform = 'none';
-      io.unobserve(e.target);
-    }
+    if (e.isIntersecting) { e.target.style.opacity='1'; e.target.style.transform='none'; io.unobserve(e.target); }
   });
-}, {threshold: .12});
-document.querySelectorAll('section .card, section .step, section .aud-card').forEach((el, i) => {
-  el.style.opacity = '0';
-  el.style.transform = 'translateY(14px)';
-  el.style.transition = `opacity .5s ease ${(i%3)*70}ms, transform .5s cubic-bezier(.16,1,.3,1) ${(i%3)*70}ms`;
+}, {threshold:.1});
+document.querySelectorAll('.feat, .aud, .step').forEach((el,i) => {
+  el.style.opacity='0'; el.style.transform='translateY(12px)';
+  el.style.transition=`opacity .45s ease ${(i%3)*60}ms, transform .45s cubic-bezier(.16,1,.3,1) ${(i%3)*60}ms`;
   io.observe(el);
 });
 </script>
