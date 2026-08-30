@@ -149,13 +149,80 @@ const LOBBIES = [
     { id: 'tolc_matTolc', name: 'TOLC — Matematica', icon: '📐', category: 'tolc', online: 15 },
     { id: 'tolc_comprensione', name: 'TOLC — Comprensione Verbale', icon: '📝', category: 'tolc', online: 11 },
     { id: 'tolc_scienzeTolc', name: 'TOLC — Scienze (Bio+Chim+Fis)', icon: '🔬', category: 'tolc', online: 13 },
+
+    // ==========================================
+    //  PIANI DI STUDIO REALI — materie aggiuntive
+    // ==========================================
+    // --- Giuridica ---
+    { id: 'dirRomano', name: 'Istituzioni di Diritto Romano', icon: '🏛️', category: 'giuridica', online: 9 },
+    { id: 'storiaDiritto', name: 'Storia del Diritto Medievale e Moderno', icon: '📜', category: 'giuridica', online: 7 },
+    { id: 'dirAmministrativo', name: 'Diritto Amministrativo', icon: '🗂️', category: 'giuridica', online: 8 },
+    { id: 'dirInternazionale', name: 'Diritto Internazionale', icon: '🌍', category: 'giuridica', online: 6 },
+    { id: 'procPenale', name: 'Procedura Penale', icon: '⚖️', category: 'giuridica', online: 5 },
+    { id: 'dirTributario', name: 'Diritto Tributario', icon: '🧾', category: 'giuridica', online: 5 },
+    { id: 'econPolitica', name: 'Economia Politica', icon: '📈', category: 'giuridica', online: 7 },
+    { id: 'dirEcclesiastico', name: 'Diritto Ecclesiastico', icon: '⛪', category: 'giuridica', online: 3 },
+
+    // --- Economia ---
+    { id: 'dirPubblico', name: 'Diritto Pubblico', icon: '🏛️', category: 'economia', online: 7 },
+    { id: 'scienzaFinanze', name: 'Scienza delle Finanze', icon: '🏦', category: 'economia', online: 5 },
+    { id: 'economiaIndustriale', name: 'Economia Industriale', icon: '🏭', category: 'economia', online: 5 },
+    { id: 'egi', name: 'Economia e Gestione delle Imprese', icon: '🏢', category: 'economia', online: 8 },
+    { id: 'intermediariFin', name: 'Economia degli Intermediari Finanziari', icon: '💳', category: 'economia', online: 6 },
+    { id: 'analisiBilancio', name: 'Analisi di Bilancio', icon: '📑', category: 'economia', online: 6 },
+    { id: 'ragioneriaApp', name: 'Ragioneria Applicata', icon: '📗', category: 'economia', online: 6 },
+
+    // --- Medicina ---
+    { id: 'istologia', name: 'Istologia ed Embriologia', icon: '🔬', category: 'medicina', online: 9 },
+    { id: 'geneticaMed', name: 'Genetica Medica', icon: '🧬', category: 'medicina', online: 6 },
+    { id: 'microbiologia', name: 'Microbiologia', icon: '🦠', category: 'medicina', online: 7 },
+    { id: 'immunologia', name: 'Immunologia', icon: '🛡️', category: 'medicina', online: 5 },
+    { id: 'igiene', name: 'Igiene e Sanità Pubblica', icon: '🧼', category: 'medicina', online: 4 },
+    { id: 'anatomiaPat', name: 'Anatomia Patologica', icon: '🩻', category: 'medicina', online: 6 },
+    { id: 'medInterna', name: 'Medicina Interna', icon: '🩺', category: 'medicina', online: 8 },
+    { id: 'chirurgiaGen', name: 'Chirurgia Generale', icon: '🔪', category: 'medicina', online: 7 },
+    { id: 'neurologia', name: 'Neurologia', icon: '🧠', category: 'medicina', online: 5 },
+    { id: 'psichiatria', name: 'Psichiatria', icon: '💭', category: 'medicina', online: 4 },
+    { id: 'cardiologia', name: 'Cardiologia', icon: '❤️', category: 'medicina', online: 6 },
+    { id: 'radiologia', name: 'Diagnostica per Immagini', icon: '📷', category: 'medicina', online: 4 },
+    { id: 'malattieInf', name: 'Malattie Infettive', icon: '🧫', category: 'medicina', online: 4 },
+    { id: 'pediatria', name: 'Pediatria', icon: '🧸', category: 'medicina', online: 5 },
+    { id: 'ginecologia', name: 'Ginecologia e Ostetricia', icon: '🤰', category: 'medicina', online: 5 },
+    { id: 'medLegale', name: 'Medicina Legale', icon: '⚖️', category: 'medicina', online: 3 },
+
+    // --- Ingegneria / scientifica ---
+    { id: 'segnali', name: 'Teoria dei Segnali', icon: '📶', category: 'scientifica', online: 6 },
+    { id: 'automatica', name: 'Fondamenti di Automatica', icon: '🎛️', category: 'scientifica', online: 5 },
+    { id: 'elettronica', name: 'Elettronica', icon: '🔌', category: 'scientifica', online: 7 },
+    { id: 'telecomunicazioni', name: 'Telecomunicazioni', icon: '📡', category: 'scientifica', online: 5 },
+    { id: 'fisicaTecnica', name: 'Fisica Tecnica', icon: '🌡️', category: 'scientifica', online: 6 },
+    { id: 'scienzaCostruzioni', name: 'Scienza delle Costruzioni', icon: '🏗️', category: 'scientifica', online: 7 },
+    { id: 'idraulica', name: 'Idraulica', icon: '💧', category: 'scientifica', online: 5 },
+    { id: 'tecnologiaMat', name: 'Tecnologia dei Materiali', icon: '⚙️', category: 'scientifica', online: 5 },
+    { id: 'disegnoTecnico', name: 'Disegno Tecnico', icon: '📐', category: 'scientifica', online: 6 },
+    { id: 'geotecnica', name: 'Geotecnica', icon: '🪨', category: 'scientifica', online: 3 },
+    { id: 'termodinamica', name: 'Termodinamica', icon: '♨️', category: 'scientifica', online: 5 },
+
+    // --- Umanistica / psicologia ---
+    { id: 'psicSviluppo', name: 'Psicologia dello Sviluppo', icon: '🌱', category: 'umanistica', online: 6 },
+    { id: 'psicSociale', name: 'Psicologia Sociale', icon: '👥', category: 'umanistica', online: 5 },
+    { id: 'psicometria', name: 'Psicometria', icon: '📊', category: 'umanistica', online: 5 },
+    { id: 'psicClinica', name: 'Psicologia Clinica', icon: '🛋️', category: 'umanistica', online: 6 },
+    { id: 'neuroscienze', name: 'Neuroscienze', icon: '🧠', category: 'umanistica', online: 5 },
+    { id: 'glottologia', name: 'Glottologia', icon: '🗣️', category: 'umanistica', online: 3 },
+    { id: 'geografia', name: 'Geografia', icon: '🗺️', category: 'umanistica', online: 4 },
+    { id: 'antropologia', name: 'Antropologia Culturale', icon: '🗿', category: 'umanistica', online: 4 },
+    { id: 'letteraturaLat', name: 'Letteratura Latina', icon: '🏺', category: 'umanistica', online: 5 },
+    { id: 'storiaMedievale', name: 'Storia Medievale', icon: '🏰', category: 'umanistica', online: 4 },
+    { id: 'storiaModerna', name: 'Storia Moderna', icon: '📜', category: 'umanistica', online: 4 },
 ];
 
 /* =============================================
    ESAMI PER CORSO DI LAUREA
    ============================================= */
 
-const CORSI_ESAMI = {
+// Fallback per i corsi non ancora mappati anno per anno in CORSI_PIANI
+const CORSI_ESAMI_LEGACY = {
     // Economia e Management
     'Economia e Commercio': ['microeconomia', 'macroeconomia', 'ragioneria', 'statistica', 'giurisprudenza', 'dirCommerciale', 'marketing', 'pianificazione', 'analisi1', 'matFin', 'econometria', 'inglese'],
     'Economia Aziendale': ['ragioneria', 'microeconomia', 'macroeconomia', 'statistica', 'giurisprudenza', 'dirCommerciale', 'marketing', 'pianificazione', 'analisi1', 'matFin', 'inglese'],
@@ -206,6 +273,219 @@ const CORSI_ESAMI = {
     'Agraria': ['chimica', 'chimicaOrg', 'biologia', 'statistica', 'fisica1', 'microeconomia', 'inglese'],
     'Veterinaria': ['anatomia', 'fisiologia', 'chimica', 'chimicaOrg', 'biologia', 'patologia', 'fisica1', 'statistica', 'inglese'],
 };
+
+/* =============================================
+   PIANI DI STUDIO ANNO PER ANNO
+   Ricalcati sui piani reali dei corsi italiani
+   (classi ministeriali L-8, L-18, LMG-01, LM-41...).
+   I singoli atenei variano nei dettagli, ma la
+   struttura per anno è quella standard.
+   ============================================= */
+
+const CORSI_PIANI = {
+    // ---------- INGEGNERIA ----------
+    'Ingegneria Informatica': {
+        1: ['analisi1', 'algebra', 'fisica1', 'informatica', 'programmazione', 'chimica'],
+        2: ['analisi2', 'fisica2', 'archCalcolatori', 'sistemiOperativi', 'elettrotecnica', 'segnali', 'statistica'],
+        3: ['basiDati', 'retiCalcolatori', 'ingSoftware', 'automatica', 'elettronica', 'telecomunicazioni', 'inglese']
+    },
+    'Ingegneria Meccanica': {
+        1: ['analisi1', 'algebra', 'fisica1', 'chimica', 'disegnoTecnico'],
+        2: ['analisi2', 'fisica2', 'meccanica', 'termodinamica', 'scienzaCostruzioni', 'tecnologiaMat'],
+        3: ['fisicaTecnica', 'elettrotecnica', 'automatica', 'statistica', 'inglese']
+    },
+    'Ingegneria Civile': {
+        1: ['analisi1', 'algebra', 'fisica1', 'chimica', 'disegnoTecnico'],
+        2: ['analisi2', 'fisica2', 'meccanica', 'scienzaCostruzioni', 'tecnologiaMat'],
+        3: ['idraulica', 'geotecnica', 'fisicaTecnica', 'statistica', 'inglese']
+    },
+    'Ingegneria Elettronica': {
+        1: ['analisi1', 'algebra', 'fisica1', 'chimica', 'informatica'],
+        2: ['analisi2', 'fisica2', 'elettrotecnica', 'elettronica', 'segnali'],
+        3: ['archCalcolatori', 'telecomunicazioni', 'automatica', 'retiCalcolatori', 'inglese']
+    },
+    'Ingegneria Gestionale': {
+        1: ['analisi1', 'algebra', 'fisica1', 'chimica', 'informatica'],
+        2: ['analisi2', 'fisica2', 'statistica', 'microeconomia', 'ricercaOperativa', 'elettrotecnica'],
+        3: ['macroeconomia', 'egi', 'ragioneria', 'pianificazione', 'inglese']
+    },
+
+    // ---------- ECONOMIA ----------
+    'Economia Aziendale': {
+        1: ['analisi1', 'giurisprudenza', 'dirPubblico', 'ragioneria', 'microeconomia', 'statistica'],
+        2: ['ragioneriaApp', 'matFin', 'economiaIndustriale', 'egi', 'scienzaFinanze', 'intermediariFin', 'macroeconomia'],
+        3: ['dirLavoro', 'analisiBilancio', 'dirCommerciale', 'marketing', 'inglese']
+    },
+    'Economia e Commercio': {
+        1: ['microeconomia', 'analisi1', 'ragioneria', 'giurisprudenza', 'statistica'],
+        2: ['macroeconomia', 'matFin', 'dirPubblico', 'economiaIndustriale', 'intermediariFin'],
+        3: ['econometria', 'scienzaFinanze', 'dirCommerciale', 'marketing', 'inglese']
+    },
+    'Management': {
+        1: ['ragioneria', 'microeconomia', 'analisi1', 'giurisprudenza', 'statistica'],
+        2: ['egi', 'macroeconomia', 'marketing', 'matFin', 'dirCommerciale'],
+        3: ['pianificazione', 'analisiBilancio', 'dirLavoro', 'inglese']
+    },
+    'Marketing': {
+        1: ['microeconomia', 'ragioneria', 'statistica', 'analisi1', 'psicologia'],
+        2: ['marketing', 'macroeconomia', 'egi', 'sociologia', 'informatica'],
+        3: ['pianificazione', 'psicSociale', 'dirCommerciale', 'inglese']
+    },
+    'Finanza': {
+        1: ['analisi1', 'microeconomia', 'ragioneria', 'statistica', 'giurisprudenza'],
+        2: ['matFin', 'macroeconomia', 'intermediariFin', 'econometria'],
+        3: ['scienzaFinanze', 'analisiBilancio', 'dirCommerciale', 'inglese']
+    },
+
+    // ---------- GIURIDICA ----------
+    'Giurisprudenza': {
+        1: ['dirRomano', 'storiaDiritto', 'giurisprudenza', 'filosofia', 'dirCostituzionale', 'econPolitica'],
+        2: ['dirUE', 'dirAmministrativo', 'dirPenale', 'dirLavoro', 'inglese'],
+        3: ['procCivile', 'dirInternazionale', 'dirCommerciale'],
+        4: ['procPenale', 'dirTributario', 'dirPubblico'],
+        5: ['sociologia', 'dirEcclesiastico']
+    },
+    'Scienze Giuridiche': {
+        1: ['dirRomano', 'giurisprudenza', 'dirCostituzionale', 'storiaDiritto', 'econPolitica'],
+        2: ['dirAmministrativo', 'dirPenale', 'dirLavoro', 'dirUE'],
+        3: ['dirCommerciale', 'procCivile', 'filosofia', 'inglese']
+    },
+
+    // ---------- MEDICINA E SALUTE ----------
+    'Medicina e Chirurgia': {
+        1: ['fisica1', 'biologia', 'istologia', 'chimica', 'biochimica'],
+        2: ['anatomia', 'fisiologia', 'geneticaMed', 'immunologia', 'inglese'],
+        3: ['microbiologia', 'patologia', 'igiene', 'farmacologia'],
+        4: ['medInterna', 'chirurgiaGen', 'anatomiaPat', 'psichiatria', 'neurologia'],
+        5: ['cardiologia', 'radiologia', 'malattieInf', 'statistica'],
+        6: ['pediatria', 'ginecologia', 'medLegale']
+    },
+    'Infermieristica': {
+        1: ['anatomia', 'fisiologia', 'biologia', 'chimica', 'istologia'],
+        2: ['patologia', 'farmacologia', 'microbiologia', 'psicologia'],
+        3: ['igiene', 'medInterna', 'chirurgiaGen', 'inglese']
+    },
+    'Farmacia': {
+        1: ['chimica', 'biologia', 'analisi1', 'fisica1'],
+        2: ['chimicaOrg', 'anatomia', 'istologia', 'biochimica'],
+        3: ['fisiologia', 'microbiologia', 'farmacologia'],
+        4: ['patologia', 'igiene', 'statistica'],
+        5: ['inglese']
+    },
+    'Veterinaria': {
+        1: ['biologia', 'chimica', 'fisica1', 'istologia'],
+        2: ['anatomia', 'chimicaOrg', 'biochimica', 'geneticaMed'],
+        3: ['fisiologia', 'microbiologia', 'farmacologia'],
+        4: ['patologia', 'anatomiaPat', 'igiene'],
+        5: ['chirurgiaGen', 'medInterna', 'inglese']
+    },
+    'Scienze Motorie': {
+        1: ['anatomia', 'biologia', 'chimica', 'istologia'],
+        2: ['fisiologia', 'biochimica', 'psicologia', 'statistica'],
+        3: ['patologia', 'pedagogia', 'igiene', 'inglese']
+    },
+
+    // ---------- SCIENZE ----------
+    'Informatica': {
+        1: ['programmazione', 'informatica', 'analisi1', 'algebra', 'fisica1'],
+        2: ['archCalcolatori', 'sistemiOperativi', 'basiDati', 'calcoloNum', 'statistica'],
+        3: ['retiCalcolatori', 'ingSoftware', 'ricercaOperativa', 'inglese']
+    },
+    'Matematica': {
+        1: ['analisi1', 'algebra', 'informatica', 'fisica1'],
+        2: ['analisi2', 'calcoloNum', 'statistica', 'fisica2', 'programmazione'],
+        3: ['ricercaOperativa', 'inglese']
+    },
+    'Fisica': {
+        1: ['analisi1', 'algebra', 'fisica1', 'chimica'],
+        2: ['analisi2', 'fisica2', 'calcoloNum', 'informatica'],
+        3: ['termodinamica', 'statistica', 'inglese']
+    },
+    'Chimica': {
+        1: ['chimica', 'analisi1', 'fisica1', 'biologia'],
+        2: ['chimicaOrg', 'fisica2', 'biochimica', 'statistica'],
+        3: ['tecnologiaMat', 'inglese']
+    },
+    'Biologia': {
+        1: ['biologia', 'chimica', 'analisi1', 'fisica1', 'istologia'],
+        2: ['chimicaOrg', 'biochimica', 'geneticaMed', 'statistica'],
+        3: ['microbiologia', 'fisiologia', 'inglese']
+    },
+    'Scienze Naturali': {
+        1: ['biologia', 'chimica', 'fisica1', 'analisi1'],
+        2: ['chimicaOrg', 'geografia', 'statistica', 'istologia'],
+        3: ['microbiologia', 'inglese']
+    },
+    'Agraria': {
+        1: ['chimica', 'biologia', 'analisi1', 'fisica1'],
+        2: ['chimicaOrg', 'biochimica', 'statistica', 'microeconomia'],
+        3: ['microbiologia', 'egi', 'inglese']
+    },
+
+    // ---------- UMANISTICA ----------
+    'Psicologia': {
+        1: ['psicologia', 'psicSviluppo', 'psicSociale', 'biologia', 'filosofiaGen'],
+        2: ['psicometria', 'statistica', 'neuroscienze', 'psicClinica', 'sociologia'],
+        3: ['pedagogia', 'antropologia', 'inglese']
+    },
+    'Lettere': {
+        1: ['letteratura', 'letteraturaLat', 'storiaMedievale', 'linguistica', 'geografia'],
+        2: ['filosofiaGen', 'storiaModerna', 'glottologia', 'storiaArte'],
+        3: ['storia', 'antropologia', 'inglese']
+    },
+    'Storia': {
+        1: ['storiaMedievale', 'storia', 'letteratura', 'geografia'],
+        2: ['storiaModerna', 'filosofiaGen', 'antropologia', 'letteraturaLat'],
+        3: ['sociologia', 'inglese']
+    },
+    'Filosofia': {
+        1: ['filosofiaGen', 'storia', 'letteratura', 'psicologia'],
+        2: ['storiaModerna', 'sociologia', 'antropologia', 'pedagogia'],
+        3: ['linguistica', 'inglese']
+    },
+    'Lingue': {
+        1: ['linguistica', 'letteratura', 'inglese', 'storia'],
+        2: ['glottologia', 'letteraturaLat', 'geografia', 'filosofiaGen'],
+        3: ['antropologia', 'storiaModerna']
+    },
+    'Scienze della Comunicazione': {
+        1: ['sociologia', 'linguistica', 'letteratura', 'psicologia', 'storia'],
+        2: ['marketing', 'statistica', 'informatica', 'psicSociale'],
+        3: ['dirPubblico', 'antropologia', 'inglese']
+    },
+    'Scienze della Formazione': {
+        1: ['pedagogia', 'psicologia', 'filosofiaGen', 'storia'],
+        2: ['psicSviluppo', 'sociologia', 'letteratura', 'antropologia'],
+        3: ['psicClinica', 'statistica', 'inglese']
+    },
+    'Scienze Politiche': {
+        1: ['dirCostituzionale', 'econPolitica', 'storia', 'sociologia', 'filosofiaGen'],
+        2: ['dirUE', 'macroeconomia', 'statistica', 'dirInternazionale'],
+        3: ['dirAmministrativo', 'geografia', 'inglese']
+    },
+
+    // ---------- ARCHITETTURA E DESIGN ----------
+    'Architettura': {
+        1: ['disegnoTecnico', 'storiaArte', 'analisi1', 'fisica1'],
+        2: ['scienzaCostruzioni', 'storia', 'tecnologiaMat', 'fisicaTecnica'],
+        3: ['geotecnica', 'informatica', 'inglese']
+    },
+    'Design': {
+        1: ['storiaArte', 'disegnoTecnico', 'informatica', 'storia'],
+        2: ['tecnologiaMat', 'marketing', 'psicologia', 'fisica1'],
+        3: ['pianificazione', 'inglese']
+    }
+};
+
+/* CORSI_ESAMI resta l'elenco piatto usato dal resto dell'app:
+   viene derivato dai piani per anno, con fallback sulla vecchia mappa. */
+const CORSI_ESAMI = Object.assign({}, CORSI_ESAMI_LEGACY);
+Object.keys(CORSI_PIANI).forEach(corso => {
+    const anni = CORSI_PIANI[corso];
+    CORSI_ESAMI[corso] = Object.keys(anni)
+        .sort()
+        .reduce((acc, y) => acc.concat(anni[y]), []);
+});
 
 /* =============================================
    MATERIE PER TIPO DI SCUOLA SUPERIORE

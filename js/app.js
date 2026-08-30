@@ -320,6 +320,35 @@ function renderSectionHeader(id, emoji, label, count) {
     `;
 }
 
+const YEAR_EMOJI = { 1: '1️⃣', 2: '2️⃣', 3: '3️⃣', 4: '4️⃣', 5: '5️⃣', 6: '6️⃣' };
+
+// "I tuoi esami": se il corso ha un piano di studi anno per anno,
+// mostra una sezione per ogni anno; altrimenti una sezione unica.
+function renderMieiEsami(mieiIds, headerLabel, headerEmoji) {
+    const piano = (state.playerSchool === 'universita' && state.playerCorso
+                   && typeof CORSI_PIANI !== 'undefined')
+                   ? CORSI_PIANI[state.playerCorso] : null;
+
+    if (!piano) {
+        const lobbies = LOBBIES.filter(l => mieiIds.includes(l.id));
+        let out = renderSectionHeader('miei', headerEmoji, headerLabel, lobbies.length);
+        out += lobbies.map(l => renderLobbyItem(l)).join('');
+        out += '</div>';
+        return out;
+    }
+
+    let out = '';
+    Object.keys(piano).sort().forEach(anno => {
+        const ids = piano[anno];
+        const lobbies = ids.map(id => LOBBIES.find(l => l.id === id)).filter(Boolean);
+        if (!lobbies.length) return;
+        out += renderSectionHeader('anno' + anno, YEAR_EMOJI[anno] || '📘', anno + '° anno', lobbies.length);
+        out += lobbies.map(l => renderLobbyItem(l)).join('');
+        out += '</div>';
+    });
+    return out;
+}
+
 function renderLobbies(filter = 'all') {
     const sidebarEl = document.getElementById('sidebar-lobbies');
     if (!sidebarEl) return;
@@ -396,14 +425,11 @@ function renderLobbies(filter = 'all') {
     }
 
     if (filter === 'miei' && mieiIds.length > 0) {
-        const mieiLobbies = LOBBIES.filter(l => mieiIds.includes(l.id));
         const relevant = getRelevantLobbies();
         const altreLobbies = relevant.filter(l => !mieiIds.includes(l.id));
 
         const headerEmoji = isSuperiori ? '🏫' : '📚';
-        html += renderSectionHeader('miei', headerEmoji, mieiLabel, mieiLobbies.length);
-        html += mieiLobbies.map(lobby => renderLobbyItem(lobby)).join('');
-        html += '</div>';
+        html += renderMieiEsami(mieiIds, mieiLabel, headerEmoji);
 
         if (altreLobbies.length > 0) {
             html += renderGrouped(altreLobbies);
@@ -412,14 +438,11 @@ function renderLobbies(filter = 'all') {
         const relevant = getRelevantLobbies();
 
         if (mieiIds.length > 0) {
-            const mieiLobbies = LOBBIES.filter(l => mieiIds.includes(l.id));
             const altreLobbies = relevant.filter(l => !mieiIds.includes(l.id));
 
             const headerEmoji = isSuperiori ? '🏫' : '📚';
             const headerLabel = isSuperiori ? 'Le tue materie' : 'I tuoi esami';
-            html += renderSectionHeader('miei', headerEmoji, headerLabel, mieiLobbies.length);
-            html += mieiLobbies.map(lobby => renderLobbyItem(lobby)).join('');
-            html += '</div>';
+            html += renderMieiEsami(mieiIds, headerLabel, headerEmoji);
 
             if (altreLobbies.length > 0) {
                 html += renderGrouped(altreLobbies);
