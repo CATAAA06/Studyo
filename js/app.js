@@ -1512,6 +1512,21 @@ function setupGlobalUX() {
     };
     document.addEventListener('pointerdown', resumeAudio);
     document.addEventListener('keydown', resumeAudio);
+
+    // Safety net: never let an unexpected error leave the user stuck silently
+    let lastErrorAt = 0;
+    window.addEventListener('error', (e) => {
+        console.error('[Studyo]', e.message, e.filename + ':' + e.lineno);
+        const now = Date.now();
+        if (now - lastErrorAt < 15000) return;   // don't spam
+        lastErrorAt = now;
+        if (typeof showNotification === 'function') {
+            showNotification('Qualcosa non ha funzionato. Se si ripete, segnalacelo dal 💬');
+        }
+    });
+    window.addEventListener('unhandledrejection', (e) => {
+        console.error('[Studyo] promise:', e.reason);
+    });
 }
 
 /* =============================================
