@@ -550,6 +550,14 @@ function openLobby(lobbyId) {
     document.getElementById('lobby-title').textContent = lobby.name;
     document.getElementById('lobby-online').textContent = `${lobbyOnline(lobby)} studenti online`;
 
+    // Una riga che spiega cosa si studia in questa materia
+    const descEl = document.getElementById('lobby-desc');
+    if (descEl) {
+        const d = (typeof MATERIE_DESC !== 'undefined') ? MATERIE_DESC[lobby.id] : '';
+        descEl.textContent = d || '';
+        descEl.style.display = d ? 'block' : 'none';
+    }
+
     // Render with ambient first; live data fills in via listeners below
     renderStudents([]);
     renderChat(null);
@@ -1015,6 +1023,33 @@ function openNotes() {
     editor.oninput = () => {
         localStorage.setItem(`studyo_notes_${state.currentLobby}`, editor.value);
     };
+}
+
+/* =============================================
+   DISPENSE — ricerca rapida su Studocu
+   ============================================= */
+
+function openDispense() {
+    const lobby = LOBBIES.find(l => l.id === state.currentLobby);
+    if (!lobby) {
+        showNotification('Entra in una lobby per cercare le dispense.');
+        return;
+    }
+
+    // Nome pulito: via i prefissi interni ("TOLC — ", "(ITIS)", ecc.)
+    let q = lobby.name
+        .replace(/^TOLC\s*—\s*/i, 'TOLC ')
+        .replace(/\s*\((ITIS|ITC|alt\.)\)/i, '')
+        .trim();
+
+    // L'ateneo aiuta a trovare gli appunti del proprio corso
+    const uni = state.playerUni || '';
+    const query = uni ? `${q} ${uni}` : q;
+
+    const url = 'https://www.studocu.com/it/search?q=' + encodeURIComponent(query);
+    window.open(url, '_blank', 'noopener');
+    showNotification(`📄 Cerco dispense di ${q} su Studocu…`);
+    addXP(5, 'Ricerca dispense');
 }
 
 /* =============================================
