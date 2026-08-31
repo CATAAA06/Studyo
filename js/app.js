@@ -1036,10 +1036,12 @@ function openDispense() {
         return;
     }
 
-    // Nome pulito: via i prefissi interni ("TOLC — ", "(ITIS)", ecc.)
+    // Nome pulito per la ricerca: via i trattini interni e ogni parentesi
+    // ("TOLC — Logica" → "TOLC Logica", "Informatica (ITIS)" → "Informatica")
     let q = lobby.name
         .replace(/^TOLC\s*—\s*/i, 'TOLC ')
-        .replace(/\s*\((ITIS|ITC|alt\.)\)/i, '')
+        .replace(/\s*\([^)]*\)/g, '')
+        .replace(/\s*\/\s*Alt\.?$/i, '')
         .trim();
 
     // L'ateneo aiuta a trovare gli appunti del proprio corso
