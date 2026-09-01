@@ -212,22 +212,25 @@ async function saveFeedbackToFirestore(type, text) {
     }
 }
 
+// Classifica reale del proprio ateneo/scuola.
+// Ordinamento lato client: evita di dover creare indici compositi su Firestore.
 async function loadCommunityFromFirestore() {
     const uniName = state.playerUni || state.playerScuola;
-    if (!uniName) return [];
+    if (!uniName || !state.firebaseUid) return [];
 
+    const field = state.playerUni ? 'uni' : 'scuola';
     try {
         const snapshot = await db.collection('users')
-            .where('uni', '==', uniName)
-            .orderBy('xp', 'desc')
-            .limit(20)
+            .where(field, '==', uniName)
+            .limit(60)
             .get();
 
         return snapshot.docs
             .map(doc => ({ id: doc.id, ...doc.data() }))
-            .filter(u => u.id !== state.firebaseUid);
+            .filter(u => u.setupDone)
+            .sort((a, b) => (b.xp || 0) - (a.xp || 0));
     } catch (error) {
-        console.error('Community load error:', error);
+        console.warn('Community load error:', error.code || error.message);
         return [];
     }
 }

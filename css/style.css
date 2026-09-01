@@ -2354,6 +2354,26 @@ textarea:focus {
     .page, .card, .btn, .stat-card, .tool-item { animation: none !important; transition: none !important; }
 }
 
+/* Classifica reale: posizione, evidenza su di te, stati vuoti */
+.community-rank {
+    font-family: var(--font-display);
+    font-size: 13px; font-weight: 800;
+    color: var(--text-muted);
+    min-width: 18px; text-align: center;
+}
+.community-member.is-me {
+    background: rgba(200, 240, 49, 0.1);
+    border: 1px solid rgba(200, 240, 49, 0.35);
+    border-radius: var(--radius-xs);
+}
+.community-member.is-me .community-rank { color: var(--primary); }
+.community-loading, .community-empty {
+    padding: 18px; text-align: center;
+    color: var(--text-muted); font-size: 14px;
+}
+.community-empty p { color: var(--text-secondary); font-weight: 600; margin-bottom: 4px; }
+.community-empty small { font-size: 12.5px; }
+
 /* =============================================
    GRUPPI DI STUDIO PRIVATI
    ============================================= */

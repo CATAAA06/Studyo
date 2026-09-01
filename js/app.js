@@ -2163,20 +2163,10 @@ function setMasterVolume(val) {
    COMMUNITY
    ============================================= */
 
-const FAKE_COMMUNITY = [
-    { name: "Alessandro R.", avatar: "😎", xp: 2450, online: true, studying: "Analisi 1" },
-    { name: "Francesca M.", avatar: "👩‍🎓", xp: 3200, online: true, studying: "Microeconomia" },
-    { name: "Davide P.", avatar: "🧑‍💻", xp: 1800, online: true, studying: "Fisica 1" },
-    { name: "Sofia L.", avatar: "📚", xp: 4100, online: false, studying: "" },
-    { name: "Marco T.", avatar: "🎯", xp: 950, online: true, studying: "Diritto Privato" },
-    { name: "Giulia B.", avatar: "✨", xp: 2800, online: false, studying: "" },
-    { name: "Andrea C.", avatar: "🔥", xp: 1500, online: true, studying: "Statistica" },
-    { name: "Chiara V.", avatar: "💡", xp: 3600, online: true, studying: "Marketing" },
-    { name: "Lorenzo G.", avatar: "🚀", xp: 2100, online: false, studying: "" },
-    { name: "Valentina S.", avatar: "🎓", xp: 5200, online: true, studying: "Informatica" },
-];
+// Classifica REALE del proprio ateneo/scuola: nessun profilo inventato.
+let communityCache = null;
 
-function renderCommunity() {
+async function renderCommunity() {
     const section = document.getElementById('community-section');
     if (!section) return;
 
@@ -2189,24 +2179,63 @@ function renderCommunity() {
     section.style.display = 'block';
     document.getElementById('community-name').textContent = uniName;
 
-    const onlineCount = FAKE_COMMUNITY.filter(m => m.online).length;
-    document.getElementById('comm-online').textContent = onlineCount;
-    document.getElementById('comm-total').textContent = FAKE_COMMUNITY.length + Math.floor(Math.random() * 50 + 30);
-    document.getElementById('comm-rank').textContent = '#' + (Math.floor(Math.random() * 15) + 1);
-
     const membersEl = document.getElementById('community-members');
-    membersEl.innerHTML = FAKE_COMMUNITY.map(m => `
-        <div class="community-member">
-            <span class="community-member-avatar">${m.avatar}</span>
+    if (!communityCache) {
+        membersEl.innerHTML = `<div class="community-loading">Carico la classifica…</div>`;
+    }
+
+    let people = [];
+    if (typeof loadCommunityFromFirestore === 'function') {
+        people = await loadCommunityFromFirestore();
+    }
+    communityCache = people;
+
+    // Chi è online adesso, dalla presenza in tempo reale
+    let onlineIds = new Set();
+    if (typeof db !== 'undefined') {
+        try {
+            const snap = await db.collection('presence').limit(100).get();
+            const now = Date.now();
+            snap.docs.forEach(d => {
+                const p = d.data();
+                const ms = p.lastSeen && p.lastSeen.toMillis ? p.lastSeen.toMillis() : 0;
+                if (!ms || (now - ms) < 120000) onlineIds.add(d.id);
+            });
+        } catch (e) { /* regole non ancora pubblicate: si prosegue senza */ }
+    }
+
+    // La mia posizione in classifica
+    const myIdx = people.findIndex(p => p.id === state.firebaseUid);
+    document.getElementById('comm-total').textContent = people.length || 1;
+    document.getElementById('comm-online').textContent =
+        people.filter(p => onlineIds.has(p.id)).length || (onlineIds.has(state.firebaseUid) ? 1 : 0);
+    document.getElementById('comm-rank').textContent = myIdx >= 0 ? '#' + (myIdx + 1) : '—';
+
+    if (!people.length) {
+        membersEl.innerHTML = `<div class="community-empty">
+            <p>Sei il primo di ${escapeHTML(uniName)} su Studyo.</p>
+            <small>Invita qualcuno del tuo corso: la classifica prende vita appena siete in due.</small>
+        </div>`;
+        return;
+    }
+
+    membersEl.innerHTML = people.slice(0, 12).map((p, i) => {
+        const isMe = p.id === state.firebaseUid;
+        const online = onlineIds.has(p.id);
+        const corso = p.corso || p.tipoScuola || '';
+        return `
+        <div class="community-member ${isMe ? 'is-me' : ''}">
+            <span class="community-rank">${i + 1}</span>
+            <span class="community-member-avatar">${avatarFor(p.id)}</span>
             <div class="community-member-info">
-                <div class="community-member-name">${m.name}</div>
-                <div class="community-member-status ${m.online ? 'online' : ''}">
-                    ${m.online ? '● ' + (m.studying ? 'Studia ' + m.studying : 'Online') : '○ Offline'}
+                <div class="community-member-name">${escapeHTML(p.name || 'Studente')}${isMe ? ' <span class="student-you">(tu)</span>' : ''}</div>
+                <div class="community-member-status ${online ? 'online' : ''}">
+                    ${online ? '● Online ora' : (corso ? escapeHTML(corso) : '○ Offline')}
                 </div>
             </div>
-            <span class="community-member-xp">${m.xp} XP</span>
-        </div>
-    `).join('');
+            <span class="community-member-xp">${p.xp || 0} XP</span>
+        </div>`;
+    }).join('');
 }
 
 /* =============================================
