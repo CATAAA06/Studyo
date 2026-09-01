@@ -170,9 +170,11 @@ function navigate(page, data) {
         renderLobbies();
         renderChallenges();
         renderCommunity();
+        renderSidebarGroups();
     } else if (page === 'lobby') {
         document.getElementById('page-lobby').classList.add('active');
         openLobby(data);
+        renderSidebarGroups();
     } else if (page === 'profile') {
         document.getElementById('page-profile').classList.add('active');
         renderProfile();
@@ -267,6 +269,10 @@ function completeSetup() {
 
     closeModal('setup');
     saveState();
+
+    // Un nuovo utente può arrivare da un link d'invito
+    if (typeof refreshGroups === 'function') refreshGroups();
+    if (typeof handleJoinFromUrl === 'function') setTimeout(handleJoinFromUrl, 600);
 
     // Save to Firestore
     if (typeof saveUserToFirestore === 'function') {
@@ -539,8 +545,27 @@ function filterLobbies(category) {
 // Real present users in the current lobby (filled live by Firestore)
 let lobbyRealUsers = [];
 
+// Un gruppo privato si comporta come una lobby, ma non sta in LOBBIES
+function resolveLobby(lobbyId) {
+    if (typeof lobbyId === 'string' && lobbyId.startsWith('group_')) {
+        const g = myGroups.find(x => groupLobbyId(x.id) === lobbyId);
+        if (!g) return null;
+        return {
+            id: lobbyId,
+            name: g.name,
+            icon: '👥',
+            category: 'gruppo',
+            online: 0,
+            isGroup: true,
+            groupCode: g.code,
+            members: g.members || {}
+        };
+    }
+    return LOBBIES.find(l => l.id === lobbyId) || null;
+}
+
 function openLobby(lobbyId) {
-    const lobby = LOBBIES.find(l => l.id === lobbyId);
+    const lobby = resolveLobby(lobbyId);
     if (!lobby) return;
 
     state.currentLobby = lobbyId;
@@ -550,11 +575,17 @@ function openLobby(lobbyId) {
     document.getElementById('lobby-title').textContent = lobby.name;
     document.getElementById('lobby-online').textContent = `${lobbyOnline(lobby)} studenti online`;
 
-    // Una riga che spiega cosa si studia in questa materia
+    // Una riga di contesto: cosa si studia, o le info del gruppo privato
     const descEl = document.getElementById('lobby-desc');
     if (descEl) {
-        const d = (typeof MATERIE_DESC !== 'undefined') ? MATERIE_DESC[lobby.id] : '';
-        descEl.textContent = d || '';
+        let d = '';
+        if (lobby.isGroup) {
+            const n = Object.keys(lobby.members || {}).length;
+            d = `Gruppo privato · ${n} ${n === 1 ? 'membro' : 'membri'} · codice ${lobby.groupCode}`;
+        } else if (typeof MATERIE_DESC !== 'undefined') {
+            d = MATERIE_DESC[lobby.id] || '';
+        }
+        descEl.textContent = d;
         descEl.style.display = d ? 'block' : 'none';
     }
 
@@ -585,19 +616,27 @@ function leaveLobby() {
 }
 
 function updateLobbyOnlineCount(lobby, realCount) {
-    // Hybrid: ambient baseline, but never show fewer than the real people present
-    const shown = Math.max(lobbyOnline(lobby), realCount);
     const el = document.getElementById('lobby-online');
-    if (el) el.textContent = `${shown} studenti online`;
+    if (!el) return;
+    if (lobby && lobby.isGroup) {
+        // Gruppo privato: solo persone vere, nessun riempimento
+        el.textContent = realCount === 1 ? '1 online' : `${realCount} online`;
+        return;
+    }
+    // Lobby pubblica: baseline ambiente, mai meno delle persone realmente presenti
+    const shown = Math.max(lobbyOnline(lobby), realCount);
+    el.textContent = `${shown} studenti online`;
 }
 
 // Hybrid render: REAL present users first (live dot), then ambient profiles to fill.
+// Nei gruppi privati NON si mostra mai nessun profilo ambiente.
 function renderStudents(realUsers = []) {
     const list = document.getElementById('students-list');
     if (!list) return;
 
-    const lobby = LOBBIES.find(l => l.id === state.currentLobby);
-    const ambientTarget = lobby ? (3 + (_hashString(lobby.id + 'amb') % 3)) : 4; // 3..5 stable
+    const lobby = resolveLobby(state.currentLobby);
+    const isGroup = !!(lobby && lobby.isGroup);
+    const ambientTarget = isGroup ? 0 : (lobby ? (3 + (_hashString(lobby.id + 'amb') % 3)) : 4);
 
     // Real users (mark self)
     const realHtml = realUsers.map(u => {
@@ -624,6 +663,16 @@ function renderStudents(realUsers = []) {
             </div>
         </div>
     `).join('');
+
+    // Gruppo vuoto: invito ad attivarlo invece di una lista vuota
+    if (isGroup && realUsers.length <= 1) {
+        const solo = `<div class="group-nudge">
+            <p>${realUsers.length === 1 ? 'Per ora ci sei solo tu.' : 'Ancora nessuno qui.'}</p>
+            <button class="btn btn-secondary btn-sm" onclick="showInvite('${(state.currentLobby||'').replace('group_','')}')">Invita i tuoi amici</button>
+        </div>`;
+        list.innerHTML = realHtml + solo;
+        return;
+    }
 
     list.innerHTML = realHtml + ambientHtml;
 }
@@ -1023,6 +1072,157 @@ function openNotes() {
     editor.oninput = () => {
         localStorage.setItem(`studyo_notes_${state.currentLobby}`, editor.value);
     };
+}
+
+/* =============================================
+   GRUPPI DI STUDIO PRIVATI
+   ============================================= */
+
+let myGroups = [];
+
+function groupLobbyId(id) { return 'group_' + id; }
+
+function openGroups() {
+    renderGroupList();
+    openModal('groups');
+}
+
+async function refreshGroups() {
+    if (typeof loadMyGroups !== 'function' || !state.firebaseUid) return;
+    myGroups = await loadMyGroups();
+    renderSidebarGroups();
+    renderGroupList();
+}
+
+function renderSidebarGroups() {
+    const el = document.getElementById('sidebar-groups');
+    if (!el) return;
+
+    if (!myGroups.length) {
+        el.innerHTML = `<div class="group-empty" onclick="openGroups()">
+            <span>Nessun gruppo</span>
+            <small>Creane uno e invita i tuoi amici</small>
+        </div>`;
+        return;
+    }
+
+    el.innerHTML = myGroups.map(g => {
+        const lid = groupLobbyId(g.id);
+        const n = Object.keys(g.members || {}).length;
+        return `<div class="sidebar-lobby ${state.currentLobby === lid ? 'active' : ''}" onclick="navigate('lobby','${lid}')">
+            <span class="sidebar-lobby-icon">👥</span>
+            <span class="sidebar-lobby-name">${escapeHTML(g.name)}</span>
+            <span class="sidebar-lobby-count">${n}</span>
+        </div>`;
+    }).join('');
+}
+
+function renderGroupList() {
+    const el = document.getElementById('group-list');
+    if (!el) return;
+    if (!myGroups.length) { el.innerHTML = ''; return; }
+
+    el.innerHTML = `<div class="group-list-title">I tuoi gruppi</div>` + myGroups.map(g => `
+        <div class="group-item">
+            <div class="group-item-info">
+                <div class="group-item-name">👥 ${escapeHTML(g.name)}</div>
+                <div class="group-item-meta">${Object.keys(g.members || {}).length} membri · codice <b>${g.code}</b></div>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="showInvite('${g.id}')">Invita</button>
+            <button class="group-leave" onclick="doLeaveGroup('${g.id}')" title="Esci dal gruppo">✕</button>
+        </div>
+    `).join('');
+}
+
+async function doCreateGroup() {
+    const input = document.getElementById('group-name');
+    const name = (input.value || '').trim();
+    if (!name) { showNotification('Dai un nome al gruppo.'); return; }
+    if (!state.firebaseUid) { showNotification('Accedi per creare un gruppo.'); return; }
+
+    const g = await createGroup(name);
+    if (!g) return;
+    input.value = '';
+    await refreshGroups();
+    closeModal('groups');
+    showInvite(g.id);
+    addXP(25, 'Gruppo di studio creato');
+}
+
+async function doJoinGroup() {
+    const input = document.getElementById('group-code');
+    const code = (input.value || '').trim().toUpperCase();
+    if (!code) return;
+
+    const g = await joinGroupByCode(code);
+    if (!g) return;
+    input.value = '';
+    await refreshGroups();
+    closeModal('groups');
+    if (g.already) {
+        showNotification(`Sei già nel gruppo "${g.name}"`);
+    } else {
+        showNotification(`🎉 Sei entrato in "${g.name}"!`);
+        addXP(15, 'Entrato in un gruppo');
+    }
+    navigate('lobby', groupLobbyId(g.id));
+}
+
+async function doLeaveGroup(id) {
+    const g = myGroups.find(x => x.id === id);
+    if (!g) return;
+    if (!confirm(`Vuoi uscire dal gruppo "${g.name}"?`)) return;
+    await leaveGroup(id);
+    if (state.currentLobby === groupLobbyId(id)) navigate('home');
+    await refreshGroups();
+    showNotification('Sei uscito dal gruppo.');
+}
+
+function inviteUrlFor(code) {
+    return location.origin + location.pathname + '?join=' + code;
+}
+
+function showInvite(groupId) {
+    const g = myGroups.find(x => x.id === groupId);
+    if (!g) return;
+    document.getElementById('invite-code').textContent = g.code;
+    document.getElementById('invite-link').value = inviteUrlFor(g.code);
+    openModal('invite');
+}
+
+function copyInvite() {
+    const input = document.getElementById('invite-link');
+    input.select();
+    const done = () => showNotification('🔗 Link copiato! Incollalo dove vuoi.');
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(input.value).then(done).catch(() => { document.execCommand('copy'); done(); });
+    } else {
+        document.execCommand('copy'); done();
+    }
+}
+
+function shareInvite() {
+    const link = document.getElementById('invite-link').value;
+    const text = `Studiamo insieme su Studyo! Entra nel gruppo: ${link}`;
+    if (navigator.share) {
+        navigator.share({ title: 'Studyo', text }).catch(() => {});
+    } else {
+        window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
+    }
+}
+
+// Se l'utente arriva da un link d'invito (?join=CODE)
+async function handleJoinFromUrl() {
+    const code = new URLSearchParams(location.search).get('join');
+    if (!code || !state.firebaseUid) return;
+    // ripulisco subito l'URL così un refresh non ritenta
+    history.replaceState({}, '', location.pathname);
+    const g = await joinGroupByCode(code);
+    if (!g) return;
+    await refreshGroups();
+    showNotification(g.already ? `Sei già in "${g.name}"` : `🎉 Benvenuto in "${g.name}"!`);
+    if (!g.already) addXP(15, 'Entrato in un gruppo');
+    navigate('lobby', groupLobbyId(g.id));
 }
 
 /* =============================================

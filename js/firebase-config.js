@@ -149,6 +149,10 @@ async function handleUserLogin(user, isNew = false) {
         renderChallenges();
         renderCommunity();
         showNotification(`👋 Bentornato, ${state.playerName || 'studente'}!`);
+
+        // Gruppi privati + eventuale link d'invito (?join=CODE)
+        if (typeof refreshGroups === 'function') await refreshGroups();
+        if (typeof handleJoinFromUrl === 'function') await handleJoinFromUrl();
     } else {
         // New user — show setup
         state.firebaseUid = user.uid;
@@ -329,6 +333,106 @@ async function sendChatMessage(lobbyId, text) {
     } catch (e) {
         console.warn('chat send failed (rules?):', e.code || e.message);
         showNotification('Messaggio non inviato (riprova tra poco).');
+        return false;
+    }
+}
+
+/* =============================================
+   GRUPPI DI STUDIO PRIVATI
+   Un gruppo riusa il motore di presenza e chat:
+   il suo id lobby è "group_<id>".
+   ============================================= */
+
+function makeGroupCode() {
+    // Niente 0/O/1/I per evitare ambiguità quando si detta il codice
+    const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let out = '';
+    for (let i = 0; i < 6; i++) out += alphabet[Math.floor(Math.random() * alphabet.length)];
+    return out;
+}
+
+async function createGroup(name) {
+    if (!state.firebaseUid) return null;
+    const code = makeGroupCode();
+    try {
+        const ref = await db.collection('groups').add({
+            name: name,
+            code: code,
+            ownerId: state.firebaseUid,
+            ownerName: state.playerName || 'Studente',
+            members: { [state.firebaseUid]: state.playerName || 'Studente' },
+            memberIds: [state.firebaseUid],
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        return { id: ref.id, name, code };
+    } catch (e) {
+        console.warn('createGroup failed:', e.code || e.message);
+        showNotification('Non riesco a creare il gruppo. Riprova.');
+        return null;
+    }
+}
+
+async function joinGroupByCode(code) {
+    if (!state.firebaseUid) return null;
+    const clean = (code || '').trim().toUpperCase();
+    if (clean.length !== 6) {
+        showNotification('Il codice deve avere 6 caratteri.');
+        return null;
+    }
+    try {
+        const snap = await db.collection('groups').where('code', '==', clean).limit(1).get();
+        if (snap.empty) {
+            showNotification('Nessun gruppo con questo codice.');
+            return null;
+        }
+        const doc = snap.docs[0];
+        const data = doc.data();
+
+        if (data.memberIds && data.memberIds.includes(state.firebaseUid)) {
+            return { id: doc.id, name: data.name, code: data.code, already: true };
+        }
+
+        await doc.ref.update({
+            ['members.' + state.firebaseUid]: state.playerName || 'Studente',
+            memberIds: firebase.firestore.FieldValue.arrayUnion(state.firebaseUid)
+        });
+        return { id: doc.id, name: data.name, code: data.code };
+    } catch (e) {
+        console.warn('joinGroup failed:', e.code || e.message);
+        showNotification('Non riesco a entrare nel gruppo. Riprova.');
+        return null;
+    }
+}
+
+async function loadMyGroups() {
+    if (!state.firebaseUid) return [];
+    try {
+        const snap = await db.collection('groups')
+            .where('memberIds', 'array-contains', state.firebaseUid)
+            .limit(20).get();
+        return snap.docs.map(d => ({
+            id: d.id,
+            name: d.data().name,
+            code: d.data().code,
+            members: d.data().members || {},
+            ownerId: d.data().ownerId
+        }));
+    } catch (e) {
+        console.warn('loadMyGroups failed:', e.code || e.message);
+        return [];
+    }
+}
+
+async function leaveGroup(groupId) {
+    if (!state.firebaseUid) return false;
+    try {
+        await db.collection('groups').doc(groupId).update({
+            ['members.' + state.firebaseUid]: firebase.firestore.FieldValue.delete(),
+            memberIds: firebase.firestore.FieldValue.arrayRemove(state.firebaseUid)
+        });
+        return true;
+    } catch (e) {
+        console.warn('leaveGroup failed:', e.code || e.message);
         return false;
     }
 }
