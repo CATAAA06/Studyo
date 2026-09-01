@@ -153,6 +153,7 @@ async function handleUserLogin(user, isNew = false) {
         // Gruppi privati + eventuale link d'invito (?join=CODE)
         if (typeof refreshGroups === 'function') await refreshGroups();
         if (typeof handleJoinFromUrl === 'function') await handleJoinFromUrl();
+        if (typeof refreshSessions === 'function') refreshSessions();
     } else {
         // New user — show setup
         state.firebaseUid = user.uid;
@@ -436,6 +437,81 @@ async function leaveGroup(groupId) {
         return true;
     } catch (e) {
         console.warn('leaveGroup failed:', e.code || e.message);
+        return false;
+    }
+}
+
+/* =============================================
+   SESSIONI PROGRAMMATE
+   ============================================= */
+
+async function createSession(lobbyId, lobbyName, startAt, note) {
+    if (!state.firebaseUid) return null;
+    try {
+        const ref = await db.collection('sessions').add({
+            lobbyId: lobbyId,
+            lobbyName: lobbyName,
+            note: note || '',
+            startAt: startAt,                       // timestamp in ms
+            creatorId: state.firebaseUid,
+            creatorName: state.playerName || 'Studente',
+            uni: state.playerUni || state.playerScuola || '',
+            participants: [state.firebaseUid],
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        return ref.id;
+    } catch (e) {
+        console.warn('createSession failed:', e.code || e.message);
+        showNotification('Non riesco a creare la sessione. Riprova.');
+        return null;
+    }
+}
+
+// Sessioni future rilevanti: della mia uni/scuola o dei miei gruppi
+async function loadUpcomingSessions() {
+    if (!state.firebaseUid) return [];
+    const now = Date.now();
+    try {
+        const snap = await db.collection('sessions')
+            .where('startAt', '>', now - 30 * 60000)   // anche quelle iniziate da poco
+            .limit(60)
+            .get();
+
+        const uni = state.playerUni || state.playerScuola || '';
+        const groupLobbyIds = (typeof myGroups !== 'undefined')
+            ? myGroups.map(g => 'group_' + g.id) : [];
+
+        return snap.docs
+            .map(d => ({ id: d.id, ...d.data() }))
+            .filter(s => s.uni === uni || groupLobbyIds.includes(s.lobbyId))
+            .sort((a, b) => a.startAt - b.startAt)
+            .slice(0, 12);
+    } catch (e) {
+        console.warn('loadUpcomingSessions failed:', e.code || e.message);
+        return [];
+    }
+}
+
+async function joinSession(sessionId) {
+    if (!state.firebaseUid) return false;
+    try {
+        await db.collection('sessions').doc(sessionId).update({
+            participants: firebase.firestore.FieldValue.arrayUnion(state.firebaseUid)
+        });
+        return true;
+    } catch (e) {
+        console.warn('joinSession failed:', e.code || e.message);
+        return false;
+    }
+}
+
+async function cancelSession(sessionId) {
+    if (!state.firebaseUid) return false;
+    try {
+        await db.collection('sessions').doc(sessionId).delete();
+        return true;
+    } catch (e) {
+        console.warn('cancelSession failed:', e.code || e.message);
         return false;
     }
 }

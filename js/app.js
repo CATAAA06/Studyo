@@ -171,6 +171,7 @@ function navigate(page, data) {
         renderChallenges();
         renderCommunity();
         renderSidebarGroups();
+        renderSessions();
     } else if (page === 'lobby') {
         document.getElementById('page-lobby').classList.add('active');
         openLobby(data);
@@ -1072,6 +1073,174 @@ function openNotes() {
     editor.oninput = () => {
         localStorage.setItem(`studyo_notes_${state.currentLobby}`, editor.value);
     };
+}
+
+/* =============================================
+   SESSIONI PROGRAMMATE
+   ============================================= */
+
+let upcomingSessions = [];
+let sessionReminders = {};
+
+function openNewSession() {
+    const sel = document.getElementById('session-lobby');
+    if (sel) {
+        // I miei esami in cima, poi i gruppi, poi il resto
+        const mieiIds = (state.playerCorso && CORSI_ESAMI[state.playerCorso]) ? CORSI_ESAMI[state.playerCorso] : [];
+        const miei = LOBBIES.filter(l => mieiIds.includes(l.id));
+        const altre = LOBBIES.filter(l => !mieiIds.includes(l.id));
+        let html = '';
+        if (myGroups.length) {
+            html += '<optgroup label="I tuoi gruppi">' +
+                myGroups.map(g => `<option value="group_${g.id}">👥 ${escapeHTML(g.name)}</option>`).join('') +
+                '</optgroup>';
+        }
+        if (miei.length) {
+            html += '<optgroup label="I tuoi esami">' +
+                miei.map(l => `<option value="${l.id}">${l.name}</option>`).join('') + '</optgroup>';
+        }
+        html += '<optgroup label="Tutte le materie">' +
+            altre.map(l => `<option value="${l.id}">${l.name}</option>`).join('') + '</optgroup>';
+        sel.innerHTML = html;
+        if (state.currentLobby) sel.value = state.currentLobby;
+    }
+
+    // Default: oggi (o domani se è tardi)
+    const d = new Date();
+    if (d.getHours() >= 21) d.setDate(d.getDate() + 1);
+    const dateEl = document.getElementById('session-date');
+    if (dateEl) dateEl.value = d.toISOString().slice(0, 10);
+
+    openModal('session');
+}
+
+async function doCreateSession() {
+    const lobbyId = document.getElementById('session-lobby').value;
+    const date = document.getElementById('session-date').value;
+    const time = document.getElementById('session-time').value;
+    const note = document.getElementById('session-note').value.trim();
+
+    if (!lobbyId || !date || !time) { showNotification('Scegli materia, giorno e ora.'); return; }
+
+    const startAt = new Date(`${date}T${time}`).getTime();
+    if (isNaN(startAt)) { showNotification('Data o ora non valide.'); return; }
+    if (startAt < Date.now() - 60000) { showNotification('Scegli un orario futuro.'); return; }
+
+    const lobby = resolveLobby(lobbyId);
+    const name = lobby ? lobby.name : 'Studio';
+
+    const id = await createSession(lobbyId, name, startAt, note);
+    if (!id) return;
+
+    document.getElementById('session-note').value = '';
+    closeModal('session');
+    showNotification('📅 Sessione programmata!');
+    addXP(15, 'Sessione programmata');
+    askNotificationPermission();
+    await refreshSessions();
+}
+
+async function refreshSessions() {
+    if (typeof loadUpcomingSessions !== 'function' || !state.firebaseUid) return;
+    upcomingSessions = await loadUpcomingSessions();
+    renderSessions();
+    scheduleReminders();
+}
+
+function formatWhen(ts) {
+    const d = new Date(ts);
+    const now = new Date();
+    const sameDay = d.toDateString() === now.toDateString();
+    const tomorrow = new Date(now); tomorrow.setDate(now.getDate() + 1);
+    const isTomorrow = d.toDateString() === tomorrow.toDateString();
+    const hh = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+    if (sameDay) return 'Oggi alle ' + hh;
+    if (isTomorrow) return 'Domani alle ' + hh;
+    return d.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' }) + ' alle ' + hh;
+}
+
+function renderSessions() {
+    const section = document.getElementById('sessions-section');
+    const list = document.getElementById('sessions-list');
+    if (!section || !list) return;
+
+    if (!state.setupDone) { section.style.display = 'none'; return; }
+    section.style.display = 'block';
+
+    if (!upcomingSessions.length) {
+        list.innerHTML = `<div class="session-empty">
+            <p>Nessuna sessione in programma.</p>
+            <small>Fissane una e invita gli altri: studiare a un orario deciso funziona molto meglio.</small>
+        </div>`;
+        return;
+    }
+
+    list.innerHTML = upcomingSessions.map(s => {
+        const joined = (s.participants || []).includes(state.firebaseUid);
+        const mine = s.creatorId === state.firebaseUid;
+        const n = (s.participants || []).length;
+        const live = s.startAt <= Date.now();
+        return `
+        <div class="session-card ${live ? 'live' : ''}">
+            <div class="session-when">${live ? '🔴 In corso' : formatWhen(s.startAt)}</div>
+            <div class="session-main">
+                <div class="session-title">${escapeHTML(s.lobbyName || 'Studio')}</div>
+                ${s.note ? `<div class="session-note">${escapeHTML(s.note)}</div>` : ''}
+                <div class="session-meta">da ${escapeHTML(s.creatorName || 'Studente')} · ${n} ${n === 1 ? 'partecipante' : 'partecipanti'}</div>
+            </div>
+            <div class="session-actions">
+                ${live
+                    ? `<button class="btn btn-primary btn-sm" onclick="navigate('lobby','${s.lobbyId}')">Entra</button>`
+                    : joined
+                        ? `<span class="session-joined">✓ Ci sei</span>`
+                        : `<button class="btn btn-secondary btn-sm" onclick="doJoinSession('${s.id}')">Partecipa</button>`}
+                ${mine ? `<button class="group-leave" onclick="doCancelSession('${s.id}')" title="Annulla">✕</button>` : ''}
+            </div>
+        </div>`;
+    }).join('');
+}
+
+async function doJoinSession(id) {
+    const ok = await joinSession(id);
+    if (!ok) return;
+    showNotification('✓ Ti sei unito alla sessione');
+    addXP(5, 'Partecipazione a una sessione');
+    askNotificationPermission();
+    await refreshSessions();
+}
+
+async function doCancelSession(id) {
+    if (!confirm('Annullare questa sessione?')) return;
+    await cancelSession(id);
+    await refreshSessions();
+    showNotification('Sessione annullata.');
+}
+
+/* --- Promemoria (notifiche locali, nessun server) --- */
+
+function askNotificationPermission() {
+    if (!('Notification' in window)) return;
+    if (Notification.permission === 'default') Notification.requestPermission().catch(() => {});
+}
+
+function scheduleReminders() {
+    Object.values(sessionReminders).forEach(t => clearTimeout(t));
+    sessionReminders = {};
+
+    upcomingSessions.forEach(s => {
+        if (!(s.participants || []).includes(state.firebaseUid)) return;
+        const lead = s.startAt - 5 * 60000 - Date.now();   // 5 minuti prima
+        if (lead <= 0 || lead > 24 * 3600000) return;      // solo entro le prossime 24h
+        sessionReminders[s.id] = setTimeout(() => {
+            const msg = `Tra 5 minuti: ${s.lobbyName}`;
+            showNotification('⏰ ' + msg);
+            if ('Notification' in window && Notification.permission === 'granted') {
+                try {
+                    new Notification('Studyo', { body: msg, icon: 'icons/icon-192.png' });
+                } catch (e) {}
+            }
+        }, lead);
+    });
 }
 
 /* =============================================

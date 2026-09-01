@@ -143,6 +143,15 @@
                     <span class="focus-cta-btn">Entra →</span>
                 </div>
 
+                <!-- Prossime sessioni -->
+                <div class="sessions-section" id="sessions-section" style="display:none">
+                    <div class="sessions-head">
+                        <h2>📅 Prossime sessioni</h2>
+                        <button class="btn btn-secondary btn-sm" onclick="openNewSession()">+ Programma</button>
+                    </div>
+                    <div class="sessions-list" id="sessions-list"></div>
+                </div>
+
                 <!-- Community Section -->
                 <div class="community-section" id="community-section" style="display:none">
                     <div class="community-header">
@@ -402,6 +411,40 @@
     </div>
 
     <!-- ============ MODALS ============ -->
+
+    <!-- NUOVA SESSIONE MODAL -->
+    <div class="modal" id="modal-session">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📅 Programma una sessione</h2>
+                <button class="modal-close" onclick="closeModal('session')">✕</button>
+            </div>
+            <p class="group-intro">Fissa quando studierai: gli altri possono unirsi e ricevete un promemoria poco prima.</p>
+
+            <div class="form-group">
+                <label>Materia o gruppo</label>
+                <select id="session-lobby"></select>
+            </div>
+
+            <div class="session-when">
+                <div class="form-group">
+                    <label>Giorno</label>
+                    <input type="date" id="session-date">
+                </div>
+                <div class="form-group">
+                    <label>Ora</label>
+                    <input type="time" id="session-time" value="15:00">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Nota (facoltativa)</label>
+                <input type="text" id="session-note" placeholder="Es: ripasso capitoli 4-6" maxlength="80">
+            </div>
+
+            <button class="btn btn-primary btn-large" style="width:100%;justify-content:center" onclick="doCreateSession()">Programma sessione</button>
+        </div>
+    </div>
 
     <!-- GRUPPI MODAL -->
     <div class="modal" id="modal-groups">
