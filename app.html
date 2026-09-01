@@ -537,10 +537,29 @@
     <div class="modal" id="modal-notes">
         <div class="modal-content modal-large">
             <div class="modal-header">
-                <h2>📝 Appunti Condivisi</h2>
+                <h2>📝 Appunti</h2>
                 <button class="modal-close" onclick="closeModal('notes')">✕</button>
             </div>
-            <textarea class="notes-editor" id="notes-editor" placeholder="Scrivi i tuoi appunti qui..."></textarea>
+
+            <div class="notes-tabs">
+                <button class="notes-tab active" id="tab-mine" onclick="showNotesTab('mine')">I miei</button>
+                <button class="notes-tab" id="tab-shared" onclick="showNotesTab('shared')">Condivisi dagli altri</button>
+            </div>
+
+            <div id="notes-pane-mine">
+                <textarea class="notes-editor" id="notes-editor" placeholder="Scrivi i tuoi appunti qui..."></textarea>
+                <div class="notes-bar">
+                    <span class="notes-status" id="notes-status">Salvati sul tuo account</span>
+                    <label class="notes-share">
+                        <input type="checkbox" id="notes-shared" onchange="toggleShareNote()">
+                        <span>Condividi con la lobby</span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="notes-pane-shared" style="display:none">
+                <div class="shared-notes" id="shared-notes"></div>
+            </div>
         </div>
     </div>
 

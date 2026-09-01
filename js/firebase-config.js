@@ -442,6 +442,67 @@ async function leaveGroup(groupId) {
 }
 
 /* =============================================
+   APPUNTI SUL CLOUD
+   Un documento per utente e materia: sincronizzati
+   tra dispositivi, condivisibili nella lobby.
+   ============================================= */
+
+function noteDocId(lobbyId) { return state.firebaseUid + '_' + lobbyId; }
+
+async function loadNote(lobbyId) {
+    if (!state.firebaseUid) return null;
+    try {
+        const doc = await db.collection('notes').doc(noteDocId(lobbyId)).get();
+        return doc.exists ? doc.data() : null;
+    } catch (e) {
+        console.warn('loadNote failed:', e.code || e.message);
+        return null;
+    }
+}
+
+async function saveNote(lobbyId, text, shared) {
+    if (!state.firebaseUid) return false;
+    try {
+        await db.collection('notes').doc(noteDocId(lobbyId)).set({
+            uid: state.firebaseUid,
+            authorName: state.playerName || 'Studente',
+            lobbyId: lobbyId,
+            text: text,
+            shared: !!shared,
+            uni: state.playerUni || state.playerScuola || '',
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+        return true;
+    } catch (e) {
+        console.warn('saveNote failed:', e.code || e.message);
+        return false;
+    }
+}
+
+// Appunti che altri hanno condiviso in questa materia
+async function loadSharedNotes(lobbyId) {
+    if (!state.firebaseUid) return [];
+    try {
+        const snap = await db.collection('notes')
+            .where('lobbyId', '==', lobbyId)
+            .limit(40)
+            .get();
+        return snap.docs
+            .map(d => ({ id: d.id, ...d.data() }))
+            .filter(n => n.shared && n.uid !== state.firebaseUid && (n.text || '').trim())
+            .sort((a, b) => {
+                const ta = a.updatedAt && a.updatedAt.toMillis ? a.updatedAt.toMillis() : 0;
+                const tb = b.updatedAt && b.updatedAt.toMillis ? b.updatedAt.toMillis() : 0;
+                return tb - ta;
+            })
+            .slice(0, 10);
+    } catch (e) {
+        console.warn('loadSharedNotes failed:', e.code || e.message);
+        return [];
+    }
+}
+
+/* =============================================
    SESSIONI PROGRAMMATE
    ============================================= */
 

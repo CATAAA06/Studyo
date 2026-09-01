@@ -1064,15 +1064,103 @@ function rateFlashcard(rating) {
    NOTES
    ============================================= */
 
-function openNotes() {
-    openModal('notes');
-    const editor = document.getElementById('notes-editor');
-    const saved = localStorage.getItem(`studyo_notes_${state.currentLobby}`);
-    if (saved) editor.value = saved;
+let noteSaveTimer = null;
+let noteIsShared = false;
 
+async function openNotes() {
+    openModal('notes');
+    showNotesTab('mine');
+
+    const editor = document.getElementById('notes-editor');
+    const statusEl = document.getElementById('notes-status');
+    const lobbyId = state.currentLobby;
+
+    // 1) Mostro subito la copia locale (istantanea, funziona anche offline)
+    const local = localStorage.getItem(`studyo_notes_${lobbyId}`) || '';
+    editor.value = local;
+
+    // 2) Poi allineo con la versione sul cloud, se più recente
+    if (typeof loadNote === 'function' && state.firebaseUid) {
+        statusEl.textContent = 'Sincronizzo…';
+        const remote = await loadNote(lobbyId);
+        if (remote && typeof remote.text === 'string') {
+            // il cloud vince se il locale è vuoto o identico all'inizio
+            if (!local || remote.text.length >= local.length) {
+                editor.value = remote.text;
+                localStorage.setItem(`studyo_notes_${lobbyId}`, remote.text);
+            }
+            noteIsShared = !!remote.shared;
+        } else {
+            noteIsShared = false;
+        }
+        const cb = document.getElementById('notes-shared');
+        if (cb) cb.checked = noteIsShared;
+        statusEl.textContent = 'Salvati sul tuo account';
+    } else {
+        statusEl.textContent = 'Salvati su questo dispositivo';
+    }
+
+    // 3) Salvataggio: locale immediato, cloud con debounce
     editor.oninput = () => {
-        localStorage.setItem(`studyo_notes_${state.currentLobby}`, editor.value);
+        localStorage.setItem(`studyo_notes_${lobbyId}`, editor.value);
+        statusEl.textContent = 'Scrivo…';
+        clearTimeout(noteSaveTimer);
+        noteSaveTimer = setTimeout(async () => {
+            if (typeof saveNote === 'function' && state.firebaseUid) {
+                const ok = await saveNote(lobbyId, editor.value, noteIsShared);
+                statusEl.textContent = ok ? 'Salvato ✓' : 'Salvato solo qui';
+            } else {
+                statusEl.textContent = 'Salvato su questo dispositivo';
+            }
+        }, 900);
     };
+}
+
+async function toggleShareNote() {
+    const cb = document.getElementById('notes-shared');
+    noteIsShared = !!(cb && cb.checked);
+    const editor = document.getElementById('notes-editor');
+    if (typeof saveNote === 'function' && state.firebaseUid) {
+        await saveNote(state.currentLobby, editor.value, noteIsShared);
+    }
+    showNotification(noteIsShared
+        ? '📤 I tuoi appunti sono ora visibili nella lobby'
+        : '🔒 Appunti tornati privati');
+    if (noteIsShared) addXP(20, 'Appunti condivisi');
+}
+
+async function showNotesTab(which) {
+    const mine = document.getElementById('notes-pane-mine');
+    const shared = document.getElementById('notes-pane-shared');
+    document.getElementById('tab-mine').classList.toggle('active', which === 'mine');
+    document.getElementById('tab-shared').classList.toggle('active', which === 'shared');
+    mine.style.display = which === 'mine' ? 'block' : 'none';
+    shared.style.display = which === 'shared' ? 'block' : 'none';
+
+    if (which !== 'shared') return;
+
+    const box = document.getElementById('shared-notes');
+    box.innerHTML = `<div class="community-loading">Cerco appunti condivisi…</div>`;
+    const notes = (typeof loadSharedNotes === 'function')
+        ? await loadSharedNotes(state.currentLobby) : [];
+
+    if (!notes.length) {
+        box.innerHTML = `<div class="session-empty">
+            <p>Ancora nessun appunto condiviso qui.</p>
+            <small>Condividi i tuoi dalla scheda "I miei": chi studia questa materia li vedrà.</small>
+        </div>`;
+        return;
+    }
+
+    box.innerHTML = notes.map(n => `
+        <div class="shared-note">
+            <div class="shared-note-head">
+                <span class="shared-note-avatar">${avatarFor(n.uid)}</span>
+                <span class="shared-note-author">${escapeHTML(n.authorName || 'Studente')}</span>
+            </div>
+            <div class="shared-note-text">${escapeHTML(n.text).replace(/\n/g, '<br>')}</div>
+        </div>
+    `).join('');
 }
 
 /* =============================================
