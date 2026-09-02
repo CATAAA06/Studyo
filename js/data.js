@@ -1404,6 +1404,226 @@ const QUIZZES = {
             options: ["Una domanda del presidente", "Un materiale scelto dalla commissione", "La tesina", "La media dei voti"],
             correct: 1
         }
+    ],
+
+    /* ---------- SCIENTIFICA / INGEGNERIA ---------- */
+    analisi2: [
+        { question: "La derivata parziale ∂f/∂x si calcola:", options: ["Derivando rispetto a x e trattando y come costante", "Derivando rispetto a tutte le variabili", "Facendo la media delle derivate", "Integrando rispetto a y"], correct: 0 },
+        { question: "Il gradiente di una funzione punta nella direzione di:", options: ["Minima crescita", "Massima crescita", "Nessuna variazione", "Massima curvatura"], correct: 1 },
+        { question: "Un punto critico con hessiano negativo è:", options: ["Un massimo", "Un minimo", "Una sella", "Un flesso"], correct: 2 },
+        { question: "L'equazione y' = f(x)g(y) si dice:", options: ["Lineare", "A variabili separabili", "Omogenea", "Esatta"], correct: 1 },
+        { question: "Il teorema di Schwarz riguarda:", options: ["L'uguaglianza delle derivate miste", "La convergenza delle serie", "L'esistenza degli integrali", "La continuità delle funzioni"], correct: 0 }
+    ],
+    algebra: [
+        { question: "Una matrice quadrata è invertibile se e solo se:", options: ["È simmetrica", "Il determinante è diverso da zero", "Ha tutti elementi positivi", "È diagonale"], correct: 1 },
+        { question: "Gli autovalori si trovano risolvendo:", options: ["det(A − λI) = 0", "A·v = 0", "tr(A) = 0", "A + I = 0"], correct: 0 },
+        { question: "Il teorema di Rouché-Capelli dice che il sistema ha soluzioni se:", options: ["Il determinante è nullo", "rango(A) = rango(A|b)", "Ci sono più equazioni che incognite", "La matrice è quadrata"], correct: 1 },
+        { question: "Il rango di una matrice è:", options: ["Il numero di righe", "Il numero massimo di righe linearmente indipendenti", "La somma degli elementi", "Il determinante"], correct: 1 },
+        { question: "Una base di uno spazio vettoriale è:", options: ["Un insieme qualsiasi di vettori", "Vettori indipendenti che generano lo spazio", "Il vettore nullo", "L'insieme di tutti i vettori"], correct: 1 }
+    ],
+    fisica2: [
+        { question: "La forza tra due cariche varia con la distanza come:", options: ["1/r", "1/r²", "r", "r²"], correct: 1 },
+        { question: "Il teorema di Gauss lega il flusso del campo elettrico a:", options: ["La carica racchiusa", "La massa", "La velocità", "Il campo magnetico"], correct: 0 },
+        { question: "La legge di Lenz stabilisce che la corrente indotta:", options: ["Amplifica la variazione di flusso", "Si oppone alla variazione di flusso", "È sempre nulla", "È costante"], correct: 1 },
+        { question: "L'unità di misura della capacità è:", options: ["Henry", "Farad", "Tesla", "Weber"], correct: 1 },
+        { question: "Un campo magnetico esercita forza su una carica:", options: ["Sempre", "Solo se la carica è in moto", "Solo se ferma", "Mai"], correct: 1 }
+    ],
+    programmazione: [
+        { question: "L'accesso a un elemento di un array per indice ha complessità:", options: ["O(1)", "O(n)", "O(log n)", "O(n²)"], correct: 0 },
+        { question: "Una funzione ricorsiva senza caso base provoca:", options: ["Un ciclo infinito controllato", "Stack overflow", "Un errore di sintassi", "Nessun problema"], correct: 1 },
+        { question: "Nel passaggio per riferimento, le modifiche:", options: ["Non sono visibili al chiamante", "Sono visibili al chiamante", "Creano una copia", "Generano errore"], correct: 1 },
+        { question: "L'incapsulamento consiste nel:", options: ["Nascondere lo stato interno esponendo metodi", "Ereditare da una classe", "Creare più oggetti", "Ottimizzare il codice"], correct: 0 },
+        { question: "Una lista concatenata rispetto a un array offre:", options: ["Accesso più rapido per indice", "Inserimento più efficiente", "Meno memoria sempre", "Ordinamento automatico"], correct: 1 }
+    ],
+    archCalcolatori: [
+        { question: "La pipeline serve a:", options: ["Ridurre il consumo", "Sovrapporre le fasi delle istruzioni", "Aumentare la RAM", "Comprimere i dati"], correct: 1 },
+        { question: "La cache sfrutta il principio di:", options: ["Località temporale e spaziale", "Ridondanza", "Parallelismo massivo", "Virtualizzazione"], correct: 0 },
+        { question: "Nell'architettura Harvard:", options: ["Dati e istruzioni condividono la memoria", "Dati e istruzioni hanno memorie separate", "Non esiste la cache", "La CPU è unica"], correct: 1 },
+        { question: "Il complemento a due serve per rappresentare:", options: ["I numeri negativi", "I numeri decimali", "I caratteri", "Le istruzioni"], correct: 0 },
+        { question: "La memoria più veloce della gerarchia è:", options: ["Il disco", "La RAM", "I registri della CPU", "La cache L3"], correct: 2 }
+    ],
+    sistemiOperativi: [
+        { question: "I thread dello stesso processo condividono:", options: ["Lo spazio di memoria", "Solo i registri", "Nulla", "Il disco"], correct: 0 },
+        { question: "Il deadlock è una situazione in cui:", options: ["Un processo termina", "Più processi attendono a vicenda risorse", "La CPU è al 100%", "La memoria è piena"], correct: 1 },
+        { question: "La memoria virtuale si basa su:", options: ["La paginazione", "La compressione", "La cache", "Il clock"], correct: 0 },
+        { question: "Il context switch consiste nel:", options: ["Cambiare utente", "Salvare lo stato di un processo e ripristinarne un altro", "Riavviare il sistema", "Liberare la RAM"], correct: 1 },
+        { question: "Un semaforo serve a:", options: ["Misurare le prestazioni", "Sincronizzare l'accesso a risorse condivise", "Comprimere file", "Gestire la rete"], correct: 1 }
+    ],
+    basiDati: [
+        { question: "Una chiave primaria:", options: ["Può essere NULL", "Identifica univocamente ogni tupla", "Può ripetersi", "È sempre testuale"], correct: 1 },
+        { question: "La chiave esterna garantisce:", options: ["La velocità delle query", "L'integrità referenziale", "La compressione", "L'ordinamento"], correct: 1 },
+        { question: "Il LEFT JOIN restituisce:", options: ["Solo le righe con corrispondenza", "Tutte le righe della tabella di sinistra", "Solo quelle di destra", "Nessuna riga"], correct: 1 },
+        { question: "ACID sta per:", options: ["Atomicità, Consistenza, Isolamento, Durabilità", "Accesso, Controllo, Indice, Dati", "Analisi, Codifica, Input, Design", "Nessuna delle precedenti"], correct: 0 },
+        { question: "La normalizzazione serve a:", options: ["Aumentare la ridondanza", "Eliminare ridondanze e anomalie", "Velocizzare sempre le query", "Cifrare i dati"], correct: 1 }
+    ],
+    retiCalcolatori: [
+        { question: "Rispetto a UDP, il protocollo TCP è:", options: ["Più veloce ma inaffidabile", "Affidabile e orientato alla connessione", "Senza controllo di errore", "Usato solo per streaming"], correct: 1 },
+        { question: "Quanti livelli ha il modello ISO/OSI?", options: ["4", "5", "7", "9"], correct: 2 },
+        { question: "Il DNS serve a:", options: ["Cifrare i dati", "Tradurre nomi di dominio in indirizzi IP", "Instradare i pacchetti", "Assegnare indirizzi MAC"], correct: 1 },
+        { question: "Il three-way handshake avviene con:", options: ["SYN, SYN-ACK, ACK", "GET, POST, PUT", "ARP, RARP, ICMP", "OPEN, SEND, CLOSE"], correct: 0 },
+        { question: "L'indirizzo MAC opera al livello:", options: ["Applicazione", "Trasporto", "Collegamento dati", "Rete"], correct: 2 }
+    ],
+    chimicaOrg: [
+        { question: "Il gruppo funzionale −COOH identifica:", options: ["Un alcol", "Un acido carbossilico", "Un'ammina", "Un chetone"], correct: 1 },
+        { question: "La reazione SN2 procede con:", options: ["Formazione di carbocatione", "Un solo stadio e inversione di configurazione", "Racemizzazione completa", "Due stadi distinti"], correct: 1 },
+        { question: "Gli enantiomeri sono:", options: ["Molecole identiche", "Immagini speculari non sovrapponibili", "Isomeri di posizione", "Stessa molecola ruotata"], correct: 1 },
+        { question: "La regola di Markovnikov riguarda:", options: ["L'addizione agli alcheni", "L'ossidazione degli alcoli", "La riduzione dei chetoni", "L'idrolisi degli esteri"], correct: 0 },
+        { question: "Il benzene è stabilizzato da:", options: ["Legami tripli", "Risonanza", "Tensione di anello", "Legami idrogeno"], correct: 1 }
+    ],
+    biologia: [
+        { question: "La cellula procariote si distingue perché:", options: ["Ha il nucleo", "Non ha nucleo né organelli membranosi", "È più grande", "Ha i mitocondri"], correct: 1 },
+        { question: "La meiosi produce:", options: ["2 cellule diploidi", "4 cellule aploidi", "2 cellule aploidi", "4 cellule diploidi"], correct: 1 },
+        { question: "Il dogma centrale della biologia molecolare è:", options: ["DNA → RNA → proteina", "Proteina → RNA → DNA", "RNA → DNA → proteina", "DNA → proteina → RNA"], correct: 0 },
+        { question: "I mitocondri producono:", options: ["Proteine", "ATP", "DNA", "Lipidi"], correct: 1 },
+        { question: "La fotosintesi avviene nei:", options: ["Ribosomi", "Cloroplasti", "Lisosomi", "Mitocondri"], correct: 1 }
+    ],
+
+    /* ---------- ECONOMIA ---------- */
+    macroeconomia: [
+        { question: "Il PIL misura:", options: ["Il debito pubblico", "Il valore dei beni e servizi finali prodotti", "La ricchezza accumulata", "Il reddito medio"], correct: 1 },
+        { question: "Il PIL reale differisce dal nominale perché:", options: ["Include l'estero", "È depurato dall'inflazione", "Considera solo i servizi", "Esclude le imposte"], correct: 1 },
+        { question: "La curva di Phillips descrive la relazione tra:", options: ["Inflazione e disoccupazione", "PIL e tassi", "Risparmio e investimento", "Import ed export"], correct: 0 },
+        { question: "Una politica monetaria espansiva prevede:", options: ["Aumento dei tassi", "Riduzione dei tassi e più moneta", "Aumento delle tasse", "Riduzione della spesa"], correct: 1 },
+        { question: "L'inflazione comporta:", options: ["Aumento del potere d'acquisto", "Riduzione del potere d'acquisto", "Nessun effetto sui prezzi", "Deflazione"], correct: 1 }
+    ],
+    ragioneria: [
+        { question: "La partita doppia registra ogni operazione:", options: ["Una sola volta", "Due volte, in dare e in avere", "Tre volte", "Solo a fine anno"], correct: 1 },
+        { question: "Lo stato patrimoniale rappresenta:", options: ["Il risultato d'esercizio", "La situazione di attività e passività a una data", "I flussi di cassa", "Le previsioni future"], correct: 1 },
+        { question: "L'ammortamento serve a:", options: ["Ripartire il costo di un bene pluriennale", "Aumentare l'utile", "Pagare i debiti", "Distribuire dividendi"], correct: 0 },
+        { question: "I risconti attivi rappresentano costi:", options: ["Già maturati non pagati", "Già pagati ma di competenza futura", "Mai sostenuti", "Straordinari"], correct: 1 },
+        { question: "Il conto economico evidenzia:", options: ["Il patrimonio netto", "Costi, ricavi e risultato d'esercizio", "Solo la liquidità", "I soci"], correct: 1 }
+    ],
+    dirCommerciale: [
+        { question: "L'imprenditore secondo l'art. 2082 c.c. esercita l'attività:", options: ["Occasionalmente", "Professionalmente e in modo organizzato", "Solo con dipendenti", "Senza scopo di lucro"], correct: 1 },
+        { question: "Nelle società di capitali i soci rispondono:", options: ["Illimitatamente", "Nei limiti del conferimento", "Solo con il patrimonio personale", "Solidalmente e illimitatamente"], correct: 1 },
+        { question: "L'azienda è definita come:", options: ["Il complesso dei beni organizzati per l'impresa", "L'insieme dei dipendenti", "Il capitale sociale", "La sede legale"], correct: 0 },
+        { question: "La cambiale è:", options: ["Un contratto di lavoro", "Un titolo di credito", "Un atto costitutivo", "Una garanzia reale"], correct: 1 },
+        { question: "L'assemblea dei soci nella S.p.A.:", options: ["Gestisce l'attività quotidiana", "Delibera sulle decisioni fondamentali", "Controlla i conti", "Rappresenta i creditori"], correct: 1 }
+    ],
+    matFin: [
+        { question: "Nel regime composto il montante si calcola:", options: ["C(1+i·n)", "C(1+i)^n", "C·i·n", "C/(1+i)"], correct: 1 },
+        { question: "L'attualizzazione serve a:", options: ["Portare un valore futuro al presente", "Calcolare gli interessi", "Aumentare il capitale", "Determinare il tasso"], correct: 0 },
+        { question: "Un investimento conviene se il VAN è:", options: ["Negativo", "Maggiore di zero", "Uguale a zero", "Indifferente"], correct: 1 },
+        { question: "Una rendita è:", options: ["Un capitale unico", "Una successione di capitali a scadenze periodiche", "Un debito", "Un tasso di interesse"], correct: 1 },
+        { question: "Nell'interesse semplice gli interessi:", options: ["Producono altri interessi", "Non si capitalizzano", "Sono sempre maggiori", "Variano ogni anno"], correct: 1 }
+    ],
+
+    /* ---------- GIURIDICA ---------- */
+    dirCostituzionale: [
+        { question: "La riserva di legge implica che una materia:", options: ["Può essere regolata da regolamenti", "Può essere disciplinata solo dalla legge", "Non è disciplinabile", "Spetta alle Regioni"], correct: 1 },
+        { question: "Il bicameralismo italiano è definito perfetto perché:", options: ["Le Camere hanno funzioni diverse", "Camera e Senato hanno pari poteri", "C'è una sola Camera", "Il Senato è consultivo"], correct: 1 },
+        { question: "Il decreto legge deve essere convertito entro:", options: ["30 giorni", "60 giorni", "90 giorni", "6 mesi"], correct: 1 },
+        { question: "La Corte costituzionale giudica:", options: ["I reati comuni", "La legittimità costituzionale delle leggi", "Le cause civili", "I ricorsi amministrativi"], correct: 1 },
+        { question: "Il decreto legislativo è adottato:", options: ["Su delega del Parlamento", "Per necessità e urgenza", "Dal Presidente della Repubblica", "Dalla Corte dei Conti"], correct: 0 }
+    ],
+    dirPenale: [
+        { question: "Il dolo si distingue dalla colpa perché l'evento è:", options: ["Non voluto", "Previsto e voluto", "Impossibile", "Casuale"], correct: 1 },
+        { question: "Il principio di legalità impone che:", options: ["La legge sia successiva al fatto", "Nessuno sia punito senza legge anteriore al fatto", "Il giudice crei la norma", "La pena sia sempre detentiva"], correct: 1 },
+        { question: "Il tentativo richiede atti:", options: ["Idonei e diretti in modo non equivoco", "Meramente preparatori", "Solo pensati", "Sempre consumati"], correct: 0 },
+        { question: "Le contravvenzioni sono punite con:", options: ["Reclusione e multa", "Arresto e ammenda", "Solo interdizione", "Nessuna pena"], correct: 1 },
+        { question: "L'elemento oggettivo del reato comprende:", options: ["Solo il dolo", "Condotta, evento e nesso causale", "La sola volontà", "La pena"], correct: 1 }
+    ],
+    dirAmministrativo: [
+        { question: "L'interesse legittimo è tutelato davanti al:", options: ["Giudice ordinario", "Giudice amministrativo", "Giudice penale", "Arbitro"], correct: 1 },
+        { question: "I vizi di legittimità dell'atto amministrativo sono:", options: ["Incompetenza, eccesso di potere, violazione di legge", "Dolo, colpa, errore", "Nullità e annullabilità", "Forma e sostanza"], correct: 0 },
+        { question: "Il silenzio-assenso significa che:", options: ["L'istanza è respinta", "Il decorso del termine equivale ad accoglimento", "Il procedimento si annulla", "Serve un nuovo atto"], correct: 1 },
+        { question: "Il provvedimento amministrativo è caratterizzato da:", options: ["Autoritatività", "Bilateralità", "Gratuità", "Informalità"], correct: 0 },
+        { question: "La discrezionalità amministrativa consiste nel:", options: ["Agire arbitrariamente", "Ponderare interesse pubblico e interessi secondari", "Applicare meccanicamente la legge", "Delegare ai privati"], correct: 1 }
+    ],
+    dirLavoro: [
+        { question: "Il lavoro subordinato si caratterizza per:", options: ["Autonomia organizzativa", "Dipendenza e direzione altrui", "Assenza di retribuzione", "Durata determinata"], correct: 1 },
+        { question: "Il licenziamento per giusta causa:", options: ["Richiede preavviso", "Non richiede preavviso", "È sempre nullo", "Richiede consenso del lavoratore"], correct: 1 },
+        { question: "Lo Statuto dei lavoratori è la legge:", options: ["300/1970", "104/1992", "92/2012", "196/1997"], correct: 0 },
+        { question: "Il TFR è:", options: ["Un premio di produzione", "Retribuzione differita liquidata a fine rapporto", "Un'indennità di malattia", "Un contributo previdenziale"], correct: 1 },
+        { question: "Il CCNL stabilisce:", options: ["Solo l'orario", "I minimi retributivi e normativi di categoria", "Le imposte", "Il numero di dipendenti"], correct: 1 }
+    ],
+    dirUE: [
+        { question: "Il regolamento europeo è:", options: ["Direttamente applicabile", "Da recepire con legge nazionale", "Solo una raccomandazione", "Vincolante per un solo Stato"], correct: 0 },
+        { question: "La direttiva vincola gli Stati:", options: ["Nella forma", "Nel risultato da raggiungere", "In nessun modo", "Solo se ratificata"], correct: 1 },
+        { question: "Le quattro libertà del mercato interno riguardano:", options: ["Merci, persone, servizi, capitali", "Stampa, culto, parola, voto", "Import, export, dazi, quote", "Lavoro, casa, studio, salute"], correct: 0 },
+        { question: "In caso di conflitto tra norma UE e nazionale:", options: ["Prevale quella nazionale", "Prevale quella UE", "Decide il governo", "Si annullano entrambe"], correct: 1 },
+        { question: "Il principio di sussidiarietà prevede che l'UE intervenga:", options: ["Sempre", "Solo se l'obiettivo non è raggiungibile meglio a livello nazionale", "Mai", "Solo su richiesta"], correct: 1 }
+    ],
+
+    /* ---------- MEDICINA ---------- */
+    anatomia: [
+        { question: "Il piano che divide il corpo in destra e sinistra è:", options: ["Frontale", "Sagittale", "Trasversale", "Obliquo"], correct: 1 },
+        { question: "Quante vertebre cervicali ha l'uomo?", options: ["5", "7", "12", "9"], correct: 1 },
+        { question: "La valvola tra atrio sinistro e ventricolo sinistro è:", options: ["Tricuspide", "Mitrale", "Aortica", "Polmonare"], correct: 1 },
+        { question: "Le arterie trasportano il sangue:", options: ["Verso il cuore", "Dal cuore alla periferia", "Solo ossigenato", "Nei capillari linfatici"], correct: 1 },
+        { question: "Il sistema nervoso centrale è formato da:", options: ["Encefalo e midollo spinale", "Nervi periferici", "Gangli e plessi", "Solo cervello"], correct: 0 }
+    ],
+    fisiologia: [
+        { question: "Il potenziale d'azione è generato dall'ingresso di:", options: ["Potassio", "Sodio", "Cloro", "Calcio"], correct: 1 },
+        { question: "La gittata cardiaca è data da:", options: ["Gittata sistolica × frequenza", "Pressione × resistenza", "Volume/tempo di riempimento", "Frequenza × pressione"], correct: 0 },
+        { question: "L'omeostasi è mantenuta soprattutto da meccanismi di:", options: ["Feedback positivo", "Feedback negativo", "Amplificazione", "Inibizione totale"], correct: 1 },
+        { question: "La filtrazione glomerulare avviene grazie alla pressione:", options: ["Oncotica", "Idrostatica", "Osmotica", "Atmosferica"], correct: 1 },
+        { question: "L'effetto Bohr sposta la curva dell'emoglobina a destra in caso di:", options: ["Alcalosi", "Acidosi e aumento di CO₂", "Ipotermia", "Iperossia"], correct: 1 }
+    ],
+    biochimica: [
+        { question: "Gli enzimi agiscono:", options: ["Aumentando l'energia di attivazione", "Abbassando l'energia di attivazione", "Consumandosi nella reazione", "Modificando l'equilibrio"], correct: 1 },
+        { question: "La Km nella cinetica di Michaelis-Menten indica:", options: ["La velocità massima", "La concentrazione di substrato a metà Vmax", "Il numero di enzimi", "Il pH ottimale"], correct: 1 },
+        { question: "La glicolisi avviene:", options: ["Nel citosol", "Nella matrice mitocondriale", "Nel nucleo", "Nel reticolo"], correct: 0 },
+        { question: "Il ciclo di Krebs si svolge:", options: ["Nel citosol", "Nella matrice mitocondriale", "Nei ribosomi", "Nel Golgi"], correct: 1 },
+        { question: "La struttura secondaria delle proteine comprende:", options: ["La sequenza amminoacidica", "α-elica e β-foglietto", "Più subunità", "Il ripiegamento globale"], correct: 1 }
+    ],
+    patologia: [
+        { question: "I segni classici dell'infiammazione sono:", options: ["Rubor, tumor, calor, dolor", "Febbre, tosse, astenia", "Pallore, freddo, rigidità", "Nausea, vomito, diarrea"], correct: 0 },
+        { question: "L'apoptosi si distingue dalla necrosi perché:", options: ["Provoca infiammazione", "È morte programmata senza infiammazione", "È sempre patologica", "Coinvolge interi tessuti"], correct: 1 },
+        { question: "Un tumore maligno si caratterizza per:", options: ["Crescita espansiva e capsula", "Infiltrazione e metastasi", "Assenza di mitosi", "Regressione spontanea"], correct: 1 },
+        { question: "L'ipertrofia consiste in:", options: ["Aumento del numero di cellule", "Aumento del volume delle cellule", "Riduzione del tessuto", "Trasformazione in altro tessuto"], correct: 1 },
+        { question: "L'ischemia prolungata provoca:", options: ["Iperplasia", "Infarto", "Atrofia reversibile", "Metaplasia"], correct: 1 }
+    ],
+    farmacologia: [
+        { question: "La farmacocinetica studia:", options: ["Cosa fa il farmaco all'organismo", "Cosa fa l'organismo al farmaco", "Le reazioni avverse", "Il costo del farmaco"], correct: 1 },
+        { question: "ADME significa:", options: ["Assorbimento, Distribuzione, Metabolismo, Escrezione", "Analisi, Dose, Modalità, Effetto", "Azione, Durata, Meccanismo, Efficacia", "Nessuna delle precedenti"], correct: 0 },
+        { question: "Un antagonista recettoriale:", options: ["Lega e attiva il recettore", "Lega senza attivare, bloccando l'agonista", "Non lega il recettore", "Distrugge il recettore"], correct: 1 },
+        { question: "L'emivita è il tempo in cui la concentrazione:", options: ["Raddoppia", "Si dimezza", "Si annulla", "Raggiunge il picco"], correct: 1 },
+        { question: "L'effetto di primo passaggio avviene principalmente:", options: ["Nel rene", "Nel fegato", "Nel polmone", "Nello stomaco"], correct: 1 }
+    ],
+
+    /* ---------- UMANISTICA ---------- */
+    psicologia: [
+        { question: "La memoria a breve termine ha capacità di circa:", options: ["3±1 elementi", "7±2 elementi", "20 elementi", "Illimitata"], correct: 1 },
+        { question: "Il condizionamento classico è stato studiato da:", options: ["Skinner", "Pavlov", "Freud", "Piaget"], correct: 1 },
+        { question: "Nel condizionamento operante il rinforzo:", options: ["Riduce il comportamento", "Aumenta la probabilità del comportamento", "Non ha effetto", "Provoca estinzione"], correct: 1 },
+        { question: "La dissonanza cognitiva è stata teorizzata da:", options: ["Festinger", "Maslow", "Watson", "Jung"], correct: 0 },
+        { question: "Al vertice della piramide di Maslow c'è:", options: ["La sicurezza", "L'autorealizzazione", "L'appartenenza", "Il bisogno fisiologico"], correct: 1 }
+    ],
+    pedagogia: [
+        { question: "La zona di sviluppo prossimale è un concetto di:", options: ["Piaget", "Vygotskij", "Montessori", "Dewey"], correct: 1 },
+        { question: "Lo stadio operatorio formale secondo Piaget inizia intorno ai:", options: ["2 anni", "7 anni", "11-12 anni", "18 anni"], correct: 2 },
+        { question: "Il metodo Montessori si basa su:", options: ["Lezione frontale", "Autonomia e ambiente preparato", "Ripetizione mnemonica", "Competizione"], correct: 1 },
+        { question: "L'apprendimento significativo secondo Ausubel avviene quando:", options: ["Si memorizza a ripetizione", "Le nuove conoscenze si collegano a quelle esistenti", "Si studia da soli", "Si usa solo il libro"], correct: 1 },
+        { question: "L'istruzione si distingue dall'educazione perché riguarda:", options: ["La formazione globale", "La trasmissione di conoscenze", "L'affettività", "La socializzazione"], correct: 1 }
+    ],
+    sociologia: [
+        { question: "L'anomia è un concetto di:", options: ["Weber", "Durkheim", "Marx", "Parsons"], correct: 1 },
+        { question: "Lo status indica:", options: ["Il comportamento atteso", "La posizione sociale occupata", "Il reddito", "Il titolo di studio"], correct: 1 },
+        { question: "La socializzazione primaria avviene:", options: ["A scuola", "In famiglia", "Sul lavoro", "Nei media"], correct: 1 },
+        { question: "L'agire razionale rispetto allo scopo è una categoria di:", options: ["Weber", "Durkheim", "Comte", "Simmel"], correct: 0 },
+        { question: "La mobilità sociale verticale indica:", options: ["Uno spostamento tra posizioni di diverso livello", "Un cambio di città", "Un cambio di lavoro allo stesso livello", "L'immobilità"], correct: 0 }
+    ],
+    filosofiaGen: [
+        { question: "Il mito della caverna appartiene a:", options: ["Aristotele", "Platone", "Socrate", "Plotino"], correct: 1 },
+        { question: "L'imperativo categorico è formulato da:", options: ["Hegel", "Kant", "Hume", "Spinoza"], correct: 1 },
+        { question: "La dialettica tesi-antitesi-sintesi è di:", options: ["Hegel", "Marx", "Fichte", "Schelling"], correct: 0 },
+        { question: "Il cogito ergo sum è di:", options: ["Cartesio", "Locke", "Leibniz", "Bacone"], correct: 0 },
+        { question: "L'eterno ritorno è un concetto di:", options: ["Schopenhauer", "Nietzsche", "Kierkegaard", "Heidegger"], correct: 1 }
+    ],
+    storiaArte: [
+        { question: "L'arco a sesto acuto è tipico dell'arte:", options: ["Romanica", "Gotica", "Rinascimentale", "Barocca"], correct: 1 },
+        { question: "La prospettiva lineare fu teorizzata da:", options: ["Giotto", "Brunelleschi", "Caravaggio", "Bernini"], correct: 1 },
+        { question: "Il Barocco si caratterizza per:", options: ["Equilibrio e staticità", "Movimento e contrasti di luce", "Assenza di decorazione", "Rigore geometrico"], correct: 1 },
+        { question: "L'Impressionismo nasce in:", options: ["Italia", "Francia", "Germania", "Spagna"], correct: 1 },
+        { question: "La volta della Cappella Sistina fu dipinta da:", options: ["Raffaello", "Michelangelo", "Leonardo", "Botticelli"], correct: 1 }
+    ],
+    linguistica: [
+        { question: "Il segno linguistico secondo Saussure unisce:", options: ["Parola e oggetto", "Significante e significato", "Frase e contesto", "Suono e scrittura"], correct: 1 },
+        { question: "La langue è:", options: ["L'atto individuale del parlante", "Il sistema astratto condiviso", "Un dialetto", "La scrittura"], correct: 1 },
+        { question: "Il fonema è:", options: ["La più piccola unità di significato", "La più piccola unità sonora distintiva", "Una sillaba", "Una parola"], correct: 1 },
+        { question: "Il morfema è:", options: ["Un suono", "La più piccola unità dotata di significato", "Una frase", "Un accento"], correct: 1 },
+        { question: "Lo studio della lingua in un dato momento si dice:", options: ["Diacronico", "Sincronico", "Diatopico", "Diafasico"], correct: 1 }
     ]
 };
 
@@ -1428,6 +1648,240 @@ const FLASHCARDS = {
         { front: "Cos'è il diritto soggettivo?", back: "Il potere riconosciuto dall'ordinamento a un soggetto di agire per soddisfare un proprio interesse." },
         { front: "Art. 1 della Costituzione", back: "L'Italia è una Repubblica democratica, fondata sul lavoro." },
         { front: "Cos'è la prescrizione?", back: "L'estinzione di un diritto per mancato esercizio entro il termine stabilito dalla legge." },
+    ],
+
+    /* ---------- SCIENTIFICA / INGEGNERIA ---------- */
+    analisi2: [
+        { front: "Cos'è una derivata parziale?", back: "La derivata rispetto a una variabile, tenendo le altre costanti: ∂f/∂x." },
+        { front: "Cos'è il gradiente?", back: "Il vettore delle derivate parziali ∇f = (∂f/∂x, ∂f/∂y). Punta nella direzione di massima crescita." },
+        { front: "Teorema di Schwarz", back: "Se le derivate seconde miste sono continue, allora ∂²f/∂x∂y = ∂²f/∂y∂x." },
+        { front: "A cosa serve il determinante hessiano?", back: "A classificare i punti critici: H>0 e f_xx>0 minimo, H>0 e f_xx<0 massimo, H<0 sella." },
+        { front: "Equazione differenziale a variabili separabili", back: "y' = f(x)g(y). Si risolve separando: dy/g(y) = f(x)dx e integrando entrambi i membri." },
+    ],
+    algebra: [
+        { front: "Quando una matrice è invertibile?", back: "Quando il suo determinante è diverso da zero (matrice non singolare)." },
+        { front: "Cos'è il rango di una matrice?", back: "Il numero massimo di righe (o colonne) linearmente indipendenti." },
+        { front: "Definizione di autovalore", back: "λ è autovalore di A se esiste v≠0 tale che Av = λv. Si trova da det(A − λI) = 0." },
+        { front: "Teorema di Rouché-Capelli", back: "Un sistema lineare ha soluzioni se e solo se rango(A) = rango(A|b)." },
+        { front: "Cos'è una base di uno spazio vettoriale?", back: "Un insieme di vettori linearmente indipendenti che generano tutto lo spazio." },
+    ],
+    fisica2: [
+        { front: "Legge di Coulomb", back: "F = k·q₁q₂/r², la forza tra due cariche è proporzionale al prodotto e inversa al quadrato della distanza." },
+        { front: "Teorema di Gauss", back: "Il flusso del campo elettrico attraverso una superficie chiusa è pari alla carica interna diviso ε₀." },
+        { front: "Legge di Faraday-Neumann", back: "Una variazione di flusso magnetico induce una f.e.m.: ε = −dΦ/dt." },
+        { front: "Cosa dice la legge di Lenz?", back: "La corrente indotta si oppone sempre alla variazione di flusso che l'ha generata (segno meno)." },
+        { front: "Cos'è la capacità di un condensatore?", back: "C = Q/V, la carica accumulata per unità di differenza di potenziale. Si misura in farad." },
+    ],
+    programmazione: [
+        { front: "Differenza tra array e lista concatenata", back: "Array: accesso O(1) per indice, inserimento costoso. Lista: inserimento O(1), accesso O(n)." },
+        { front: "Cos'è la ricorsione?", back: "Una funzione che richiama sé stessa. Serve un caso base per terminare, altrimenti stack overflow." },
+        { front: "Cos'è un puntatore / riferimento?", back: "Una variabile che contiene l'indirizzo di memoria di un altro dato, non il dato stesso." },
+        { front: "Differenza tra passaggio per valore e per riferimento", back: "Per valore si copia il dato; per riferimento si passa l'indirizzo, quindi le modifiche sono visibili al chiamante." },
+        { front: "Cos'è l'incapsulamento?", back: "Nascondere lo stato interno di un oggetto esponendo solo metodi pubblici controllati." },
+    ],
+    archCalcolatori: [
+        { front: "Cos'è la pipeline?", back: "Tecnica che sovrappone le fasi di più istruzioni (fetch, decode, execute) per aumentare il throughput." },
+        { front: "Cos'è la cache?", back: "Memoria piccola e velocissima tra CPU e RAM, che sfrutta la località temporale e spaziale." },
+        { front: "Differenza tra architettura von Neumann e Harvard", back: "Von Neumann: dati e istruzioni nella stessa memoria. Harvard: memorie separate." },
+        { front: "Cos'è un registro?", back: "Memoria interna alla CPU, velocissima e di dimensioni minime, usata per gli operandi correnti." },
+        { front: "Complemento a due", back: "Rappresentazione dei numeri negativi: si invertono i bit e si somma 1. Permette di sottrarre sommando." },
+    ],
+    sistemiOperativi: [
+        { front: "Differenza tra processo e thread", back: "Il processo ha spazio di memoria proprio; i thread dello stesso processo lo condividono." },
+        { front: "Cos'è il deadlock?", back: "Stallo in cui più processi attendono a vicenda risorse che nessuno rilascia." },
+        { front: "Cos'è la memoria virtuale?", back: "Astrazione che dà a ogni processo uno spazio di indirizzi proprio, mappato su RAM e disco tramite paginazione." },
+        { front: "Cos'è un semaforo?", back: "Variabile di sincronizzazione con operazioni wait e signal, usata per regolare l'accesso a risorse condivise." },
+        { front: "Cos'è il context switch?", back: "Il salvataggio dello stato di un processo e il ripristino di un altro: permette il multitasking ma ha un costo." },
+    ],
+    basiDati: [
+        { front: "Cos'è una chiave primaria?", back: "Un attributo (o insieme) che identifica univocamente ogni tupla. Non può essere NULL." },
+        { front: "Cos'è una chiave esterna?", back: "Attributo che referenzia la chiave primaria di un'altra tabella: garantisce l'integrità referenziale." },
+        { front: "Cos'è la normalizzazione?", back: "Processo di scomposizione delle tabelle per eliminare ridondanze e anomalie di aggiornamento." },
+        { front: "Differenza tra INNER e LEFT JOIN", back: "INNER restituisce solo le righe con corrispondenza; LEFT tiene tutte quelle di sinistra, con NULL dove manca." },
+        { front: "Cosa sono le proprietà ACID?", back: "Atomicità, Consistenza, Isolamento, Durabilità: le garanzie di una transazione." },
+    ],
+    retiCalcolatori: [
+        { front: "Differenza tra TCP e UDP", back: "TCP è affidabile e orientato alla connessione; UDP è veloce, senza garanzie di consegna né ordine." },
+        { front: "Cos'è il modello ISO/OSI?", back: "Sette livelli: fisico, collegamento, rete, trasporto, sessione, presentazione, applicazione." },
+        { front: "A cosa serve il DNS?", back: "Traduce i nomi di dominio in indirizzi IP." },
+        { front: "Cos'è il three-way handshake?", back: "Apertura di una connessione TCP in tre passi: SYN, SYN-ACK, ACK." },
+        { front: "Differenza tra indirizzo IP e MAC", back: "L'IP è logico e instradabile a livello rete; il MAC è fisico, assegnato alla scheda, valido nella rete locale." },
+    ],
+    chimicaOrg: [
+        { front: "Cos'è un gruppo funzionale?", back: "L'insieme di atomi che determina la reattività di una molecola (es. −OH alcol, −COOH acido)." },
+        { front: "Differenza tra SN1 e SN2", back: "SN1: due stadi, carbocatione, racemizzazione. SN2: un solo stadio, attacco dorsale, inversione di configurazione." },
+        { front: "Cos'è l'isomeria ottica?", back: "Due molecole speculari e non sovrapponibili (enantiomeri), dovute a un carbonio stereogenico." },
+        { front: "Cos'è la risonanza?", back: "Delocalizzazione degli elettroni su più strutture limite: stabilizza la molecola (es. benzene)." },
+        { front: "Regola di Markovnikov", back: "Nell'addizione a un alchene, l'idrogeno si lega al carbonio già più idrogenato." },
+    ],
+    biologia: [
+        { front: "Differenza tra cellula procariote ed eucariote", back: "La procariote non ha nucleo né organelli membranosi; l'eucariote sì." },
+        { front: "Cos'è la mitosi?", back: "Divisione cellulare che produce due cellule figlie identiche alla madre (2n → 2n)." },
+        { front: "Cos'è la meiosi?", back: "Divisione che produce quattro gameti aploidi geneticamente diversi (2n → n)." },
+        { front: "Dogma centrale della biologia molecolare", back: "DNA → RNA → proteina: trascrizione e poi traduzione." },
+        { front: "A cosa servono i mitocondri?", back: "Sede della respirazione cellulare: producono ATP tramite fosforilazione ossidativa." },
+    ],
+
+    /* ---------- ECONOMIA ---------- */
+    macroeconomia: [
+        { front: "Cos'è il PIL?", back: "Il valore di tutti i beni e servizi finali prodotti in un Paese in un anno." },
+        { front: "Differenza tra PIL nominale e reale", back: "Il nominale è ai prezzi correnti; il reale è a prezzi costanti, quindi depurato dall'inflazione." },
+        { front: "Cos'è l'inflazione?", back: "L'aumento generalizzato e persistente del livello dei prezzi, che riduce il potere d'acquisto." },
+        { front: "Cosa descrive la curva di Phillips?", back: "La relazione inversa di breve periodo tra inflazione e disoccupazione." },
+        { front: "Cos'è la politica monetaria espansiva?", back: "Riduzione dei tassi e aumento della moneta per stimolare consumi e investimenti." },
+    ],
+    ragioneria: [
+        { front: "Cos'è il principio della partita doppia?", back: "Ogni operazione si registra due volte, in dare e in avere, per importi uguali." },
+        { front: "Quali sono i documenti del bilancio?", back: "Stato patrimoniale, conto economico, rendiconto finanziario e nota integrativa." },
+        { front: "Differenza tra costo e uscita", back: "Il costo è di competenza economica dell'esercizio; l'uscita è il movimento finanziario, che può avvenire in un altro momento." },
+        { front: "Cos'è l'ammortamento?", back: "La ripartizione del costo di un bene pluriennale sugli esercizi in cui produce utilità." },
+        { front: "Cosa sono i ratei e i risconti?", back: "Ratei: costi/ricavi già maturati ma non ancora liquidati. Risconti: già liquidati ma di competenza futura." },
+    ],
+    dirCommerciale: [
+        { front: "Cos'è l'imprenditore secondo l'art. 2082 c.c.?", back: "Chi esercita professionalmente un'attività economica organizzata al fine della produzione o scambio di beni o servizi." },
+        { front: "Differenza tra società di persone e di capitali", back: "Nelle società di persone i soci rispondono illimitatamente; nelle società di capitali la responsabilità è limitata al conferimento." },
+        { front: "Cos'è l'azienda?", back: "Il complesso dei beni organizzati dall'imprenditore per l'esercizio dell'impresa (art. 2555 c.c.)." },
+        { front: "Cosa sono i titoli di credito?", back: "Documenti che incorporano un diritto di credito e ne permettono la circolazione (cambiale, assegno)." },
+        { front: "Quali sono gli organi della S.p.A.?", back: "Assemblea dei soci, organo amministrativo (CdA o amministratore unico) e collegio sindacale." },
+    ],
+    matFin: [
+        { front: "Differenza tra interesse semplice e composto", back: "Semplice: gli interessi non producono interessi. Composto: si capitalizzano, M = C(1+i)^n." },
+        { front: "Cos'è il montante?", back: "Il capitale finale dopo la capitalizzazione: capitale iniziale più interessi maturati." },
+        { front: "Cos'è l'attualizzazione?", back: "L'operazione inversa alla capitalizzazione: riporta un valore futuro al presente." },
+        { front: "Cos'è il VAN?", back: "Valore Attuale Netto: somma dei flussi di cassa attualizzati meno l'investimento iniziale. Se > 0 conviene." },
+        { front: "Cos'è una rendita?", back: "Una successione di capitali esigibili a scadenze periodiche." },
+    ],
+
+    /* ---------- GIURIDICA ---------- */
+    dirCostituzionale: [
+        { front: "Cos'è la riserva di legge?", back: "Il vincolo per cui una materia può essere disciplinata solo dalla legge, non da fonti secondarie." },
+        { front: "Quali sono gli organi costituzionali?", back: "Parlamento, Governo, Presidente della Repubblica, Corte costituzionale e Magistratura." },
+        { front: "Cos'è il bicameralismo perfetto?", back: "Camera e Senato hanno le stesse funzioni e pari poteri: la legge va approvata in identico testo da entrambe." },
+        { front: "Cosa fa la Corte costituzionale?", back: "Giudica la legittimità costituzionale delle leggi, i conflitti tra poteri e le accuse al Presidente." },
+        { front: "Differenza tra decreto legge e decreto legislativo", back: "Il d.l. è adottato dal Governo per necessità e urgenza e va convertito in 60 giorni; il d.lgs. attua una delega del Parlamento." },
+    ],
+    dirPenale: [
+        { front: "Quali sono gli elementi del reato?", back: "Elemento oggettivo (condotta, evento, nesso causale) ed elemento soggettivo (dolo o colpa)." },
+        { front: "Differenza tra dolo e colpa", back: "Dolo: evento previsto e voluto. Colpa: evento non voluto, dovuto a negligenza, imprudenza, imperizia o violazione di norme." },
+        { front: "Principio di legalità (art. 25 Cost.)", back: "Nessuno può essere punito se non in forza di una legge entrata in vigore prima del fatto commesso." },
+        { front: "Cos'è il tentativo?", back: "Atti idonei diretti in modo non equivoco a commettere un delitto, che non si compie o non si verifica." },
+        { front: "Differenza tra delitti e contravvenzioni", back: "Distinzione per tipo di pena: delitti (reclusione e multa), contravvenzioni (arresto e ammenda)." },
+    ],
+    dirRomano: [
+        { front: "Cos'è la mancipatio?", back: "Antico atto formale e solenne di trasferimento della proprietà su res mancipi, davanti a testimoni." },
+        { front: "Differenza tra ius civile e ius gentium", back: "Ius civile: riservato ai cittadini romani. Ius gentium: applicabile anche agli stranieri, più flessibile." },
+        { front: "Cos'è l'usucapione romana?", back: "Acquisto della proprietà per possesso continuato nel tempo, in buona fede e con giusto titolo." },
+        { front: "Chi era il pretore?", back: "Magistrato che amministrava la giustizia ed emanava l'editto, fonte dello ius honorarium." },
+        { front: "Cos'è la patria potestas?", back: "Il potere del pater familias su figli e beni del nucleo familiare." },
+    ],
+    dirAmministrativo: [
+        { front: "Cos'è il provvedimento amministrativo?", back: "L'atto con cui la P.A. esercita il potere autoritativo, modificando unilateralmente la sfera del destinatario." },
+        { front: "Differenza tra diritto soggettivo e interesse legittimo", back: "Il diritto soggettivo è tutelato dal giudice ordinario; l'interesse legittimo, davanti al potere della P.A., dal giudice amministrativo." },
+        { front: "Quali sono i vizi di legittimità?", back: "Incompetenza, eccesso di potere e violazione di legge." },
+        { front: "Cos'è il silenzio-assenso?", back: "Il decorso del termine senza risposta della P.A. equivale ad accoglimento dell'istanza." },
+        { front: "Cos'è la discrezionalità amministrativa?", back: "La ponderazione tra interesse pubblico primario e interessi secondari nella scelta della soluzione migliore." },
+    ],
+    dirLavoro: [
+        { front: "Cos'è il lavoro subordinato (art. 2094 c.c.)?", back: "Prestazione di lavoro alle dipendenze e sotto la direzione dell'imprenditore, in cambio di retribuzione." },
+        { front: "Differenza tra licenziamento per giusta causa e giustificato motivo", back: "Giusta causa: fatto gravissimo, licenziamento immediato. Giustificato motivo: inadempimento notevole (soggettivo) o ragioni aziendali (oggettivo), con preavviso." },
+        { front: "Cos'è lo Statuto dei lavoratori?", back: "La legge 300/1970, che tutela libertà, dignità e attività sindacale nei luoghi di lavoro." },
+        { front: "Cos'è il CCNL?", back: "Contratto collettivo nazionale di lavoro: fissa i minimi retributivi e normativi di categoria." },
+        { front: "Cos'è il TFR?", back: "Trattamento di fine rapporto: retribuzione differita accantonata ogni anno e liquidata alla cessazione." },
+    ],
+    dirUE: [
+        { front: "Quali sono le istituzioni principali dell'UE?", back: "Parlamento europeo, Consiglio dell'UE, Consiglio europeo, Commissione, Corte di giustizia e BCE." },
+        { front: "Differenza tra regolamento e direttiva", back: "Il regolamento è direttamente applicabile in tutti gli Stati; la direttiva vincola nel risultato e va recepita." },
+        { front: "Cos'è il principio di sussidiarietà?", back: "L'UE interviene solo se l'obiettivo non può essere raggiunto meglio a livello nazionale." },
+        { front: "Cosa sono le quattro libertà?", back: "Libera circolazione di merci, persone, servizi e capitali nel mercato interno." },
+        { front: "Cos'è il primato del diritto UE?", back: "In caso di conflitto, la norma europea prevale su quella nazionale contrastante." },
+    ],
+
+    /* ---------- MEDICINA ---------- */
+    anatomia: [
+        { front: "Quali sono i piani anatomici?", back: "Sagittale (destra/sinistra), frontale o coronale (avanti/dietro), trasversale (sopra/sotto)." },
+        { front: "Quante vertebre ha la colonna?", back: "33-34: 7 cervicali, 12 toraciche, 5 lombari, 5 sacrali fuse, 4-5 coccigee." },
+        { front: "Quali sono le cavità del cuore?", back: "Due atri e due ventricoli. Valvole: tricuspide e mitrale (atrioventricolari), polmonare e aortica (semilunari)." },
+        { front: "Differenza tra arterie e vene", back: "Le arterie portano il sangue dal cuore alla periferia, hanno parete spessa; le vene lo riportano al cuore e hanno valvole." },
+        { front: "Da cosa è formato il sistema nervoso centrale?", back: "Encefalo (cervello, cervelletto, tronco) e midollo spinale." },
+    ],
+    fisiologia: [
+        { front: "Cos'è il potenziale d'azione?", back: "Rapida inversione del potenziale di membrana per apertura dei canali del sodio, seguita da ripolarizzazione col potassio." },
+        { front: "Cos'è la gittata cardiaca?", back: "Volume di sangue espulso al minuto: gittata sistolica × frequenza cardiaca (≈5 L/min a riposo)." },
+        { front: "Cos'è l'omeostasi?", back: "Il mantenimento di condizioni interne costanti tramite meccanismi di feedback, di solito negativo." },
+        { front: "Come avviene la filtrazione glomerulare?", back: "Nel glomerulo, per pressione idrostatica; circa 125 ml/min di filtrato, poi riassorbito nei tubuli." },
+        { front: "Cos'è la curva di dissociazione dell'emoglobina?", back: "Relazione sigmoide tra pO₂ e saturazione. Si sposta a destra con acidosi, calore e CO₂ (effetto Bohr)." },
+    ],
+    biochimica: [
+        { front: "Cos'è un enzima?", back: "Catalizzatore biologico proteico che abbassa l'energia di attivazione senza consumarsi." },
+        { front: "Cosa descrive la cinetica di Michaelis-Menten?", back: "v = Vmax[S]/(Km+[S]). Km è la concentrazione di substrato a metà Vmax: misura l'affinità." },
+        { front: "Quali sono le tappe della respirazione cellulare?", back: "Glicolisi (citosol), ciclo di Krebs (matrice mitocondriale), fosforilazione ossidativa (membrana interna)." },
+        { front: "Quanto ATP produce una molecola di glucosio?", back: "Circa 30-32 ATP con la respirazione aerobica completa." },
+        { front: "Struttura delle proteine", back: "Primaria (sequenza), secondaria (α-elica, β-foglietto), terziaria (ripiegamento 3D), quaternaria (più subunità)." },
+    ],
+    patologia: [
+        { front: "Quali sono i segni dell'infiammazione?", back: "Rubor, tumor, calor, dolor e functio laesa." },
+        { front: "Differenza tra necrosi e apoptosi", back: "Necrosi: morte accidentale con infiammazione. Apoptosi: morte programmata, senza risposta infiammatoria." },
+        { front: "Differenza tra tumore benigno e maligno", back: "Il benigno è ben delimitato e non metastatizza; il maligno è infiltrante e dà metastasi." },
+        { front: "Cos'è l'ipertrofia?", back: "Aumento del volume delle cellule (non del numero) come adattamento a maggior carico funzionale." },
+        { front: "Cos'è l'ischemia?", back: "Riduzione dell'apporto di sangue a un tessuto: se prolungata provoca infarto." },
+    ],
+    farmacologia: [
+        { front: "Differenza tra farmacocinetica e farmacodinamica", back: "Cinetica: cosa fa l'organismo al farmaco (ADME). Dinamica: cosa fa il farmaco all'organismo." },
+        { front: "Cosa significa ADME?", back: "Assorbimento, Distribuzione, Metabolismo, Escrezione." },
+        { front: "Differenza tra agonista e antagonista", back: "L'agonista lega il recettore e lo attiva; l'antagonista lega ma non attiva, bloccando l'agonista." },
+        { front: "Cos'è l'emivita di un farmaco?", back: "Il tempo necessario perché la concentrazione plasmatica si dimezzi." },
+        { front: "Cos'è l'effetto di primo passaggio?", back: "Il metabolismo epatico che riduce la quota di farmaco orale che raggiunge la circolazione sistemica." },
+    ],
+
+    /* ---------- UMANISTICA ---------- */
+    psicologia: [
+        { front: "Differenza tra memoria a breve e lungo termine", back: "La breve dura secondi e ha capacità limitata (7±2); la lungo termine è potenzialmente illimitata e duratura." },
+        { front: "Cos'è il condizionamento classico?", back: "Associazione tra stimolo neutro e stimolo incondizionato, studiata da Pavlov." },
+        { front: "Cos'è il condizionamento operante?", back: "L'apprendimento basato sulle conseguenze: rinforzi aumentano il comportamento, punizioni lo riducono (Skinner)." },
+        { front: "Cos'è la dissonanza cognitiva?", back: "Il disagio da conflitto tra credenze e comportamento, che spinge a modificarne uno (Festinger)." },
+        { front: "Piramide di Maslow", back: "Gerarchia dei bisogni: fisiologici, sicurezza, appartenenza, stima, autorealizzazione." },
+    ],
+    pedagogia: [
+        { front: "Cos'è la zona di sviluppo prossimale?", back: "Lo spazio tra ciò che il bambino sa fare da solo e ciò che riesce a fare con una guida (Vygotskij)." },
+        { front: "Quali sono gli stadi di Piaget?", back: "Senso-motorio, preoperatorio, operatorio concreto, operatorio formale." },
+        { front: "Cos'è il metodo Montessori?", back: "Educazione basata su autonomia, ambiente preparato e materiali strutturati auto-correttivi." },
+        { front: "Differenza tra educazione e istruzione", back: "L'educazione riguarda la formazione globale della persona; l'istruzione la trasmissione di conoscenze." },
+        { front: "Cos'è l'apprendimento significativo?", back: "Quando le nuove conoscenze si collegano a quelle già possedute, invece di essere memorizzate (Ausubel)." },
+    ],
+    sociologia: [
+        { front: "Cos'è la socializzazione?", back: "Il processo con cui si interiorizzano norme e valori: primaria in famiglia, secondaria nelle altre agenzie." },
+        { front: "Cos'è l'anomia secondo Durkheim?", back: "Lo stato di assenza o indebolimento delle norme sociali condivise." },
+        { front: "Cos'è lo status e cos'è il ruolo?", back: "Lo status è la posizione occupata; il ruolo è l'insieme dei comportamenti attesi da chi la occupa." },
+        { front: "Cos'è la mobilità sociale?", back: "Lo spostamento tra posizioni sociali: verticale (su/giù) o orizzontale, intra o intergenerazionale." },
+        { front: "Cosa intende Weber per agire sociale?", back: "Un'azione dotata di senso e orientata al comportamento altrui, distinta in razionale, valoriale, affettiva, tradizionale." },
+    ],
+    filosofiaGen: [
+        { front: "Cos'è il mito della caverna?", back: "Allegoria di Platone: i prigionieri scambiano le ombre per realtà; la filosofia è l'uscita verso il mondo delle Idee." },
+        { front: "Cos'è l'imperativo categorico?", back: "Agisci solo secondo la massima che vorresti diventasse legge universale (Kant)." },
+        { front: "Cos'è la dialettica hegeliana?", back: "Il movimento tesi-antitesi-sintesi con cui si sviluppa lo Spirito." },
+        { front: "Cos'è il cogito cartesiano?", back: "Penso, dunque sono: il dubbio radicale trova nella coscienza del pensare la prima certezza." },
+        { front: "Cos'è l'eterno ritorno in Nietzsche?", back: "L'idea che ogni istante torni identico infinite volte: prova suprema di accettazione della vita." },
+    ],
+    storia: [
+        { front: "Cause della Prima guerra mondiale", back: "Nazionalismi, corsa agli armamenti, sistema di alleanze contrapposte e crisi balcaniche; scintilla: Sarajevo 1914." },
+        { front: "Cos'è stata la Rivoluzione russa?", back: "Nel 1917: febbraio abbatte lo zar, ottobre porta i bolscevichi di Lenin al potere." },
+        { front: "Cosa fu il New Deal?", back: "Il programma di Roosevelt (1933) di intervento pubblico e opere per uscire dalla Grande depressione." },
+        { front: "Cos'è stata la guerra fredda?", back: "Il confronto USA-URSS dal 1947 al 1991, senza scontro diretto ma con corsa agli armamenti e guerre per procura." },
+        { front: "Cos'è il Piano Marshall?", back: "Aiuti economici USA all'Europa (1948) per la ricostruzione e per contenere l'influenza sovietica." },
+    ],
+    storiaArte: [
+        { front: "Caratteristiche dell'arte gotica", back: "Arco a sesto acuto, volta a crociera ogivale, archi rampanti, verticalismo e vetrate." },
+        { front: "Cos'è la prospettiva lineare?", back: "Sistema rinascimentale di rappresentazione dello spazio con un punto di fuga, teorizzato da Brunelleschi." },
+        { front: "Differenza tra Rinascimento e Barocco", back: "Rinascimento: equilibrio, armonia, staticità. Barocco: movimento, teatralità, contrasti di luce." },
+        { front: "Cos'è l'Impressionismo?", back: "Movimento di fine Ottocento: pittura en plein air, colori puri, resa dell'impressione luminosa istantanea." },
+        { front: "Chi ha dipinto la Cappella Sistina?", back: "Michelangelo: la volta tra 1508 e 1512, il Giudizio Universale tra 1536 e 1541." },
+    ],
+    linguistica: [
+        { front: "Cos'è il segno linguistico?", back: "L'unione arbitraria di significante (immagine acustica) e significato (concetto), secondo Saussure." },
+        { front: "Differenza tra langue e parole", back: "La langue è il sistema astratto condiviso; la parole è l'atto concreto del singolo parlante." },
+        { front: "Cos'è il fonema?", back: "La più piccola unità sonora capace di distinguere significati (pane/cane)." },
+        { front: "Cos'è il morfema?", back: "La più piccola unità dotata di significato (in-util-mente ne contiene tre)." },
+        { front: "Differenza tra sincronia e diacronia", back: "Sincronia: la lingua in un dato momento. Diacronia: la sua evoluzione nel tempo." },
     ]
 };
 
