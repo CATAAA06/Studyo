@@ -26,26 +26,57 @@ const googleProvider = new firebase.auth.GoogleAuthProvider();
    ============================================= */
 
 async function signInWithGoogle() {
+    // Nei browser interni delle app (WhatsApp, Instagram…) il login Google
+    // non può funzionare: lo storage è isolato e il ritorno si perde.
+    if (typeof isInAppBrowser === 'function' && isInAppBrowser()) {
+        showInAppBrowserHelp();
+        return null;
+    }
+
     try {
         const result = await auth.signInWithPopup(googleProvider);
-        const user = result.user;
-        await handleUserLogin(user);
-        return user;
+        await handleUserLogin(result.user);
+        return result.user;
     } catch (error) {
-        console.error('Google sign-in error:', error.code, error.message);
+        console.warn('Google sign-in:', error.code, error.message);
 
-        if (error.code === 'auth/popup-blocked') {
-            showNotification('Popup bloccato! Disattiva il blocco popup per questo sito.');
-        } else if (error.code === 'auth/popup-closed-by-user') {
-            // User closed the popup, no error needed
-        } else if (error.code === 'auth/unauthorized-domain') {
-            showNotification('Dominio non autorizzato su Firebase. Aggiungi il dominio nelle impostazioni.');
-        } else if (error.code === 'auth/cancelled-popup-request') {
-            // Ignore
-        } else {
-            showNotification('Errore Google: ' + error.code);
+        switch (error.code) {
+            case 'auth/popup-closed-by-user':
+            case 'auth/cancelled-popup-request':
+                break; // l'utente ha chiuso: nessun messaggio
+            case 'auth/popup-blocked':
+                showNotification('Popup bloccato dal browser. Usa email e password qui sotto.');
+                highlightEmailLogin();
+                break;
+            case 'auth/unauthorized-domain':
+                showNotification('Dominio non autorizzato su Firebase.');
+                break;
+            case 'auth/operation-not-supported-in-this-environment':
+            case 'auth/web-storage-unsupported':
+                showInAppBrowserHelp();
+                break;
+            default:
+                showNotification('Accesso Google non riuscito. Prova con email e password.');
+                highlightEmailLogin();
         }
         return null;
+    }
+}
+
+// Messaggio chiaro quando si è dentro il browser di un'altra app
+function showInAppBrowserHelp() {
+    const box = document.getElementById('inapp-warning');
+    if (box) box.style.display = 'block';
+    highlightEmailLogin();
+    showNotification('Qui l\'accesso Google non funziona: usa email e password.');
+}
+
+function highlightEmailLogin() {
+    const el = document.getElementById('auth-email');
+    if (el) {
+        el.focus();
+        el.classList.add('field-pulse');
+        setTimeout(() => el.classList.remove('field-pulse'), 2000);
     }
 }
 
@@ -583,6 +614,20 @@ async function cancelSession(sessionId) {
 
 let authReady = false;
 
+// Se l'accesso è passato da un redirect, il risultato arriva al ritorno:
+// va raccolto, altrimenti l'utente resta fuori senza capire perché.
+auth.getRedirectResult()
+    .then((res) => {
+        if (res && res.user) handleUserLogin(res.user);
+    })
+    .catch((e) => {
+        console.warn('redirect result:', e.code || e.message);
+        // "missing initial state": tipico dei browser interni delle app
+        if (/missing initial state|web-storage|storage/i.test(e.message || '')) {
+            if (typeof showInAppBrowserHelp === 'function') showInAppBrowserHelp();
+        }
+    });
+
 auth.onAuthStateChanged(async (user) => {
     if (user) {
         // User is signed in
@@ -598,5 +643,11 @@ auth.onAuthStateChanged(async (user) => {
         authReady = true;
         closeModal('setup');
         openModal('auth');
+
+        // Avviso preventivo se siamo nel browser di un'altra app
+        if (typeof isInAppBrowser === 'function' && isInAppBrowser()) {
+            const box = document.getElementById('inapp-warning');
+            if (box) box.style.display = 'block';
+        }
     }
 });

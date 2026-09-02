@@ -2,6 +2,22 @@
    STUDYO — App Logic
    ============================================= */
 
+/* Il codice d'invito va messo al sicuro SUBITO, prima di qualsiasi login:
+   l'accesso Google può passare da un redirect che cancella la query string. */
+(function captureInvite() {
+    try {
+        const c = new URLSearchParams(location.search).get('join');
+        if (c) localStorage.setItem('studyo_pending_join', c.trim().toUpperCase());
+    } catch (e) {}
+})();
+
+// Browser interni delle app (WhatsApp, Instagram, Facebook…): isolano lo
+// storage e il login Google non riesce a completarsi.
+function isInAppBrowser() {
+    const ua = navigator.userAgent || '';
+    return /FBAN|FBAV|FB_IAB|Instagram|Line\/|Snapchat|Twitter|WhatsApp|; wv\)/i.test(ua);
+}
+
 let state = {
     currentPage: 'home',
     currentLobby: null,
@@ -1447,6 +1463,20 @@ function showInvite(groupId) {
     openModal('invite');
 }
 
+// Copia il link dell'app (con eventuale codice invito) per riaprirlo in un browser vero
+function copyAppLink() {
+    const pending = localStorage.getItem('studyo_pending_join');
+    const url = location.origin + location.pathname + (pending ? '?join=' + pending : '');
+    const done = () => showNotification('🔗 Link copiato! Incollalo in Chrome o Safari.');
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(done).catch(() => {
+            prompt('Copia questo link e aprilo nel browser:', url);
+        });
+    } else {
+        prompt('Copia questo link e aprilo nel browser:', url);
+    }
+}
+
 function copyInvite() {
     const input = document.getElementById('invite-link');
     input.select();
@@ -1470,10 +1500,15 @@ function shareInvite() {
 
 // Se l'utente arriva da un link d'invito (?join=CODE)
 async function handleJoinFromUrl() {
-    const code = new URLSearchParams(location.search).get('join');
+    // Il codice può essere nell'URL oppure messo da parte prima del login
+    const code = new URLSearchParams(location.search).get('join')
+              || localStorage.getItem('studyo_pending_join');
     if (!code || !state.firebaseUid) return;
-    // ripulisco subito l'URL così un refresh non ritenta
+
+    // ripulisco URL e memoria così un refresh non ritenta
     history.replaceState({}, '', location.pathname);
+    localStorage.removeItem('studyo_pending_join');
+
     const g = await joinGroupByCode(code);
     if (!g) return;
     await refreshGroups();

@@ -2354,6 +2354,38 @@ textarea:focus {
     .page, .card, .btn, .stat-card, .tool-item { animation: none !important; transition: none !important; }
 }
 
+/* Avviso: browser interno di un'altra app (WhatsApp, Instagram…) */
+.inapp-warning {
+    background: rgba(255, 176, 32, 0.1);
+    border: 1px solid rgba(255, 176, 32, 0.4);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    text-align: left;
+}
+.inapp-warning strong { display: block; font-size: 14px; color: var(--warning); margin-bottom: 6px; }
+.inapp-warning p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+.inapp-warning b { color: var(--text); }
+.inapp-copy {
+    margin-top: 10px; width: 100%;
+    background: var(--bg-input); border: 1px solid var(--border);
+    color: var(--text); font-family: inherit; font-size: 13px; font-weight: 600;
+    padding: 9px 12px; border-radius: var(--radius-xs); cursor: pointer;
+    transition: var(--transition);
+}
+.inapp-copy:hover { border-color: var(--warning); color: var(--warning); }
+
+/* Campo evidenziato quando indirizziamo l'utente all'accesso via email */
+.field-pulse {
+    border-color: var(--primary) !important;
+    box-shadow: var(--ring) !important;
+    animation: fieldPulse 1s ease-in-out 2;
+}
+@keyframes fieldPulse {
+    0%, 100% { box-shadow: var(--ring); }
+    50% { box-shadow: 0 0 0 6px rgba(200, 240, 49, 0.18); }
+}
+
 /* =============================================
    APPUNTI (cloud + condivisi)
    ============================================= */
