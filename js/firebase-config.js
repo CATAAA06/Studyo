@@ -63,12 +63,19 @@ async function signInWithGoogle() {
     }
 }
 
-// Messaggio chiaro quando si è dentro il browser di un'altra app
+// Messaggio chiaro quando si è dentro il browser di un'altra app.
+// Il pulsante Google viene proprio nascosto: lì non può funzionare,
+// lasciarlo cliccabile porta solo a ripetere lo stesso errore.
 function showInAppBrowserHelp() {
     const box = document.getElementById('inapp-warning');
     if (box) box.style.display = 'block';
+
+    const gBtn = document.querySelector('.btn-google');
+    if (gBtn) gBtn.style.display = 'none';
+    const divider = document.querySelector('#modal-auth .auth-divider');
+    if (divider) divider.style.display = 'none';
+
     highlightEmailLogin();
-    showNotification('Qui l\'accesso Google non funziona: usa email e password.');
 }
 
 function highlightEmailLogin() {
@@ -644,10 +651,9 @@ auth.onAuthStateChanged(async (user) => {
         closeModal('setup');
         openModal('auth');
 
-        // Avviso preventivo se siamo nel browser di un'altra app
+        // Nel browser di un'altra app: niente Google, si va dritti su email
         if (typeof isInAppBrowser === 'function' && isInAppBrowser()) {
-            const box = document.getElementById('inapp-warning');
-            if (box) box.style.display = 'block';
+            showInAppBrowserHelp();
         }
     }
 });
