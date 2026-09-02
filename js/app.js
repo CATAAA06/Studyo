@@ -372,9 +372,67 @@ function renderMieiEsami(mieiIds, headerLabel, headerEmoji) {
     return out;
 }
 
+/* --- Ricerca tra le materie --- */
+let lobbySearchQuery = '';
+
+function searchLobbies(q) {
+    lobbySearchQuery = (q || '').trim();
+    const clear = document.getElementById('lobby-search-clear');
+    if (clear) clear.style.display = lobbySearchQuery ? 'block' : 'none';
+    renderLobbies(currentLobbyFilter);
+}
+
+function clearLobbySearch() {
+    const input = document.getElementById('lobby-search');
+    if (input) input.value = '';
+    searchLobbies('');
+}
+
+// Confronto senza accenti e maiuscole, così "analisi" trova "Analisi Matematica"
+function normalizeText(s) {
+    return (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+function renderSearchResults(sidebarEl) {
+    const q = normalizeText(lobbySearchQuery);
+    const found = LOBBIES.filter(l => normalizeText(l.name).includes(q));
+
+    if (!found.length) {
+        sidebarEl.innerHTML = `<div class="lobby-search-empty">
+            Nessuna materia trovata per “${escapeHTML(lobbySearchQuery)}”.
+        </div>`;
+        return;
+    }
+
+    const CAT_LABEL = {
+        scientifica: 'Scientifica', economia: 'Economia', giuridica: 'Giuridica',
+        umanistica: 'Umanistica', medicina: 'Medicina', superiori: 'Superiori', tolc: 'TOLC'
+    };
+
+    sidebarEl.innerHTML =
+        `<div class="lobby-search-count">${found.length} ${found.length === 1 ? 'risultato' : 'risultati'}</div>` +
+        found.slice(0, 40).map(l => `
+            <div class="sidebar-lobby ${state.currentLobby === l.id ? 'active' : ''}" onclick="navigate('lobby','${l.id}')">
+                <span class="sidebar-lobby-icon">${l.icon}</span>
+                <span class="sidebar-lobby-name">${l.name}</span>
+                <span class="sidebar-lobby-cat">${CAT_LABEL[l.category] || ''}</span>
+            </div>
+        `).join('');
+}
+
+let currentLobbyFilter = 'all';
+
 function renderLobbies(filter = 'all') {
+    currentLobbyFilter = filter;
     const sidebarEl = document.getElementById('sidebar-lobbies');
     if (!sidebarEl) return;
+
+    // Con una ricerca attiva mostro i risultati piatti, senza sezioni
+    if (lobbySearchQuery) {
+        updateFilterBar();
+        renderSearchResults(sidebarEl);
+        return;
+    }
 
     const isUni = state.playerSchool === 'universita';
     const isSuperiori = state.playerSchool === 'superiori';
@@ -585,8 +643,16 @@ function openLobby(lobbyId) {
     const lobby = resolveLobby(lobbyId);
     if (!lobby) return;
 
+    // Una sessione già avviata nella stessa lobby non va azzerata:
+    // prima bastava passare dal profilo e tornare per perderla.
+    const sameLobby = state.currentLobby === lobbyId;
+    const keepTimer = sameLobby && state.timerRunning;
+
     state.currentLobby = lobbyId;
     lobbyRealUsers = [];
+
+    // Prima visita di una lobby: serve per il badge
+    trackLobbyVisit(lobbyId);
 
     document.getElementById('lobby-icon-big').textContent = lobby.icon;
     document.getElementById('lobby-title').textContent = lobby.name;
@@ -609,8 +675,15 @@ function openLobby(lobbyId) {
     // Render with ambient first; live data fills in via listeners below
     renderStudents([]);
     renderChat(null);
-    resetQuizArea();
-    resetTimer();
+    if (!keepTimer) {
+        resetQuizArea();
+        resetTimer();
+    } else {
+        // Sessione in corso: ripristino solo la vista del timer
+        updateTimerDisplay();
+        const b = document.getElementById('timer-start-btn');
+        if (b) { b.textContent = '⏸ Pausa'; b.classList.remove('btn-primary'); b.classList.add('btn-warning'); }
+    }
 
     // ---- REAL-TIME: announce presence + listen to people & chat ----
     if (typeof enterLobbyPresence === 'function') {
@@ -738,6 +811,7 @@ function sendChat() {
 
     // Daily challenge: social messages
     bumpDailyStat('messages');
+    bumpStat('messagesSent');
     renderChallenges();
 }
 
@@ -939,10 +1013,16 @@ function answerQuiz(selected) {
 function finishQuiz() {
     state.quizzesCompleted++;
 
+    // Quiz senza errori → badge "Quiz Perfetto"
+    if (state.currentQuiz && state.quizScore === state.currentQuiz.length) {
+        state.perfectQuizzes = (state.perfectQuizzes || 0) + 1;
+    }
+
     // Streak + daily challenge tracking
     registerStudyDay();
     bumpDailyStat('quizzes');
     renderChallenges();
+    checkNewBadges();
 
     const xpEarned = state.quizScore * 50;
     addXP(xpEarned, `Quiz completato: ${state.quizScore}/${state.currentQuiz.length}`);
@@ -1420,6 +1500,7 @@ async function doCreateGroup() {
     closeModal('groups');
     showInvite(g.id);
     addXP(25, 'Gruppo di studio creato');
+    bumpStat('groupsJoined');
 }
 
 async function doJoinGroup() {
@@ -1437,6 +1518,7 @@ async function doJoinGroup() {
     } else {
         showNotification(`🎉 Sei entrato in "${g.name}"!`);
         addXP(15, 'Entrato in un gruppo');
+        bumpStat('groupsJoined');
     }
     navigate('lobby', groupLobbyId(g.id));
 }
@@ -1929,22 +2011,60 @@ function renderProfile() {
     renderActivity();
 }
 
+/* --- Tracciamento dei traguardi (serve ai badge veri) --- */
+
+function trackLobbyVisit(lobbyId) {
+    if (!lobbyId) return;
+    if (!Array.isArray(state.lobbiesVisited)) state.lobbiesVisited = [];
+    if (!state.lobbiesVisited.includes(lobbyId)) {
+        state.lobbiesVisited.push(lobbyId);
+        saveState();
+        checkNewBadges();
+    }
+}
+
+function bumpStat(field, by = 1) {
+    state[field] = (state[field] || 0) + by;
+    saveState();
+    checkNewBadges();
+}
+
+// Avvisa quando un badge viene sbloccato davvero
+function checkNewBadges() {
+    const unlocked = JSON.parse(localStorage.getItem('studyo_badges') || '[]');
+    let changed = false;
+    BADGES.forEach(b => {
+        if (typeof b.check !== 'function') return;
+        if (b.check(state) && !unlocked.includes(b.name)) {
+            unlocked.push(b.name);
+            changed = true;
+            showNotification(`${b.icon} Badge sbloccato: ${b.name}!`);
+            if (typeof celebrate === 'function') celebrate();
+        }
+    });
+    if (changed) localStorage.setItem('studyo_badges', JSON.stringify(unlocked));
+}
+
 function renderBadges() {
     const grid = document.getElementById('badges-grid');
-    const dynamicBadges = BADGES.map(b => {
-        const badge = { ...b };
-        if (b.name === '10 Quiz' && state.quizzesCompleted >= 10) badge.earned = true;
-        if (b.name === '20 Pomodori' && state.pomodorosCompleted >= 20) badge.earned = true;
-        if (b.name === 'Streak 7gg' && state.streak >= 7) badge.earned = true;
-        return badge;
-    });
+    if (!grid) return;
 
-    grid.innerHTML = dynamicBadges.map(b => `
-        <div class="badge-item ${b.earned ? 'earned' : ''}">
+    grid.innerHTML = BADGES.map(b => {
+        const earned = typeof b.check === 'function' ? b.check(state) : false;
+        let bar = '';
+        if (!earned && typeof b.progress === 'function') {
+            const [cur, goal] = b.progress(state);
+            const pct = Math.min(100, Math.round((cur / goal) * 100));
+            bar = `<div class="badge-bar"><span style="width:${pct}%"></span></div>
+                   <div class="badge-progress">${Math.min(cur, goal)}/${goal}</div>`;
+        }
+        return `
+        <div class="badge-item ${earned ? 'earned' : ''}" title="${escapeHTML(b.desc || '')}">
             <span class="badge-icon">${b.icon}</span>
             <div class="badge-name">${b.name}</div>
-        </div>
-    `).join('');
+            ${bar}
+        </div>`;
+    }).join('');
 }
 
 function renderActivity() {
@@ -2496,8 +2616,16 @@ async function renderCommunity() {
         } catch (e) { /* regole non ancora pubblicate: si prosegue senza */ }
     }
 
-    // La mia posizione in classifica
+    // La mia posizione in classifica (serve anche al badge "Top 10")
     const myIdx = people.findIndex(p => p.id === state.firebaseUid);
+    if (myIdx >= 0) {
+        const rank = myIdx + 1;
+        if (!state.bestRank || rank < state.bestRank) {
+            state.bestRank = rank;
+            saveState();
+            checkNewBadges();
+        }
+    }
     document.getElementById('comm-total').textContent = people.length || 1;
     document.getElementById('comm-online').textContent =
         people.filter(p => onlineIds.has(p.id)).length || (onlineIds.has(state.firebaseUid) ? 1 : 0);

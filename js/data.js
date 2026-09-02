@@ -1909,15 +1909,49 @@ const FAKE_CHAT = [
     { name: "Giulia", text: "Io! Appena finisco questo pomodoro" },
 ];
 
+/* Badge con criteri reali e verificabili.
+   `check` riceve lo stato e restituisce true solo se il traguardo è
+   davvero raggiunto; `goal` serve a mostrare i progressi. */
 const BADGES = [
-    { icon: "🌟", name: "Prima Lobby", earned: true },
-    { icon: "🔥", name: "Streak 7gg", earned: false },
-    { icon: "🧠", name: "10 Quiz", earned: false },
-    { icon: "🍅", name: "20 Pomodori", earned: false },
-    { icon: "💬", name: "Social", earned: true },
-    { icon: "⚡", name: "Speed Quiz", earned: false },
-    { icon: "📚", name: "Studioso", earned: false },
-    { icon: "🏆", name: "Top 10", earned: false },
+    { icon: "🌟", name: "Prima Lobby",  desc: "Entra nella tua prima lobby",
+      check: s => (s.lobbiesVisited || []).length >= 1,
+      progress: s => [Math.min((s.lobbiesVisited || []).length, 1), 1] },
+
+    { icon: "🧭", name: "Esploratore",  desc: "Visita 10 materie diverse",
+      check: s => (s.lobbiesVisited || []).length >= 10,
+      progress: s => [(s.lobbiesVisited || []).length, 10] },
+
+    { icon: "🔥", name: "Streak 7gg",   desc: "Studia 7 giorni di fila",
+      check: s => (s.streak || 0) >= 7,
+      progress: s => [s.streak || 0, 7] },
+
+    { icon: "🧠", name: "10 Quiz",      desc: "Completa 10 quiz",
+      check: s => (s.quizzesCompleted || 0) >= 10,
+      progress: s => [s.quizzesCompleted || 0, 10] },
+
+    { icon: "🍅", name: "20 Pomodori",  desc: "Completa 20 sessioni di studio",
+      check: s => (s.pomodorosCompleted || 0) >= 20,
+      progress: s => [s.pomodorosCompleted || 0, 20] },
+
+    { icon: "💬", name: "Social",       desc: "Scrivi 10 messaggi in chat",
+      check: s => (s.messagesSent || 0) >= 10,
+      progress: s => [s.messagesSent || 0, 10] },
+
+    { icon: "⚡", name: "Quiz Perfetto", desc: "Fai un quiz senza errori",
+      check: s => (s.perfectQuizzes || 0) >= 1,
+      progress: s => [Math.min(s.perfectQuizzes || 0, 1), 1] },
+
+    { icon: "📚", name: "Studioso",     desc: "Accumula 10 ore di studio",
+      check: s => (s.studyHours || 0) >= 10,
+      progress: s => [Math.floor(s.studyHours || 0), 10] },
+
+    { icon: "👥", name: "Squadra",      desc: "Entra in un gruppo di studio",
+      check: s => (s.groupsJoined || 0) >= 1,
+      progress: s => [Math.min(s.groupsJoined || 0, 1), 1] },
+
+    { icon: "🏆", name: "Top 10",       desc: "Entra nella top 10 del tuo ateneo",
+      check: s => s.bestRank > 0 && s.bestRank <= 10,
+      progress: s => [s.bestRank > 0 && s.bestRank <= 10 ? 1 : 0, 1] },
 ];
 
 const LEVELS = [

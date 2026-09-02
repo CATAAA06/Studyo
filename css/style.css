@@ -2354,6 +2354,62 @@ textarea:focus {
     .page, .card, .btn, .stat-card, .tool-item { animation: none !important; transition: none !important; }
 }
 
+/* =============================================
+   RICERCA MATERIE + BADGE CON PROGRESSI
+   ============================================= */
+
+.lobby-search {
+    position: relative;
+    display: flex; align-items: center;
+    margin-bottom: 9px;
+}
+.lobby-search-icon {
+    position: absolute; left: 9px; font-size: 12px; opacity: .6; pointer-events: none;
+}
+.lobby-search input {
+    width: 100%;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    color: var(--text);
+    font-family: inherit; font-size: 13px;
+    padding: 8px 28px 8px 28px;
+    outline: none; transition: var(--transition);
+}
+.lobby-search input::placeholder { color: var(--text-muted); }
+.lobby-search input:focus { border-color: var(--primary); box-shadow: var(--ring); }
+.lobby-search-clear {
+    position: absolute; right: 6px;
+    background: none; border: none; cursor: pointer;
+    color: var(--text-muted); font-size: 13px;
+    padding: 3px 5px; border-radius: 4px; line-height: 1;
+}
+.lobby-search-clear:hover { color: var(--text); background: var(--bg-card-hover); }
+
+.lobby-search-count {
+    font-size: 10.5px; font-weight: 700; letter-spacing: .08em;
+    color: var(--text-muted); text-transform: uppercase;
+    padding: 4px 2px 8px;
+}
+.lobby-search-empty {
+    font-size: 12.5px; color: var(--text-muted);
+    padding: 14px 8px; line-height: 1.5;
+}
+.sidebar-lobby-cat {
+    font-size: 10px; color: var(--text-muted);
+    background: var(--bg); padding: 2px 7px; border-radius: 999px;
+    white-space: nowrap; flex-shrink: 0;
+}
+
+/* Badge: barra di avanzamento verso il traguardo */
+.badge-bar {
+    height: 3px; background: rgba(255,255,255,.1);
+    border-radius: 2px; margin: 7px 4px 0; overflow: hidden;
+}
+.badge-bar span { display: block; height: 100%; background: var(--primary); border-radius: 2px; }
+.badge-progress { font-size: 10px; color: var(--text-muted); margin-top: 4px; font-weight: 600; }
+.badge-item { cursor: default; }
+
 /* Avviso: browser interno di un'altra app (WhatsApp, Instagram…) */
 .inapp-warning {
     background: rgba(255, 176, 32, 0.1);
