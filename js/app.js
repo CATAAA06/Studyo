@@ -643,10 +643,10 @@ function openLobby(lobbyId) {
     const lobby = resolveLobby(lobbyId);
     if (!lobby) return;
 
-    // Una sessione già avviata nella stessa lobby non va azzerata:
-    // prima bastava passare dal profilo e tornare per perderla.
-    const sameLobby = state.currentLobby === lobbyId;
-    const keepTimer = sameLobby && state.timerRunning;
+    // Una sessione già avviata nella stessa lobby non va azzerata: prima
+    // bastava passare dal profilo e tornare per perderla. Non posso usare
+    // currentLobby perché navigate() lo azzera uscendo dalla pagina.
+    const keepTimer = state.timerRunning && state.timerLobby === lobbyId;
 
     state.currentLobby = lobbyId;
     lobbyRealUsers = [];
@@ -840,6 +840,7 @@ function toggleTimer() {
 
 function startTimer() {
     state.timerRunning = true;
+    state.timerLobby = state.currentLobby;   // dove sta girando questa sessione
     document.getElementById('timer-start-btn').textContent = '⏸ Pausa';
     document.getElementById('timer-start-btn').classList.remove('btn-primary');
     document.getElementById('timer-start-btn').classList.add('btn-warning');
