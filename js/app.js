@@ -134,11 +134,14 @@ function _hashString(str) {
     return Math.abs(h);
 }
 
-// Stable per-lobby online count: base + deterministic 0..4 variation,
-// fixed for the whole session so it doesn't flicker when re-rendering.
+/* Conteggio REALE delle persone presenti per lobby.
+   Popolato da un listener sulla collezione "presence": mostrare numeri
+   inventati quando una stanza è vuota sarebbe una pratica ingannevole. */
+let presenceCounts = {};
+
 function lobbyOnline(lobby) {
-    const variation = _hashString(lobby.id + _sessionSalt) % 5;
-    return lobby.online + variation;
+    if (!lobby) return 0;
+    return presenceCounts[lobby.id] || 0;
 }
 
 /* =============================================
@@ -234,7 +237,25 @@ function updateNav() {
    EMAIL LOGIN
    ============================================= */
 
+// Il consenso deve essere un'azione esplicita dell'utente, non una casella
+// già spuntata: vale sia per Google sia per email.
+function hasAcceptedTerms() {
+    const cb = document.getElementById('consent-terms');
+    if (cb && !cb.checked) {
+        showNotification('Per continuare accetta i Termini e conferma di avere almeno 14 anni.');
+        const box = document.querySelector('.consent-box');
+        if (box) {
+            box.classList.add('consent-missing');
+            setTimeout(() => box.classList.remove('consent-missing'), 2000);
+        }
+        return false;
+    }
+    return true;
+}
+
 function loginWithEmail() {
+    if (!hasAcceptedTerms()) return;
+
     const email = document.getElementById('auth-email').value.trim();
     const password = document.getElementById('auth-password').value;
 
@@ -600,7 +621,7 @@ function renderLobbyItem(lobby) {
         <div class="sidebar-lobby ${state.currentLobby === lobby.id ? 'active' : ''}" onclick="navigate('lobby', '${lobby.id}')">
             <span class="sidebar-lobby-icon">${lobby.icon}</span>
             <span class="sidebar-lobby-name">${lobby.name}</span>
-            <span class="sidebar-lobby-count">${lobbyOnline(lobby)}</span>
+            ${lobbyOnline(lobby) > 0 ? `<span class="sidebar-lobby-count">${lobbyOnline(lobby)}</span>` : ''}
         </div>
     `;
 }
@@ -656,7 +677,7 @@ function openLobby(lobbyId) {
 
     document.getElementById('lobby-icon-big').textContent = lobby.icon;
     document.getElementById('lobby-title').textContent = lobby.name;
-    document.getElementById('lobby-online').textContent = `${lobbyOnline(lobby)} studenti online`;
+    updateLobbyOnlineCount(lobby, lobbyOnline(lobby));
 
     // Una riga di contesto: cosa si studia, o le info del gruppo privato
     const descEl = document.getElementById('lobby-desc');
@@ -705,17 +726,13 @@ function leaveLobby() {
     lobbyRealUsers = [];
 }
 
+// Numero reale di presenti. Se non c'è nessuno lo diciamo.
 function updateLobbyOnlineCount(lobby, realCount) {
     const el = document.getElementById('lobby-online');
     if (!el) return;
-    if (lobby && lobby.isGroup) {
-        // Gruppo privato: solo persone vere, nessun riempimento
-        el.textContent = realCount === 1 ? '1 online' : `${realCount} online`;
-        return;
-    }
-    // Lobby pubblica: baseline ambiente, mai meno delle persone realmente presenti
-    const shown = Math.max(lobbyOnline(lobby), realCount);
-    el.textContent = `${shown} studenti online`;
+    if (realCount <= 0) el.textContent = 'Nessuno online adesso';
+    else if (realCount === 1) el.textContent = '1 persona online';
+    else el.textContent = `${realCount} persone online`;
 }
 
 // Hybrid render: REAL present users first (live dot), then ambient profiles to fill.
@@ -725,10 +742,8 @@ function renderStudents(realUsers = []) {
     if (!list) return;
 
     const lobby = resolveLobby(state.currentLobby);
-    const isGroup = !!(lobby && lobby.isGroup);
-    const ambientTarget = isGroup ? 0 : (lobby ? (3 + (_hashString(lobby.id + 'amb') % 3)) : 4);
 
-    // Real users (mark self)
+    // Solo persone reali: nessun profilo di riempimento, mai.
     const realHtml = realUsers.map(u => {
         const isSelf = u.id === state.firebaseUid;
         return `
@@ -742,29 +757,20 @@ function renderStudents(realUsers = []) {
         `;
     }).join('');
 
-    // Ambient fill (only what's needed to reach the baseline)
-    const fill = Math.max(0, ambientTarget - realUsers.length);
-    const ambientHtml = FAKE_STUDENTS.slice(0, fill).map(s => `
-        <div class="student-item ambient">
-            <span class="student-avatar">${s.avatar}</span>
-            <div class="student-info">
-                <div class="student-name">${s.name}</div>
-                <div class="student-studying">${s.status} · ${s.time}</div>
-            </div>
-        </div>
-    `).join('');
-
-    // Gruppo vuoto: invito ad attivarlo invece di una lista vuota
-    if (isGroup && realUsers.length <= 1) {
-        const solo = `<div class="group-nudge">
-            <p>${realUsers.length === 1 ? 'Per ora ci sei solo tu.' : 'Ancora nessuno qui.'}</p>
-            <button class="btn btn-secondary btn-sm" onclick="showInvite('${(state.currentLobby||'').replace('group_','')}')">Invita i tuoi amici</button>
+    // Nessuno oltre a te (o stanza vuota): lo diciamo, non lo mascheriamo
+    if (realUsers.length <= 1) {
+        const isGroup = !!(lobby && lobby.isGroup);
+        const inviteBtn = isGroup
+            ? `<button class="btn btn-secondary btn-sm" onclick="showInvite('${(state.currentLobby||'').replace('group_','')}')">Invita i tuoi amici</button>`
+            : `<button class="btn btn-secondary btn-sm" onclick="openGroups()">Studia con i tuoi amici</button>`;
+        list.innerHTML = realHtml + `<div class="group-nudge">
+            <p>${realUsers.length === 1 ? 'Per ora ci sei solo tu qui.' : 'Ancora nessuno in questa stanza.'}</p>
+            ${inviteBtn}
         </div>`;
-        list.innerHTML = realHtml + solo;
         return;
     }
 
-    list.innerHTML = realHtml + ambientHtml;
+    list.innerHTML = realHtml;
 }
 
 function renderChat(messages) {
@@ -2153,8 +2159,45 @@ function closeTopModal() {
     return true;
 }
 
+/* Accessibilità: gli elementi cliccabili che non sono <button> devono
+   essere raggiungibili e attivabili da tastiera, altrimenti chi non usa
+   il mouse (o usa uno screen reader) resta tagliato fuori. */
+function makeClickablesAccessible(root) {
+    (root || document).querySelectorAll('[onclick]').forEach(el => {
+        const tag = el.tagName.toLowerCase();
+        if (tag === 'button' || tag === 'a' || tag === 'input' || tag === 'select') return;
+        if (el.dataset.a11yReady) return;
+
+        el.dataset.a11yReady = '1';
+        if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+        if (!el.hasAttribute('role')) el.setAttribute('role', 'button');
+        if (!el.hasAttribute('aria-label')) {
+            const label = (el.getAttribute('title') || el.innerText || '').trim().replace(/\s+/g, ' ').slice(0, 80);
+            if (label) el.setAttribute('aria-label', label);
+        }
+        el.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                el.click();
+            }
+        });
+    });
+}
+
+// Le liste vengono ridisegnate di continuo: riapplico dopo ogni render
+function observeDynamicContent() {
+    const targets = ['sidebar-lobbies', 'sidebar-groups', 'students-list', 'sessions-list', 'community-members', 'fp-rooms'];
+    targets.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        new MutationObserver(() => makeClickablesAccessible(el)).observe(el, { childList: true, subtree: true });
+    });
+}
+
 // Global UX: Esc closes modals, clicking the backdrop closes modals.
 function setupGlobalUX() {
+    makeClickablesAccessible(document);
+    observeDynamicContent();
     // Esc to close the top dismissible modal (or Focus Pocus)
     document.addEventListener('keydown', (e) => {
         if (e.key !== 'Escape') return;

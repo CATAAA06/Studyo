@@ -26,6 +26,9 @@ const googleProvider = new firebase.auth.GoogleAuthProvider();
    ============================================= */
 
 async function signInWithGoogle() {
+    // Stesso consenso richiesto per l'accesso via email
+    if (typeof hasAcceptedTerms === 'function' && !hasAcceptedTerms()) return null;
+
     // Nei browser interni delle app (WhatsApp, Instagram…) il login Google
     // non può funzionare: lo storage è isolato e il ritorno si perde.
     if (typeof isInAppBrowser === 'function' && isInAppBrowser()) {
@@ -192,6 +195,7 @@ async function handleUserLogin(user, isNew = false) {
         if (typeof refreshGroups === 'function') await refreshGroups();
         if (typeof handleJoinFromUrl === 'function') await handleJoinFromUrl();
         if (typeof refreshSessions === 'function') refreshSessions();
+        if (typeof listenGlobalPresence === 'function') listenGlobalPresence();
     } else {
         // New user — show setup
         state.firebaseUid = user.uid;
@@ -306,6 +310,35 @@ async function enterLobbyPresence(lobbyId) {
     _presenceHeartbeat = setInterval(() => {
         ref.update({ lastSeen: firebase.firestore.FieldValue.serverTimestamp() }).catch(() => {});
     }, 45000);
+}
+
+// Conteggio globale delle presenze per lobby: alimenta i numeri mostrati
+// nella sidebar. Sono numeri reali, non stime.
+let _globalPresenceUnsub = null;
+
+function listenGlobalPresence() {
+    if (_globalPresenceUnsub || !state.firebaseUid) return;
+    try {
+        _globalPresenceUnsub = db.collection('presence')
+            .limit(300)
+            .onSnapshot((snap) => {
+                const now = Date.now();
+                const counts = {};
+                snap.docs.forEach(d => {
+                    const p = d.data();
+                    const ms = p.lastSeen && p.lastSeen.toMillis ? p.lastSeen.toMillis() : 0;
+                    if (ms && (now - ms) > 120000) return;      // presenze scadute
+                    if (!p.lobbyId) return;
+                    counts[p.lobbyId] = (counts[p.lobbyId] || 0) + 1;
+                });
+                if (typeof presenceCounts !== 'undefined') {
+                    presenceCounts = counts;
+                    if (typeof renderLobbies === 'function' && state.currentPage !== 'lobby') {
+                        renderLobbies(typeof currentLobbyFilter !== 'undefined' ? currentLobbyFilter : 'all');
+                    }
+                }
+            }, (err) => console.warn('global presence:', err.code || err.message));
+    } catch (e) { /* regole non pubblicate: si prosegue con 0 */ }
 }
 
 // Live list of people currently in this lobby (active in the last 2 minutes).

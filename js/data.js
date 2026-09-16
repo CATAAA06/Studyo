@@ -1892,22 +1892,9 @@ const DAILY_CHALLENGES = [
     { title: "Social Learner", desc: "Invia 10 messaggi in chat", reward: "+100 XP", progress: 0 },
 ];
 
-const FAKE_STUDENTS = [
-    { name: "Davide", avatar: "😎", status: "Sta studiando", time: "45 min" },
-    { name: "Giulia", avatar: "👩‍🎓", status: "In pausa", time: "1h 20min" },
-    { name: "Marco", avatar: "🧑‍💻", status: "Sta studiando", time: "30 min" },
-    { name: "Sara", avatar: "📚", status: "Sta studiando", time: "2h 10min" },
-    { name: "Luca", avatar: "🎯", status: "Quiz in corso", time: "15 min" },
-    { name: "Elena", avatar: "✨", status: "Sta studiando", time: "55 min" },
-];
-
-const FAKE_CHAT = [
-    { name: "Sistema", text: "Benvenuto nella lobby! 🎉", system: true },
-    { name: "Davide", text: "Raga chi mi spiega il teorema di Lagrange?" },
-    { name: "Sara", text: "Ci provo io, in pratica dice che..." },
-    { name: "Marco", text: "Qualcuno fa un quiz insieme?" },
-    { name: "Giulia", text: "Io! Appena finisco questo pomodoro" },
-];
+/* Nota: qui c'erano profili e messaggi di esempio mostrati agli utenti come
+   se fossero persone reali online. Rimossi: far apparire un servizio più
+   frequentato di quanto sia è una pratica commerciale ingannevole. */
 
 /* Badge con criteri reali e verificabili.
    `check` riceve lo stato e restituisce true solo se il traguardo è
