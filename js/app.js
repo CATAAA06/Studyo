@@ -173,6 +173,9 @@ function bumpDailyStat(field, amount = 1) {
    ============================================= */
 
 function navigate(page, data) {
+    // Una materia che non esiste più (es. gruppo abbandonato) riporta alla home
+    if (page === 'lobby' && !resolveLobby(data)) page = 'home';
+
     // Leaving the lobby page → stop presence + chat listeners
     const switchingLobby = page === 'lobby' && data && data !== state.currentLobby;
     if (state.currentPage === 'lobby' && (page !== 'lobby' || switchingLobby)) {
@@ -186,11 +189,16 @@ function navigate(page, data) {
 
     if (page === 'home') {
         document.getElementById('page-home').classList.add('active');
-        renderLobbies();
-        renderChallenges();
-        renderCommunity();
+        renderHome();
+        renderSidebarGroups();
+    } else if (page === 'materie') {
+        document.getElementById('page-materie').classList.add('active');
+        renderLobbies(currentLobbyFilter);
+    } else if (page === 'insieme') {
+        document.getElementById('page-insieme').classList.add('active');
         renderSidebarGroups();
         renderSessions();
+        renderCommunity();
     } else if (page === 'lobby') {
         document.getElementById('page-lobby').classList.add('active');
         openLobby(data);
@@ -200,10 +208,23 @@ function navigate(page, data) {
         renderProfile();
     }
 
-    // Close mobile sidebar when navigating
     closeMobileSidebar();
+    if (page !== 'lobby') closeLobbySheet();
 
+    // Voce attiva in sidebar e barra in basso (la materia rientra in "Materie")
+    const navKey = page === 'lobby' ? 'materie' : page;
+    document.querySelectorAll('[data-nav]').forEach(el => {
+        const on = el.dataset.nav === navKey;
+        el.classList.toggle('active', on);
+        if (on) el.setAttribute('aria-current', 'page'); else el.removeAttribute('aria-current');
+    });
+
+    const chatFab = document.getElementById('chat-fab');
+    if (chatFab) chatFab.hidden = page !== 'lobby';
+
+    renderNavSubjects();
     updateNav();
+    updateMiniTimer();
     window.scrollTo(0, 0);
 }
 
@@ -214,8 +235,18 @@ function updateNav() {
     const uniIcon = document.getElementById('server-uni-icon');
 
     if (sidebarName) sidebarName.textContent = state.playerName || 'Studente';
-    if (sidebarXp) sidebarXp.textContent = `${state.xp} XP · 🔥${state.streak}`;
+    if (sidebarXp) sidebarXp.textContent = `${state.xp} XP · Livello ${getCurrentLevel().level}`;
     if (welcomeName) welcomeName.textContent = state.playerName || 'Studente';
+
+    const menuName = document.getElementById('avatar-menu-name');
+    if (menuName) menuName.textContent = state.playerName || 'Studente';
+    const streakNum = document.getElementById('topbar-streak-num');
+    if (streakNum) streakNum.textContent = state.streak || 0;
+    const homeDate = document.getElementById('home-date');
+    if (homeDate) {
+        const d = new Date().toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' });
+        homeDate.textContent = d.charAt(0).toUpperCase() + d.slice(1);
+    }
 
     if (uniIcon && (state.playerUni || state.playerScuola)) {
         uniIcon.style.display = 'flex';
@@ -319,8 +350,8 @@ function completeSetup() {
 
     updateNav();
     renderLobbies();
-    renderChallenges();
     renderCommunity();
+    renderHome();
 
     addXP(50, 'Benvenuto su Studyo!');
 
@@ -348,18 +379,20 @@ function toggleSidebarSection(sectionId) {
     }
     if (arrow) {
         arrow.textContent = collapsedSections[sectionId] ? '▶' : '▼';
+        const btn = arrow.closest('button');
+        if (btn) btn.setAttribute('aria-expanded', String(!collapsedSections[sectionId]));
     }
 }
 
 function renderSectionHeader(id, emoji, label, count) {
     const isCollapsed = collapsedSections[id] || false;
     return `
-        <div class="sidebar-section-toggle" onclick="toggleSidebarSection('${id}')">
-            <span class="sidebar-section-arrow" id="arrow-${id}">${isCollapsed ? '▶' : '▼'}</span>
+        <button class="sidebar-section-toggle" onclick="toggleSidebarSection('${id}')" aria-expanded="${!isCollapsed}" aria-controls="section-${id}">
+            <span class="sidebar-section-arrow" id="arrow-${id}" aria-hidden="true">${isCollapsed ? '▶' : '▼'}</span>
             <span class="sidebar-section-emoji">${emoji}</span>
             <span class="sidebar-section-label">${label}</span>
             <span class="sidebar-section-count">${count}</span>
-        </div>
+        </button>
         <div class="sidebar-section-content ${isCollapsed ? 'collapsed' : ''}" id="section-${id}">
     `;
 }
@@ -433,11 +466,11 @@ function renderSearchResults(sidebarEl) {
     sidebarEl.innerHTML =
         `<div class="lobby-search-count">${found.length} ${found.length === 1 ? 'risultato' : 'risultati'}</div>` +
         found.slice(0, 40).map(l => `
-            <div class="sidebar-lobby ${state.currentLobby === l.id ? 'active' : ''}" onclick="navigate('lobby','${l.id}')">
-                <span class="sidebar-lobby-icon">${l.icon}</span>
+            <button class="sidebar-lobby" onclick="navigate('lobby','${l.id}')">
+                <span class="sidebar-lobby-icon" aria-hidden="true">${l.icon}</span>
                 <span class="sidebar-lobby-name">${l.name}</span>
                 <span class="sidebar-lobby-cat">${CAT_LABEL[l.category] || ''}</span>
-            </div>
+            </button>
         `).join('');
 }
 
@@ -618,11 +651,11 @@ function updateFilterBar() {
 
 function renderLobbyItem(lobby) {
     return `
-        <div class="sidebar-lobby ${state.currentLobby === lobby.id ? 'active' : ''}" onclick="navigate('lobby', '${lobby.id}')">
-            <span class="sidebar-lobby-icon">${lobby.icon}</span>
+        <button class="sidebar-lobby" onclick="navigate('lobby', '${lobby.id}')">
+            <span class="sidebar-lobby-icon" aria-hidden="true">${lobby.icon}</span>
             <span class="sidebar-lobby-name">${lobby.name}</span>
-            ${lobbyOnline(lobby) > 0 ? `<span class="sidebar-lobby-count">${lobbyOnline(lobby)}</span>` : ''}
-        </div>
+            ${lobbyOnline(lobby) > 0 ? `<span class="sidebar-lobby-count" title="Persone online">● ${lobbyOnline(lobby)}</span>` : ''}
+        </button>
     `;
 }
 
@@ -667,13 +700,36 @@ function openLobby(lobbyId) {
     // Una sessione già avviata nella stessa lobby non va azzerata: prima
     // bastava passare dal profilo e tornare per perderla. Non posso usare
     // currentLobby perché navigate() lo azzera uscendo dalla pagina.
-    const keepTimer = state.timerRunning && state.timerLobby === lobbyId;
+    // Il timer è personale: una sessione avviata o in pausa sopravvive al cambio
+    // di pagina e di materia (prima cambiare materia la azzerava senza avviso).
+    const keepTimer = timerInSession();
+    const sameLobbyAsBefore = lastOpenedLobbyId === lobbyId;
+    lastOpenedLobbyId = lobbyId;
 
     state.currentLobby = lobbyId;
     lobbyRealUsers = [];
 
     // Prima visita di una lobby: serve per il badge
     trackLobbyVisit(lobbyId);
+
+    // Ultime materie aperte: alimentano "Riprendi" e "Le tue materie"
+    state.recentLobbies = [lobbyId, ...(state.recentLobbies || []).filter(id => id !== lobbyId)].slice(0, 12);
+    state.lastLobbyAt = Date.now();
+    saveState();
+
+    // Tab: l'ultimo usato in questa materia; "Com'è l'esame" solo dove ha senso
+    const examTab = document.getElementById('tab-esame');
+    if (examTab) examTab.hidden = !reviewsEnabledFor(lobby);
+    let tab = getSavedLobbyTab(lobbyId);
+    if (tab === 'esame' && !reviewsEnabledFor(lobby)) tab = 'studia';
+    setLobbyTab(tab, true);
+
+    // Chat: i messaggi già presenti all'ingresso non contano come non letti
+    chatSeenIds = null;
+    lastChatMessages = [];
+    setChatUnread(0);
+    lobbyPanelOpenMobile = false;
+    applyLobbyPanelState();
 
     document.getElementById('lobby-icon-big').textContent = lobby.icon;
     document.getElementById('lobby-title').textContent = lobby.name;
@@ -696,14 +752,15 @@ function openLobby(lobbyId) {
     // Render with ambient first; live data fills in via listeners below
     renderStudents([]);
     renderChat(null);
+    if (!sameLobbyAsBefore) resetQuizArea();
     if (!keepTimer) {
-        resetQuizArea();
         resetTimer();
     } else {
-        // Sessione in corso: ripristino solo la vista del timer
+        // Sessione in corso o in pausa: ripristino solo la vista del timer
         updateTimerDisplay();
         const b = document.getElementById('timer-start-btn');
-        if (b) { b.textContent = '⏸ Pausa'; b.classList.remove('btn-primary'); b.classList.add('btn-warning'); }
+        if (b && state.timerRunning) { b.textContent = '⏸ Pausa'; b.classList.remove('btn-primary'); b.classList.add('btn-warning'); }
+        else if (b) { b.textContent = '▶ Riprendi'; b.classList.add('btn-primary'); b.classList.remove('btn-warning'); }
     }
 
     // ---- REAL-TIME: announce presence + listen to people & chat ----
@@ -732,6 +789,8 @@ function leaveLobby() {
 function updateLobbyOnlineCount(lobby, realCount) {
     const el = document.getElementById('lobby-online');
     if (!el) return;
+    const dot = document.querySelector('.lobby-meta .online-dot');
+    if (dot) dot.classList.toggle('is-empty', realCount <= 0);
     if (realCount <= 0) el.textContent = 'Nessuno online adesso';
     else if (realCount === 1) el.textContent = '1 persona online';
     else el.textContent = `${realCount} persone online`;
@@ -799,6 +858,18 @@ function renderChat(messages) {
 
     box.innerHTML = html;
     box.scrollTop = box.scrollHeight;
+
+    // Non letti: contano solo i messaggi arrivati a pannello chiuso
+    // (per id: il listener tiene solo gli ultimi 50, il conteggio non basterebbe)
+    if (Array.isArray(messages)) {
+        lastChatMessages = messages;
+        if (chatSeenIds === null || isLobbyPanelOpen()) {
+            markChatSeen();
+        } else {
+            const unread = messages.filter(m => !chatSeenIds.has(m.id) && m.uid !== state.firebaseUid).length;
+            setChatUnread(unread);
+        }
+    }
 }
 
 function sendChat() {
@@ -848,6 +919,7 @@ function toggleTimer() {
 
 function startTimer() {
     state.timerRunning = true;
+    timerTouched = true;
     state.timerLobby = state.currentLobby;   // dove sta girando questa sessione
     document.getElementById('timer-start-btn').textContent = '⏸ Pausa';
     document.getElementById('timer-start-btn').classList.remove('btn-primary');
@@ -874,6 +946,7 @@ function pauseTimer() {
     document.getElementById('timer-start-btn').classList.remove('btn-warning');
     const scene = document.querySelector('.build-scene');
     if (scene) scene.style.boxShadow = 'none';
+    updateMiniTimer();
 }
 
 function resetTimer() {
@@ -928,6 +1001,7 @@ function updateTimerDisplay() {
     document.getElementById('timer-bar').style.width = progress + '%';
 
     updateBuildingAnimation(progress);
+    updateMiniTimer();
 }
 
 function updateBuildingAnimation(progress) {
@@ -1726,6 +1800,7 @@ function formatWhen(ts) {
 }
 
 function renderSessions() {
+    renderHomeSessions();
     const section = document.getElementById('sessions-section');
     const list = document.getElementById('sessions-list');
     if (!section || !list) return;
@@ -1830,26 +1905,30 @@ async function refreshGroups() {
 }
 
 function renderSidebarGroups() {
+    renderInsiemeGroups();
     const el = document.getElementById('sidebar-groups');
     if (!el) return;
 
     if (!myGroups.length) {
-        el.innerHTML = `<div class="group-empty" onclick="openGroups()">
-            <span>Nessun gruppo</span>
-            <small>Creane uno e invita i tuoi amici</small>
-        </div>`;
+        el.innerHTML = `<button class="nav-empty" onclick="openGroups()">Crea un gruppo e invita i tuoi amici</button>`;
         return;
     }
 
     el.innerHTML = myGroups.map(g => {
         const lid = groupLobbyId(g.id);
         const n = Object.keys(g.members || {}).length;
-        return `<div class="sidebar-lobby ${state.currentLobby === lid ? 'active' : ''}" onclick="navigate('lobby','${lid}')">
-            <span class="sidebar-lobby-icon">👥</span>
-            <span class="sidebar-lobby-name">${escapeHTML(g.name)}</span>
-            <span class="sidebar-lobby-count">${n}</span>
-        </div>`;
+        return navSubItem('👥', g.name, lid, n, `${n} ${n === 1 ? 'membro' : 'membri'}`);
     }).join('');
+}
+
+// Voce secondaria della sidebar (materia o gruppo)
+function navSubItem(icon, name, lobbyId, count, countLabel) {
+    const active = state.currentPage === 'lobby' && state.currentLobby === lobbyId;
+    return `<button class="nav-sub ${active ? 'active' : ''}" onclick="navigate('lobby','${lobbyId}')"${active ? ' aria-current="page"' : ''}>
+        <span class="nav-sub-icon" aria-hidden="true">${icon}</span>
+        <span class="nav-sub-name">${escapeHTML(name)}</span>
+        ${count > 0 ? `<span class="nav-sub-count" aria-label="${countLabel}">${count}</span>` : ''}
+    </button>`;
 }
 
 function renderGroupList() {
@@ -2561,7 +2640,8 @@ function makeClickablesAccessible(root) {
 
 // Le liste vengono ridisegnate di continuo: riapplico dopo ogni render
 function observeDynamicContent() {
-    const targets = ['sidebar-lobbies', 'sidebar-groups', 'students-list', 'sessions-list', 'community-members', 'fp-rooms'];
+    const targets = ['sidebar-lobbies', 'sidebar-groups', 'students-list', 'sessions-list', 'community-members', 'fp-rooms',
+                     'nav-subjects', 'home-resume', 'home-subjects', 'home-sessions', 'insieme-groups', 'sidebar-challenges'];
     targets.forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
@@ -2576,9 +2656,16 @@ function setupGlobalUX() {
     // Esc to close the top dismissible modal (or Focus Pocus)
     document.addEventListener('keydown', (e) => {
         if (e.key !== 'Escape') return;
+        // Dal livello più in alto al più in basso
+        if (closeCommandPalette()) return;
+        if (closeAvatarMenu(true)) return;
         const fp = document.getElementById('focuspocus');
         if (fp && fp.classList.contains('active')) { closeFocusPocus(); return; }
-        closeTopModal();
+        if (closeTopModal()) return;
+        if (closeLobbySheet()) {
+            const fab = document.getElementById('chat-fab');
+            if (fab && !fab.hidden) fab.focus();
+        }
     });
 
     // Click on backdrop (the .modal element itself, not its content) to close
@@ -2612,7 +2699,7 @@ function setupGlobalUX() {
         if (now - lastErrorAt < 15000) return;   // don't spam
         lastErrorAt = now;
         if (typeof showNotification === 'function') {
-            showNotification('Qualcosa non ha funzionato. Se si ripete, segnalacelo dal 💬');
+            showNotification('Qualcosa non ha funzionato. Se si ripete, segnalacelo da Invia feedback, nel menu del tuo account.');
         }
     });
     window.addEventListener('unhandledrejection', (e) => {
@@ -3101,7 +3188,8 @@ function openFeedbackWidget() {
 
 function showFeedbackWelcome() {
     // Don't show if already dismissed this session or feedback already given
-    const dismissed = sessionStorage.getItem('studyo_feedback_welcome_dismissed');
+    // Una volta sola, non a ogni visita
+    const dismissed = localStorage.getItem('studyo_feedback_welcome_dismissed');
     if (dismissed) return;
 
     // Don't show if no setup done (user hasn't logged in yet)
@@ -3131,43 +3219,16 @@ function closeFeedbackWelcome() {
     if (welcome) {
         welcome.style.display = 'none';
     }
-    sessionStorage.setItem('studyo_feedback_welcome_dismissed', 'true');
+    localStorage.setItem('studyo_feedback_welcome_dismissed', 'true');
 }
 
 /* =============================================
-   MOBILE SIDEBAR
+   COMPATIBILITÀ: prima esisteva un menu laterale a scomparsa su mobile.
+   Ora c'è la barra in basso; chi chiamava queste funzioni chiude i menu aperti.
    ============================================= */
 
-function toggleMobileSidebar() {
-    const sidebar = document.querySelector('.channel-sidebar');
-    const overlay = document.getElementById('mobile-sidebar-overlay');
-    const icon = document.getElementById('hamburger-icon');
-
-    if (sidebar.classList.contains('mobile-open')) {
-        sidebar.classList.remove('mobile-open');
-        overlay.classList.remove('active');
-        icon.textContent = '☰';
-        document.body.style.overflow = '';
-    } else {
-        sidebar.classList.add('mobile-open');
-        overlay.classList.add('active');
-        icon.textContent = '✕';
-        document.body.style.overflow = 'hidden';
-    }
-}
-
-function closeMobileSidebar() {
-    const sidebar = document.querySelector('.channel-sidebar');
-    const overlay = document.getElementById('mobile-sidebar-overlay');
-    const icon = document.getElementById('hamburger-icon');
-
-    if (sidebar && sidebar.classList.contains('mobile-open')) {
-        sidebar.classList.remove('mobile-open');
-        overlay.classList.remove('active');
-        if (icon) icon.textContent = '☰';
-        document.body.style.overflow = '';
-    }
-}
+function toggleMobileSidebar() { closeAvatarMenu(); }
+function closeMobileSidebar() { closeAvatarMenu(); }
 
 /* =============================================
    UTILS
@@ -3243,7 +3304,7 @@ const OB_STEPS = [
             <div class="ob-row"><span>💻</span> Informatica <b>21</b></div>
         </div>`,
         title: 'Ogni materia ha la sua lobby',
-        text: 'Nella barra a sinistra trovi gli esami del tuo corso. Il numero accanto dice quante persone ci sono adesso.'
+        text: 'In Home trovi gli esami del tuo corso, in Materie tutte le altre. Il numero dice quante persone ci sono adesso.'
     },
     {
         visual: `<div class="ob-scene ob-scene-people">
@@ -3268,7 +3329,7 @@ const OB_STEPS = [
             <div class="ob-focus-label">🔮 Focus Pocus</div>
         </div>`,
         title: 'E quando serve silenzio totale',
-        text: 'Apri Focus Pocus dall\'icona 🔮: schermo intero, atmosfera immersiva e solo il timer. Tutto il resto sparisce.'
+        text: 'Apri Focus Pocus dalla Home: schermo intero, atmosfera immersiva e solo il timer. Tutto il resto sparisce.'
     }
 ];
 
@@ -3544,6 +3605,601 @@ function generateParticles(scene, theme) {
 }
 
 /* =============================================
+   SHELL — navigazione, home, pagina materia, ricerca rapida
+   ============================================= */
+
+function isNarrowScreen() {
+    return window.matchMedia('(max-width: 900px)').matches;
+}
+
+function safeStorageGet(key, fallback) {
+    try { const v = localStorage.getItem(key); return v === null ? fallback : v; } catch (e) { return fallback; }
+}
+function safeStorageSet(key, value) {
+    try { localStorage.setItem(key, value); } catch (e) { /* storage bloccato: pazienza */ }
+}
+
+function onlineLabel(n) {
+    if (n <= 0) return 'Nessuno online';
+    return n === 1 ? '1 online' : `${n} online`;
+}
+
+function formatAgo(ts) {
+    if (!ts) return '';
+    const min = Math.round((Date.now() - ts) / 60000);
+    if (min < 2) return 'poco fa';
+    if (min < 60) return `${min} minuti fa`;
+    const h = Math.round(min / 60);
+    if (h < 24) return h === 1 ? "un'ora fa" : `${h} ore fa`;
+    const d = Math.round(h / 24);
+    return d === 1 ? 'ieri' : `${d} giorni fa`;
+}
+
+/* --- Le tue materie: prima quelle aperte di recente, poi il piano di studi --- */
+
+function getMySubjects(limit) {
+    let plan = [];
+    if (state.playerSchool === 'superiori') {
+        if (state.playerTipoScuola && typeof SCUOLE_MATERIE !== 'undefined' && SCUOLE_MATERIE[state.playerTipoScuola]) {
+            plan = SCUOLE_MATERIE[state.playerTipoScuola];
+        }
+    } else if (state.playerCorso && CORSI_ESAMI[state.playerCorso]) {
+        plan = CORSI_ESAMI[state.playerCorso];
+    }
+    const recent = (state.recentLobbies || []).filter(id => typeof id === 'string' && !id.startsWith('group_'));
+    const ids = [...new Set([...recent, ...plan])];
+    return ids.map(id => LOBBIES.find(l => l.id === id)).filter(Boolean).slice(0, limit);
+}
+
+function renderNavSubjects() {
+    const el = document.getElementById('nav-subjects');
+    if (!el) return;
+    const list = getMySubjects(6);
+    if (!list.length) {
+        el.innerHTML = `<button class="nav-empty" onclick="navigate('materie')">Scegli le materie che stai preparando</button>`;
+        return;
+    }
+    el.innerHTML = list.map(l => navSubItem(l.icon, l.name, l.id, lobbyOnline(l), onlineLabel(lobbyOnline(l)))).join('');
+}
+
+/* --- Home --- */
+
+function renderHome() {
+    updateNav();
+    renderHomeResume();
+    renderHomeSubjects();
+    renderHomeSessions();
+    renderChallenges();
+    renderNavSubjects();
+}
+
+function renderHomeResume() {
+    const box = document.getElementById('home-resume');
+    if (!box) return;
+    // Non ridisegno mentre l'utente sta scrivendo nella ricerca
+    if (document.activeElement && document.activeElement.id === 'home-search') return;
+
+    const last = (state.recentLobbies || []).map(id => resolveLobby(id)).find(Boolean);
+
+    if (last) {
+        const n = lobbyOnline(last);
+        const people = n > 0 ? `<span class="live-pill"><span class="live-dot"></span>${n === 1 ? '1 persona sta studiando' : `${n} persone stanno studiando`}</span>` : '';
+        box.className = 'hero-card';
+        box.innerHTML = `
+            <div class="hero-text">
+                <span class="eyebrow">Riprendi</span>
+                <h2><span aria-hidden="true">${last.icon}</span> ${escapeHTML(last.name)}</h2>
+                <p>${people}${state.lastLobbyAt ? `<span>Ultima volta ${formatAgo(state.lastLobbyAt)}</span>` : ''}</p>
+            </div>
+            <button class="btn btn-primary btn-large hero-cta" onclick="navigate('lobby','${last.id}')">
+                Entra e studia <svg class="ic ic-sm" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+            </button>`;
+        return;
+    }
+
+    const suggestions = getMySubjects(4);
+    box.className = 'hero-card hero-card-start';
+    box.innerHTML = `
+        <div class="hero-text">
+            <span class="eyebrow">Inizia</span>
+            <h2>Cosa studi oggi?</h2>
+        </div>
+        <form class="hero-search" onsubmit="event.preventDefault();goToCatalogSearch(document.getElementById('home-search').value)">
+            <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg>
+            <input type="search" id="home-search" placeholder="Es. Analisi 1, Diritto privato…" aria-label="Cerca una materia" autocomplete="off">
+            <button type="submit" class="btn btn-primary">Cerca</button>
+        </form>
+        ${suggestions.length ? `<div class="hero-chips">${suggestions.map(l =>
+            `<button class="chip" onclick="navigate('lobby','${l.id}')"><span aria-hidden="true">${l.icon}</span> ${escapeHTML(l.name)}</button>`).join('')}</div>` : ''}`;
+}
+
+function renderHomeSubjects() {
+    const el = document.getElementById('home-subjects');
+    if (!el) return;
+    const list = getMySubjects(8);
+    if (!list.length) {
+        el.innerHTML = `<div class="empty-inline">
+            <p>Non hai ancora materie qui.</p>
+            <button class="btn btn-secondary btn-sm" onclick="navigate('materie')">Sfoglia le materie</button>
+        </div>`;
+        return;
+    }
+    el.innerHTML = list.map(l => {
+        const n = lobbyOnline(l);
+        return `<button class="subject-card" onclick="navigate('lobby','${l.id}')">
+            <span class="subject-card-icon" aria-hidden="true">${l.icon}</span>
+            <span class="subject-card-name">${escapeHTML(l.name)}</span>
+            <span class="subject-card-online ${n > 0 ? 'is-live' : ''}">${n > 0 ? '<span class="live-dot"></span>' : ''}${onlineLabel(n)}</span>
+        </button>`;
+    }).join('');
+}
+
+function renderHomeSessions() {
+    const el = document.getElementById('home-sessions');
+    if (!el) return;
+    if (!upcomingSessions.length) {
+        el.innerHTML = `<p class="muted-line">Nessuna sessione in programma. Fissane una e invita gli altri.</p>`;
+        return;
+    }
+    const rows = upcomingSessions.slice(0, 3).map(s => {
+        const joined = (s.participants || []).includes(state.firebaseUid);
+        const live = s.startAt <= Date.now();
+        const n = (s.participants || []).length;
+        const action = live
+            ? `<button class="btn btn-secondary btn-sm" onclick="navigate('lobby','${s.lobbyId}')">Entra</button>`
+            : joined
+                ? `<span class="session-joined">✓ Ci sei</span>`
+                : `<button class="btn btn-secondary btn-sm" onclick="doJoinSession('${s.id}')">Partecipa</button>`;
+        return `<div class="mini-row">
+            <div class="mini-row-main">
+                <span class="mini-row-when ${live ? 'is-live' : ''}">${live ? 'In corso' : formatWhen(s.startAt)}</span>
+                <span class="mini-row-title">${escapeHTML(s.lobbyName || 'Studio')}</span>
+                <span class="mini-row-meta">${n} ${n === 1 ? 'partecipante' : 'partecipanti'}</span>
+            </div>
+            ${action}
+        </div>`;
+    }).join('');
+    const more = upcomingSessions.length > 3
+        ? `<button class="link-btn" onclick="navigate('insieme')">Vedi tutte (${upcomingSessions.length})</button>` : '';
+    el.innerHTML = rows + more;
+}
+
+function goToCatalogSearch(q) {
+    navigate('materie');
+    const input = document.getElementById('lobby-search');
+    if (!input) return;
+    input.value = (q || '').trim();
+    searchLobbies(input.value);
+    input.focus();
+}
+
+/* --- Insieme --- */
+
+function renderInsiemeGroups() {
+    const el = document.getElementById('insieme-groups');
+    if (!el) return;
+    if (!myGroups.length) {
+        el.innerHTML = `<div class="empty-inline">
+            <p>Non sei ancora in nessun gruppo. Crea un gruppo privato e invita i tuoi compagni con un link, oppure entra con un codice.</p>
+        </div>`;
+        return;
+    }
+    el.innerHTML = myGroups.map(g => {
+        const n = Object.keys(g.members || {}).length;
+        const lid = groupLobbyId(g.id);
+        return `<div class="group-row">
+            <span class="group-row-icon" aria-hidden="true">👥</span>
+            <div class="group-row-info">
+                <strong>${escapeHTML(g.name)}</strong>
+                <span>${n} ${n === 1 ? 'membro' : 'membri'} · codice <b>${escapeHTML(g.code || '')}</b>${lobbyOnline({ id: lid }) > 0 ? ` · ${onlineLabel(lobbyOnline({ id: lid }))}` : ''}</span>
+            </div>
+            <div class="group-row-actions">
+                <button class="btn btn-secondary btn-sm" onclick="navigate('lobby','${lid}')">Apri</button>
+                <button class="btn btn-secondary btn-sm" onclick="showInvite('${g.id}')">Invita</button>
+                <button class="icon-btn" onclick="doLeaveGroup('${g.id}')" aria-label="Esci dal gruppo ${escapeHTML(g.name)}" title="Esci dal gruppo">
+                    <svg class="ic ic-sm" aria-hidden="true"><use href="#i-logout"/></svg>
+                </button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+/* --- Presenza aggiornata: ridisegno solo ciò che è visibile --- */
+
+function onPresenceCountsChanged() {
+    renderNavSubjects();
+    if (state.currentPage === 'materie') renderLobbies(currentLobbyFilter);
+    else if (state.currentPage === 'home') { renderHomeSubjects(); renderHomeResume(); }
+    else if (state.currentPage === 'insieme') renderInsiemeGroups();
+}
+
+/* --- Sidebar comprimibile --- */
+
+function applyNavCollapsed() {
+    const collapsed = safeStorageGet('studyo_nav_collapsed', '0') === '1';
+    const shell = document.getElementById('app-shell');
+    if (shell) shell.classList.toggle('nav-collapsed', collapsed);
+    const btn = document.getElementById('nav-collapse-btn');
+    if (btn) {
+        const label = collapsed ? 'Espandi la barra laterale' : 'Comprimi la barra laterale';
+        btn.setAttribute('aria-label', label);
+        btn.title = label;
+        const text = btn.querySelector('.nav-label');
+        if (text) text.textContent = collapsed ? 'Espandi' : 'Comprimi';
+    }
+}
+
+function toggleNavCollapsed() {
+    const collapsed = safeStorageGet('studyo_nav_collapsed', '0') === '1';
+    safeStorageSet('studyo_nav_collapsed', collapsed ? '0' : '1');
+    applyNavCollapsed();
+}
+
+/* --- Menu account --- */
+
+function toggleAvatarMenu() {
+    const menu = document.getElementById('avatar-menu');
+    if (!menu) return;
+    if (menu.hidden) {
+        menu.hidden = false;
+        document.getElementById('avatar-btn').setAttribute('aria-expanded', 'true');
+        const first = menu.querySelector('[role="menuitem"]');
+        if (first) first.focus();
+    } else {
+        closeAvatarMenu();
+    }
+}
+
+function closeAvatarMenu(returnFocus) {
+    const menu = document.getElementById('avatar-menu');
+    if (!menu || menu.hidden) return false;
+    menu.hidden = true;
+    const btn = document.getElementById('avatar-btn');
+    if (btn) {
+        btn.setAttribute('aria-expanded', 'false');
+        if (returnFocus) btn.focus();
+    }
+    return true;
+}
+
+/* --- Tab della materia --- */
+
+const LOBBY_TABS = ['studia', 'ripassa', 'materiali', 'esame'];
+let currentLobbyTab = 'studia';
+
+function getSavedLobbyTab(lobbyId) {
+    try {
+        const map = JSON.parse(safeStorageGet('studyo_lobby_tabs', '{}'));
+        return LOBBY_TABS.includes(map[lobbyId]) ? map[lobbyId] : 'studia';
+    } catch (e) { return 'studia'; }
+}
+
+function saveLobbyTab(lobbyId, tab) {
+    try {
+        const map = JSON.parse(safeStorageGet('studyo_lobby_tabs', '{}'));
+        map[lobbyId] = tab;
+        safeStorageSet('studyo_lobby_tabs', JSON.stringify(map));
+    } catch (e) {}
+}
+
+function setLobbyTab(tab, silent) {
+    if (!LOBBY_TABS.includes(tab)) tab = 'studia';
+    const wanted = document.getElementById('tab-' + tab);
+    if (!wanted || wanted.hidden) tab = 'studia';
+
+    LOBBY_TABS.forEach(t => {
+        const btn = document.getElementById('tab-' + t);
+        const panel = document.getElementById('panel-' + t);
+        const on = t === tab;
+        if (btn) {
+            btn.classList.toggle('active', on);
+            btn.setAttribute('aria-selected', on ? 'true' : 'false');
+            btn.tabIndex = on ? 0 : -1;
+        }
+        if (panel) panel.hidden = !on;
+    });
+
+    currentLobbyTab = tab;
+    if (!silent && state.currentLobby) saveLobbyTab(state.currentLobby, tab);
+    updateMiniTimer();
+}
+
+function handleTabKeys(e) {
+    const keys = ['ArrowLeft', 'ArrowRight', 'Home', 'End'];
+    if (!keys.includes(e.key)) return;
+    const tabs = [...document.querySelectorAll('.lobby-tab')].filter(t => !t.hidden);
+    const idx = tabs.indexOf(document.activeElement);
+    if (idx < 0) return;
+    e.preventDefault();
+    let next = idx;
+    if (e.key === 'ArrowRight') next = (idx + 1) % tabs.length;
+    if (e.key === 'ArrowLeft') next = (idx - 1 + tabs.length) % tabs.length;
+    if (e.key === 'Home') next = 0;
+    if (e.key === 'End') next = tabs.length - 1;
+    setLobbyTab(tabs[next].dataset.tab);
+    tabs[next].focus();
+}
+
+/* --- Pannello persone + chat (colonna su desktop, foglio dal basso su mobile) --- */
+
+let lobbyPanelOpenDesktop = safeStorageGet('studyo_panel_open', '1') !== '0';
+let lobbyPanelOpenMobile = false;
+let chatSeenIds = null;
+let lastChatMessages = [];
+
+function isLobbyPanelOpen() {
+    return isNarrowScreen() ? lobbyPanelOpenMobile : lobbyPanelOpenDesktop;
+}
+
+function toggleLobbyPanel(force) {
+    const next = typeof force === 'boolean' ? force : !isLobbyPanelOpen();
+    if (isNarrowScreen()) {
+        lobbyPanelOpenMobile = next;
+    } else {
+        lobbyPanelOpenDesktop = next;
+        safeStorageSet('studyo_panel_open', next ? '1' : '0');
+    }
+    applyLobbyPanelState();
+    if (next) markChatSeen();
+    else if (isNarrowScreen()) {
+        const fab = document.getElementById('chat-fab');
+        if (fab && !fab.hidden && document.activeElement && document.getElementById('lobby-panel').contains(document.activeElement)) fab.focus();
+    }
+}
+
+function closeLobbySheet() {
+    if (!lobbyPanelOpenMobile) return false;
+    lobbyPanelOpenMobile = false;
+    applyLobbyPanelState();
+    return true;
+}
+
+function applyLobbyPanelState() {
+    const narrow = isNarrowScreen();
+    const open = isLobbyPanelOpen();
+    const onLobby = state.currentPage === 'lobby';
+
+    const layout = document.getElementById('lobby-layout');
+    if (layout) layout.classList.toggle('panel-closed', !narrow && !open);
+
+    const sheetOpen = narrow && open && onLobby;
+    document.body.classList.toggle('sheet-open', sheetOpen);
+    const backdrop = document.getElementById('sheet-backdrop');
+    if (backdrop) backdrop.hidden = !sheetOpen;
+
+    const toggle = document.getElementById('panel-toggle');
+    if (toggle) {
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        toggle.setAttribute('aria-label', open ? 'Nascondi persone e chat' : 'Mostra persone e chat');
+    }
+    const fab = document.getElementById('chat-fab');
+    if (fab) fab.setAttribute('aria-expanded', sheetOpen ? 'true' : 'false');
+}
+
+function markChatSeen() {
+    chatSeenIds = new Set((lastChatMessages || []).map(m => m.id));
+    setChatUnread(0);
+}
+
+function setChatUnread(n) {
+    ['chat-unread', 'chat-fab-unread'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.textContent = n > 9 ? '9+' : String(n);
+        el.hidden = n <= 0;
+    });
+    const fab = document.getElementById('chat-fab');
+    if (fab) fab.setAttribute('aria-label', n > 0 ? `Apri persone e chat, ${n} messaggi non letti` : 'Apri persone e chat');
+}
+
+/* --- Mini-timer: la sessione resta visibile anche fuori dalla materia --- */
+
+let timerTouched = false;
+let lastOpenedLobbyId = null;
+
+function timerInSession() {
+    return timerTouched && !!state.timerLobby
+        && (state.timerRunning || (state.timerSeconds > 0 && state.timerSeconds < state.timerTotal));
+}
+
+function updateMiniTimer() {
+    const el = document.getElementById('mini-timer');
+    if (!el) return;
+    const timerInView = state.currentPage === 'lobby' && currentLobbyTab === 'studia';
+    const show = timerInSession() && !timerInView;
+    el.hidden = !show;
+    if (!show) return;
+
+    const m = Math.floor(state.timerSeconds / 60), s = state.timerSeconds % 60;
+    document.getElementById('mini-timer-time').textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+    const lobby = resolveLobby(state.timerLobby);
+    document.getElementById('mini-timer-name').textContent =
+        (state.timerRunning ? '' : 'In pausa · ') + (lobby ? lobby.name : 'Sessione');
+    el.classList.toggle('is-paused', !state.timerRunning);
+    el.setAttribute('aria-label', `Timer ${state.timerRunning ? 'in corso' : 'in pausa'}, torna alla sessione`);
+}
+
+function returnToTimer() {
+    if (state.currentPage === 'lobby') {
+        setLobbyTab('studia');
+        return;
+    }
+    const target = resolveLobby(state.timerLobby) ? state.timerLobby : null;
+    if (!target) return;
+    saveLobbyTab(target, 'studia');
+    navigate('lobby', target);
+}
+
+/* --- Ricerca rapida (Ctrl+K) --- */
+
+let cmdkItems = [];
+let cmdkIndex = 0;
+let cmdkReturnFocus = null;
+
+function isCommandPaletteOpen() {
+    const el = document.getElementById('cmdk');
+    return !!el && !el.hidden;
+}
+
+function openCommandPalette() {
+    const el = document.getElementById('cmdk');
+    if (!el || !state.setupDone) return;
+    closeAvatarMenu();
+    cmdkReturnFocus = document.activeElement;
+    el.hidden = false;
+    document.body.classList.add('cmdk-open');
+    const input = document.getElementById('cmdk-input');
+    input.value = '';
+    renderCommandResults();
+    input.focus();
+}
+
+function closeCommandPalette(restoreFocus = true) {
+    const el = document.getElementById('cmdk');
+    if (!el || el.hidden) return false;
+    el.hidden = true;
+    document.body.classList.remove('cmdk-open');
+    if (restoreFocus && cmdkReturnFocus && typeof cmdkReturnFocus.focus === 'function') cmdkReturnFocus.focus();
+    return true;
+}
+
+function renderCommandResults() {
+    const input = document.getElementById('cmdk-input');
+    const box = document.getElementById('cmdk-results');
+    if (!input || !box) return;
+    const q = normalizeText(input.value.trim());
+    const match = label => !q || normalizeText(label).includes(q);
+
+    const CAT = { scientifica: 'Scientifica', economia: 'Economia', giuridica: 'Giuridica', umanistica: 'Umanistica',
+                  medicina: 'Medicina', superiori: 'Superiori', tolc: 'TOLC' };
+
+    const subjects = (q ? LOBBIES.filter(l => normalizeText(l.name).includes(q)).slice(0, 8) : getMySubjects(5))
+        .map(l => ({ icon: l.icon, label: l.name, hint: CAT[l.category] || 'Materia', run: () => navigate('lobby', l.id) }));
+    const groups = myGroups.filter(g => match(g.name))
+        .map(g => ({ icon: '👥', label: g.name, hint: 'Gruppo', run: () => navigate('lobby', groupLobbyId(g.id)) }));
+    const pages = [
+        { icon: '🏠', label: 'Home', hint: 'Pagina', run: () => navigate('home') },
+        { icon: '📚', label: 'Materie', hint: 'Pagina', run: () => navigate('materie') },
+        { icon: '🤝', label: 'Insieme', hint: 'Pagina', run: () => navigate('insieme') },
+        { icon: '👤', label: 'Profilo', hint: 'Pagina', run: () => navigate('profile') },
+    ].filter(p => match(p.label));
+    const actions = [
+        { icon: '🔮', label: 'Focus Pocus', hint: 'Azione', run: () => openFocusPocus() },
+        { icon: '📅', label: 'Programma una sessione', hint: 'Azione', run: () => openNewSession() },
+        { icon: '➕', label: 'Crea o entra in un gruppo', hint: 'Azione', run: () => openGroups() },
+        { icon: '💬', label: 'Invia feedback', hint: 'Azione', run: () => openFeedbackWidget() },
+    ].filter(a => match(a.label));
+
+    const sections = [
+        [q ? 'Materie' : 'Le tue materie', subjects],
+        ['Gruppi', groups],
+        ['Pagine', pages],
+        ['Azioni', actions],
+    ].filter(([, items]) => items.length);
+
+    cmdkItems = sections.flatMap(([, items]) => items);
+    cmdkIndex = 0;
+
+    if (!cmdkItems.length) {
+        box.innerHTML = `<div class="cmdk-empty">Nessun risultato per “${escapeHTML(input.value.trim())}”.</div>`;
+        input.removeAttribute('aria-activedescendant');
+        return;
+    }
+
+    let i = 0;
+    box.innerHTML = sections.map(([title, items]) => `
+        <div class="cmdk-section" role="group" aria-label="${title}">
+            <div class="cmdk-section-title" aria-hidden="true">${title}</div>
+            ${items.map(it => {
+                const idx = i++;
+                return `<div class="cmdk-item" role="option" id="cmdk-opt-${idx}" data-idx="${idx}"
+                             onmousedown="event.preventDefault()" onclick="runCommand(${idx})" onmousemove="highlightCommand(${idx})">
+                    <span class="cmdk-item-icon" aria-hidden="true">${it.icon}</span>
+                    <span class="cmdk-item-label">${escapeHTML(it.label)}</span>
+                    <span class="cmdk-item-hint">${it.hint}</span>
+                </div>`;
+            }).join('')}
+        </div>`).join('');
+    highlightCommand(0);
+}
+
+function highlightCommand(idx) {
+    if (idx === cmdkIndex && document.querySelector('.cmdk-item.active')) return;
+    cmdkIndex = idx;
+    document.querySelectorAll('.cmdk-item').forEach(el => {
+        const on = +el.dataset.idx === idx;
+        el.classList.toggle('active', on);
+        el.setAttribute('aria-selected', on ? 'true' : 'false');
+        if (on) el.scrollIntoView({ block: 'nearest' });
+    });
+    const input = document.getElementById('cmdk-input');
+    if (input) input.setAttribute('aria-activedescendant', 'cmdk-opt-' + idx);
+}
+
+function handleCommandKey(e) {
+    if (e.key === 'Escape') {
+        e.preventDefault();
+        e.stopPropagation();
+        closeCommandPalette();
+        return;
+    }
+    if (!cmdkItems.length) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); highlightCommand((cmdkIndex + 1) % cmdkItems.length); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); highlightCommand((cmdkIndex - 1 + cmdkItems.length) % cmdkItems.length); }
+    else if (e.key === 'Enter') { e.preventDefault(); runCommand(cmdkIndex); }
+}
+
+function runCommand(idx) {
+    const item = cmdkItems[idx];
+    if (!item) return;
+    closeCommandPalette(false);
+    item.run();
+}
+
+function setupShell() {
+    applyNavCollapsed();
+
+    // Ctrl/Cmd + K apre la ricerca rapida
+    document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && !e.altKey && e.key.toLowerCase() === 'k') {
+            e.preventDefault();
+            if (isCommandPaletteOpen()) closeCommandPalette(); else openCommandPalette();
+        }
+    });
+
+    // Clic fuori dal menu account lo chiude
+    document.addEventListener('click', (e) => {
+        const wrap = document.querySelector('.avatar-wrap');
+        if (wrap && !wrap.contains(e.target)) closeAvatarMenu();
+    });
+
+    // Frecce dentro il menu account
+    const menu = document.getElementById('avatar-menu');
+    if (menu) {
+        menu.addEventListener('keydown', (e) => {
+            const items = [...menu.querySelectorAll('[role="menuitem"]')];
+            const idx = items.indexOf(document.activeElement);
+            if (e.key === 'ArrowDown') { e.preventDefault(); items[(idx + 1) % items.length].focus(); }
+            else if (e.key === 'ArrowUp') { e.preventDefault(); items[(idx - 1 + items.length) % items.length].focus(); }
+            else if (e.key === 'Tab') closeAvatarMenu();
+        });
+    }
+
+    const tablist = document.querySelector('.lobby-tabs');
+    if (tablist) tablist.addEventListener('keydown', handleTabKeys);
+
+    // Passando da desktop a mobile (o ruotando il tablet) il pannello si riadatta
+    window.matchMedia('(max-width: 900px)').addEventListener('change', () => {
+        lobbyPanelOpenMobile = false;
+        applyLobbyPanelState();
+    });
+
+    // Il layout mobile usa la barra in basso: niente scroll della pagina sotto il foglio chat
+    applyLobbyPanelState();
+    setLobbyTab('studia', true);
+}
+
+/* =============================================
    INIT
    ============================================= */
 
@@ -3560,10 +4216,11 @@ function init() {
         closeModal('auth');
     }
 
-    updateNav();
-    renderLobbies();
-    renderChallenges();
-    renderCommunity();
+    // Si riparte sempre dalla home: presenza e chat si riattivano entrando in una materia
+    state.currentPage = 'home';
+    state.currentLobby = null;
+    setupShell();
+    navigate('home');
 
     // Restore master volume slider + label
     const volSlider = document.getElementById('master-volume');

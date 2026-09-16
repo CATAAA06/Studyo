@@ -189,6 +189,7 @@ async function handleUserLogin(user, isNew = false) {
         renderLobbies();
         renderChallenges();
         renderCommunity();
+        if (typeof renderHome === 'function') renderHome();
         showNotification(`👋 Bentornato, ${state.playerName || 'studente'}!`);
 
         // Gruppi privati + eventuale link d'invito (?join=CODE)
@@ -333,9 +334,7 @@ function listenGlobalPresence() {
                 });
                 if (typeof presenceCounts !== 'undefined') {
                     presenceCounts = counts;
-                    if (typeof renderLobbies === 'function' && state.currentPage !== 'lobby') {
-                        renderLobbies(typeof currentLobbyFilter !== 'undefined' ? currentLobbyFilter : 'all');
-                    }
+                    if (typeof onPresenceCountsChanged === 'function') onPresenceCountsChanged();
                 }
             }, (err) => console.warn('global presence:', err.code || err.message));
     } catch (e) { /* regole non pubblicate: si prosegue con 0 */ }

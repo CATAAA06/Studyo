@@ -2,7 +2,7 @@
    STUDYO — Service Worker (PWA offline shell)
    ============================================= */
 
-const CACHE_VERSION = 'studyo-v8';
+const CACHE_VERSION = 'studyo-v9';
 const APP_SHELL = [
   './',
   './index.html',
@@ -14,7 +14,7 @@ const APP_SHELL = [
   './legal.css',
   './fonts/fonts.css',
   './css/style.css',
-  './css/discord.css',
+  './css/layout.css',
   './js/data.js',
   './js/app.js',
   './js/firebase-config.js',

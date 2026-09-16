@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Studyo — Lo studio diventa multiplayer</title>
 
     <!-- SEO -->
@@ -39,401 +39,566 @@
     <link rel="apple-touch-icon" href="icons/icon-180.png">
 
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/discord.css">
+    <link rel="stylesheet" href="css/layout.css">
     <!-- Font ospitati in locale: nessun dato inviato a server di terze parti -->
     <link rel="stylesheet" href="fonts/fonts.css">
 </head>
 <body>
-    <div id="app-discord">
-        <!-- DISCORD-STYLE: Server Strip (left icons) -->
-        <div class="server-strip">
-            <div class="server-icon server-home active" onclick="navigate('home')" title="Home">
-                <svg width="26" height="26" viewBox="0 0 32 32" fill="none" aria-label="Studyo">
-                    <rect width="32" height="32" rx="7" fill="#C8F031"/>
-                    <path d="M20.6 11c-.95-.9-2.5-1.45-4.25-1.45-2.8 0-4.65 1.35-4.65 3.4 0 1.95 1.45 2.9 4.05 3.5 2.3.55 3 .95 3 1.9 0 .95-.95 1.55-2.5 1.55-1.65 0-3.1-.6-4.15-1.65" stroke="#0A0A0B" stroke-width="2.6" stroke-linecap="round" fill="none"/>
-                </svg>
-            </div>
-            <div class="server-divider"></div>
-            <div class="server-icon server-uni" id="server-uni-icon" onclick="navigate('home')" title="La tua università" style="display:none">
-                <span>🏛️</span>
-            </div>
-            <div class="server-icon server-focus" onclick="openFocusPocus()" title="Focus Pocus — entra in full focus">
-                <span>🔮</span>
-            </div>
-            <div class="server-icon" onclick="navigate('profile')" title="Profilo">
-                <span>👤</span>
-            </div>
-            <div class="server-divider"></div>
-            <div class="server-icon server-feedback" onclick="openFeedbackWidget()" title="Invia Feedback">
-                <span>💬</span>
-            </div>
-        </div>
+    <!-- Icone (tratto lineare, stile Lucide — licenza ISC) -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+        <defs>
+            <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+            <symbol id="i-book" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></symbol>
+            <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+            <symbol id="i-user" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+            <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+            <symbol id="i-collapse" viewBox="0 0 24 24"><path d="m11 17-5-5 5-5"/><path d="m18 17-5-5 5-5"/></symbol>
+            <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+            <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+            <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M12 3l1.8 5.4a2 2 0 0 0 1.3 1.3L20.5 11.5l-5.4 1.8a2 2 0 0 0-1.3 1.3L12 20l-1.8-5.4a2 2 0 0 0-1.3-1.3L3.5 11.5l5.4-1.8a2 2 0 0 0 1.3-1.3z"/></symbol>
+            <symbol id="i-video" viewBox="0 0 24 24"><path d="m16 13 5.2 3.5a.5.5 0 0 0 .8-.4V7.9a.5.5 0 0 0-.8-.4L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></symbol>
+            <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+            <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></symbol>
+            <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+            <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+            <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></symbol>
+            <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></symbol>
+            <symbol id="i-flag" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/></symbol>
+            <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+            <symbol id="i-message" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+            <symbol id="i-file" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></symbol>
+            <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12.8 2.2a2 2 0 0 0-1.6 0L2.6 6.1a1 1 0 0 0 0 1.8l8.6 3.9a2 2 0 0 0 1.6 0l8.6-3.9a1 1 0 0 0 0-1.8Z"/><path d="m22 17.6-9.2 4.2a2 2 0 0 1-1.6 0L2 17.6"/><path d="m22 12.6-9.2 4.2a2 2 0 0 1-1.6 0L2 12.6"/></symbol>
+            <symbol id="i-external" viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+            <symbol id="i-map" viewBox="0 0 24 24"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></symbol>
+            <symbol id="i-bot" viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></symbol>
+        </defs>
+    </svg>
 
-        <!-- MOBILE: Toggle sidebar button + overlay -->
-        <button class="mobile-sidebar-toggle" id="mobile-sidebar-toggle" onclick="toggleMobileSidebar()">
-            <span class="hamburger-icon" id="hamburger-icon">☰</span>
-        </button>
-        <div class="mobile-sidebar-overlay" id="mobile-sidebar-overlay" onclick="toggleMobileSidebar()"></div>
-
-        <!-- DISCORD-STYLE: Channel Sidebar -->
-        <div class="channel-sidebar">
-            <div class="sidebar-header">
-                <h2 class="sidebar-title">Studyo</h2>
-                <span class="sidebar-sub" id="sidebar-sub">Lo studio diventa multiplayer</span>
+    <div id="app-shell" class="shell">
+        <!-- ============ SIDEBAR (desktop) ============ -->
+        <aside class="nav-sidebar" id="nav-sidebar" aria-label="Navigazione principale">
+            <div class="nav-brand">
+                <button class="nav-logo" onclick="navigate('home')" aria-label="Studyo, vai alla home">
+                    <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+                        <rect width="32" height="32" rx="7" fill="#C8F031"/>
+                        <path d="M20.6 11c-.95-.9-2.5-1.45-4.25-1.45-2.8 0-4.65 1.35-4.65 3.4 0 1.95 1.45 2.9 4.05 3.5 2.3.55 3 .95 3 1.9 0 .95-.95 1.55-2.5 1.55-1.65 0-3.1-.6-4.15-1.65" stroke="#0A0A0B" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+                    </svg>
+                    <span class="nav-label nav-brand-name">Studyo</span>
+                </button>
             </div>
 
-            <!-- User card top -->
-            <div class="sidebar-user-card" onclick="navigate('profile')">
-                <span class="sidebar-avatar">🎓</span>
-                <div class="sidebar-user-info">
-                    <span class="sidebar-user-name" id="sidebar-name">Studente</span>
-                    <span class="sidebar-user-xp" id="sidebar-xp">0 XP · 🔥0</span>
+            <nav class="nav-main">
+                <button class="nav-item" data-nav="home" onclick="navigate('home')" title="Home">
+                    <svg class="ic" aria-hidden="true"><use href="#i-home"/></svg><span class="nav-label">Home</span>
+                </button>
+                <button class="nav-item" data-nav="materie" onclick="navigate('materie')" title="Materie">
+                    <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span class="nav-label">Materie</span>
+                </button>
+                <button class="nav-item" data-nav="insieme" onclick="navigate('insieme')" title="Insieme">
+                    <svg class="ic" aria-hidden="true"><use href="#i-users"/></svg><span class="nav-label">Insieme</span>
+                </button>
+                <button class="nav-item" data-nav="profile" onclick="navigate('profile')" title="Profilo">
+                    <svg class="ic" aria-hidden="true"><use href="#i-user"/></svg><span class="nav-label">Profilo</span>
+                </button>
+            </nav>
+
+            <div class="nav-section nav-hide-collapsed">
+                <div class="nav-section-title">Le tue materie</div>
+                <div class="nav-list" id="nav-subjects"></div>
+                <button class="nav-more" onclick="navigate('materie')">Tutte le materie</button>
+            </div>
+
+            <div class="nav-section nav-hide-collapsed">
+                <div class="nav-section-title">
+                    <span>Gruppi</span>
+                    <button class="nav-add" onclick="openGroups()" aria-label="Crea o entra in un gruppo" title="Crea o entra in un gruppo">
+                        <svg class="ic ic-sm" aria-hidden="true"><use href="#i-plus"/></svg>
+                    </button>
                 </div>
+                <div class="nav-list" id="sidebar-groups"></div>
             </div>
 
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">FILTRA</div>
-                <div class="sidebar-filters" id="sidebar-filters">
-                    <!-- Rendered dynamically by updateFilterBar() based on user type -->
-                </div>
+            <div class="nav-bottom">
+                <button class="nav-item nav-focus" onclick="openFocusPocus()" title="Focus Pocus">
+                    <svg class="ic" aria-hidden="true"><use href="#i-sparkles"/></svg><span class="nav-label">Focus Pocus</span>
+                </button>
+                <button class="nav-item nav-collapse-btn" id="nav-collapse-btn" onclick="toggleNavCollapsed()" aria-label="Comprimi la barra laterale" title="Comprimi la barra laterale">
+                    <svg class="ic" aria-hidden="true"><use href="#i-collapse"/></svg><span class="nav-label">Comprimi</span>
+                </button>
             </div>
+        </aside>
 
-            <div class="sidebar-section">
-                <div class="sidebar-section-title sidebar-title-row">
-                    <span>I TUOI GRUPPI</span>
-                    <button class="sidebar-add-btn" onclick="openGroups()" title="Crea o entra in un gruppo">+</button>
-                </div>
-                <div class="sidebar-groups" id="sidebar-groups">
-                    <!-- Generated by JS -->
-                </div>
-            </div>
+        <div class="shell-main">
+            <!-- ============ TOP BAR ============ -->
+            <header class="topbar">
+                <button class="topbar-logo" onclick="navigate('home')" aria-label="Studyo, vai alla home">
+                    <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+                        <rect width="32" height="32" rx="7" fill="#C8F031"/>
+                        <path d="M20.6 11c-.95-.9-2.5-1.45-4.25-1.45-2.8 0-4.65 1.35-4.65 3.4 0 1.95 1.45 2.9 4.05 3.5 2.3.55 3 .95 3 1.9 0 .95-.95 1.55-2.5 1.55-1.65 0-3.1-.6-4.15-1.65" stroke="#0A0A0B" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+                    </svg>
+                </button>
 
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">LOBBY</div>
-                <div class="lobby-search">
-                    <span class="lobby-search-icon">🔍</span>
-                    <input type="text" id="lobby-search" aria-label="Cerca una materia" placeholder="Cerca una materia…"
-                           oninput="searchLobbies(this.value)" autocomplete="off">
-                    <button class="lobby-search-clear" id="lobby-search-clear"
-                            onclick="clearLobbySearch()" style="display:none">✕</button>
-                </div>
-                <div class="sidebar-lobbies" id="sidebar-lobbies">
-                    <!-- Generated by JS -->
-                </div>
-            </div>
+                <button class="topbar-search" onclick="openCommandPalette()" aria-label="Cerca materia, gruppo o azione">
+                    <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg>
+                    <span class="topbar-search-text">Cerca materia, gruppo…</span>
+                    <kbd class="topbar-kbd">Ctrl K</kbd>
+                </button>
 
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">SFIDE DEL GIORNO</div>
-                <div class="sidebar-challenges" id="sidebar-challenges">
-                    <!-- Generated by JS -->
-                </div>
-            </div>
-
-            <div class="sidebar-legal">
-                <a href="privacy.html" target="_blank" rel="noopener">Privacy</a>
-                <a href="termini.html" target="_blank" rel="noopener">Termini</a>
-                <a href="cookie.html" target="_blank" rel="noopener">Cookie</a>
-                <a href="mailto:fra.cata2006@gmail.com?subject=Segnalazione%20su%20Studyo" class="report-link">Segnala un problema</a>
-            </div>
-        </div>
-
-        <!-- MAIN CONTENT -->
-        <div class="main-content">
-            <!-- HOME PAGE -->
-            <div id="page-home" class="page active">
-                <div class="main-header">
-                    <h1>👋 Bentornato, <span class="highlight" id="main-welcome-name">Studente</span></h1>
-                    <p class="main-header-sub">Scegli una lobby dalla sidebar o esplora la tua community.</p>
-                </div>
-
-                <!-- Focus Pocus CTA -->
-                <div class="focus-cta" onclick="openFocusPocus()">
-                    <div class="focus-cta-glow"></div>
-                    <div class="focus-cta-text">
-                        <span class="focus-cta-title">🔮 Focus Pocus</span>
-                        <span class="focus-cta-sub">Entra in una stanza immersiva e studia in full focus</span>
-                    </div>
-                    <span class="focus-cta-btn">Entra →</span>
-                </div>
-
-                <!-- Prossime sessioni -->
-                <div class="sessions-section" id="sessions-section" style="display:none">
-                    <div class="sessions-head">
-                        <h2>📅 Prossime sessioni</h2>
-                        <button class="btn btn-secondary btn-sm" onclick="openNewSession()">+ Programma</button>
-                    </div>
-                    <div class="sessions-list" id="sessions-list"></div>
-                </div>
-
-                <!-- Community Section -->
-                <div class="community-section" id="community-section" style="display:none">
-                    <div class="community-header">
-                        <h2>🏛️ La tua community</h2>
-                        <span class="community-badge" id="community-name"></span>
-                    </div>
-                    <div class="community-stats-row">
-                        <div class="community-stat">
-                            <span class="community-stat-value" id="comm-online">0</span>
-                            <span class="community-stat-label">Online ora</span>
-                        </div>
-                        <div class="community-stat">
-                            <span class="community-stat-value" id="comm-total">0</span>
-                            <span class="community-stat-label">Membri totali</span>
-                        </div>
-                        <div class="community-stat">
-                            <span class="community-stat-value" id="comm-rank">#1</span>
-                            <span class="community-stat-label">Classifica atenei</span>
+                <div class="topbar-right">
+                    <span class="topbar-streak" id="topbar-streak" title="Giorni di studio consecutivi">🔥 <b id="topbar-streak-num">0</b></span>
+                    <div class="avatar-wrap">
+                        <button class="avatar-btn" id="avatar-btn" onclick="toggleAvatarMenu()" aria-haspopup="menu" aria-expanded="false" aria-controls="avatar-menu" aria-label="Menu account">
+                            <span class="avatar-emoji" aria-hidden="true">🎓</span>
+                            <span class="avatar-name" id="sidebar-name">Studente</span>
+                            <svg class="ic ic-sm" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+                        </button>
+                        <div class="avatar-menu" id="avatar-menu" role="menu" hidden>
+                            <div class="avatar-menu-head">
+                                <strong id="avatar-menu-name">Studente</strong>
+                                <span id="sidebar-xp">0 XP</span>
+                            </div>
+                            <button role="menuitem" onclick="closeAvatarMenu();navigate('profile')"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>Profilo</button>
+                            <button role="menuitem" onclick="closeAvatarMenu();openFeedbackWidget()"><svg class="ic" aria-hidden="true"><use href="#i-message"/></svg>Invia feedback</button>
+                            <div class="avatar-menu-sep" role="separator"></div>
+                            <a role="menuitem" href="privacy.html" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg>Privacy</a>
+                            <a role="menuitem" href="termini.html" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg>Termini</a>
+                            <a role="menuitem" href="cookie.html" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg>Cookie</a>
+                            <a role="menuitem" href="mailto:fra.cata2006@gmail.com?subject=Segnalazione%20su%20Studyo"><svg class="ic" aria-hidden="true"><use href="#i-flag"/></svg>Segnala un problema</a>
+                            <div class="avatar-menu-sep" role="separator"></div>
+                            <button role="menuitem" class="avatar-menu-danger" onclick="closeAvatarMenu();signOut()"><svg class="ic" aria-hidden="true"><use href="#i-logout"/></svg>Esci</button>
                         </div>
                     </div>
-                    <div class="community-members" id="community-members"></div>
+                </div>
+            </header>
+
+            <main class="main-content" id="main-content">
+                <!-- ============ HOME ============ -->
+                <div id="page-home" class="page active">
+                    <div class="page-head">
+                        <h1>Ciao, <span id="main-welcome-name">Studente</span></h1>
+                        <p class="page-sub" id="home-date"></p>
+                    </div>
+
+                    <!-- Azione principale: riprendi o scegli cosa studiare -->
+                    <section class="hero-card" id="home-resume" aria-live="polite"></section>
+
+                    <section class="home-block">
+                        <div class="block-head">
+                            <h2>Le tue materie</h2>
+                            <button class="link-btn" onclick="navigate('materie')">Tutte <svg class="ic ic-sm" aria-hidden="true"><use href="#i-arrow-right"/></svg></button>
+                        </div>
+                        <div class="subject-grid" id="home-subjects"></div>
+                    </section>
+
+                    <div class="home-columns">
+                        <section class="panel">
+                            <div class="block-head">
+                                <h2>Prossime sessioni</h2>
+                                <button class="btn btn-secondary btn-sm" onclick="openNewSession()">
+                                    <svg class="ic ic-sm" aria-hidden="true"><use href="#i-plus"/></svg> Programma
+                                </button>
+                            </div>
+                            <div id="home-sessions"></div>
+                        </section>
+                        <section class="panel">
+                            <div class="block-head">
+                                <h2>Sfide del giorno</h2>
+                            </div>
+                            <div class="challenge-list" id="sidebar-challenges"></div>
+                        </section>
+                    </div>
+
+                    <!-- Focus Pocus: modalità, non destinazione -->
+                    <button class="focus-band" onclick="openFocusPocus()">
+                        <span class="focus-band-icon" aria-hidden="true">🔮</span>
+                        <span class="focus-band-text">
+                            <strong>Focus Pocus</strong>
+                            <span>Stanze immersive per studiare senza distrazioni</span>
+                        </span>
+                        <span class="focus-band-cta">Entra <svg class="ic ic-sm" aria-hidden="true"><use href="#i-arrow-right"/></svg></span>
+                    </button>
+
+                    <section class="week-stats" aria-label="I tuoi numeri">
+                        <span><b id="home-xp">0</b> XP</span>
+                        <span><b id="home-streak">0</b> giorni di streak</span>
+                        <span><b id="home-pomodoros">0</b> pomodori</span>
+                        <span><b id="home-quizzes">0</b> quiz</span>
+                        <button class="link-btn" onclick="navigate('profile')">Dettagli <svg class="ic ic-sm" aria-hidden="true"><use href="#i-arrow-right"/></svg></button>
+                    </section>
                 </div>
 
-                <!-- Quick Stats -->
-                <div class="home-stats-grid">
-                    <div class="home-stat-card">
-                        <span class="home-stat-icon">⚡</span>
-                        <span class="home-stat-value" id="home-xp">0</span>
-                        <span class="home-stat-label">XP Totali</span>
+                <!-- ============ MATERIE ============ -->
+                <div id="page-materie" class="page">
+                    <div class="page-head">
+                        <h1>Materie</h1>
+                        <p class="page-sub">Entra in una materia per studiare con chi la sta preparando adesso.</p>
                     </div>
-                    <div class="home-stat-card">
-                        <span class="home-stat-icon">🔥</span>
-                        <span class="home-stat-value" id="home-streak">0</span>
-                        <span class="home-stat-label">Giorni streak</span>
+                    <div class="catalog-tools">
+                        <div class="lobby-search">
+                            <svg class="ic lobby-search-icon" aria-hidden="true"><use href="#i-search"/></svg>
+                            <input type="text" id="lobby-search" aria-label="Cerca una materia" placeholder="Cerca una materia…"
+                                   oninput="searchLobbies(this.value)" autocomplete="off">
+                            <button class="lobby-search-clear" id="lobby-search-clear" aria-label="Cancella ricerca"
+                                    onclick="clearLobbySearch()" style="display:none">✕</button>
+                        </div>
+                        <div class="catalog-filters" id="sidebar-filters" role="group" aria-label="Filtra per area"></div>
                     </div>
-                    <div class="home-stat-card">
-                        <span class="home-stat-icon">🧠</span>
-                        <span class="home-stat-value" id="home-quizzes">0</span>
-                        <span class="home-stat-label">Quiz fatti</span>
-                    </div>
-                    <div class="home-stat-card">
-                        <span class="home-stat-icon">🍅</span>
-                        <span class="home-stat-value" id="home-pomodoros">0</span>
-                        <span class="home-stat-label">Pomodori</span>
-                    </div>
+                    <div class="catalog" id="sidebar-lobbies"></div>
                 </div>
-            </div>
 
-            <!-- LOBBY PAGE -->
-            <div id="page-lobby" class="page">
-                <div class="main-header lobby-main-header">
-                    <div class="lobby-title-row">
-                        <span class="lobby-icon-big" id="lobby-icon-big"></span>
+                <!-- ============ INSIEME ============ -->
+                <div id="page-insieme" class="page">
+                    <div class="page-head page-head-row">
                         <div>
-                            <h1 id="lobby-title"></h1>
-                            <p class="lobby-desc" id="lobby-desc"></p>
-                            <div class="lobby-meta">
-                                <span class="online-dot"></span>
-                                <span id="lobby-online">0 online</span>
-                                <span class="lobby-mode-tag">🟢 Sincrona</span>
-                            </div>
+                            <h1>Insieme</h1>
+                            <p class="page-sub">Gruppi privati, sessioni programmate e la community del tuo ateneo.</p>
+                        </div>
+                        <div class="page-actions">
+                            <button class="btn btn-secondary" onclick="openNewSession()">
+                                <svg class="ic ic-sm" aria-hidden="true"><use href="#i-calendar"/></svg> Programma sessione
+                            </button>
+                            <button class="btn btn-primary" onclick="openGroups()">
+                                <svg class="ic ic-sm" aria-hidden="true"><use href="#i-plus"/></svg> Crea o entra in un gruppo
+                            </button>
                         </div>
                     </div>
-                    <button class="btn btn-video-cta" onclick="openVideoCall()">📹 Videochiamata</button>
+
+                    <section class="panel">
+                        <div class="block-head"><h2>I tuoi gruppi</h2></div>
+                        <div id="insieme-groups"></div>
+                    </section>
+
+                    <section class="panel sessions-section" id="sessions-section" style="display:none">
+                        <div class="block-head"><h2>Prossime sessioni</h2></div>
+                        <div class="sessions-list" id="sessions-list"></div>
+                    </section>
+
+                    <section class="panel community-section" id="community-section" style="display:none">
+                        <div class="block-head">
+                            <h2>La tua community</h2>
+                            <span class="community-badge" id="community-name"></span>
+                        </div>
+                        <div class="community-stats-row">
+                            <div class="community-stat">
+                                <span class="community-stat-value" id="comm-online">0</span>
+                                <span class="community-stat-label">Online ora</span>
+                            </div>
+                            <div class="community-stat">
+                                <span class="community-stat-value" id="comm-total">0</span>
+                                <span class="community-stat-label">Membri totali</span>
+                            </div>
+                            <div class="community-stat">
+                                <span class="community-stat-value" id="comm-rank">—</span>
+                                <span class="community-stat-label">La tua posizione</span>
+                            </div>
+                        </div>
+                        <div class="community-members" id="community-members"></div>
+                    </section>
                 </div>
 
-                <div class="lobby-layout">
-                    <div class="lobby-main">
-                        <!-- POMODORO / BUILDING -->
-                        <div class="card pomodoro-card">
-                            <div class="card-header">
-                                <h3>🍅 Sessione di Studio</h3>
-                                <div class="pomodoro-controls">
-                                    <button class="pomo-btn" onclick="setPomodoro(25)">25min</button>
-                                    <button class="pomo-btn" onclick="setPomodoro(50)">50min</button>
-                                    <button class="pomo-btn break" onclick="setPomodoro(5)">Pausa 5</button>
+                <!-- ============ MATERIA (LOBBY) ============ -->
+                <div id="page-lobby" class="page">
+                    <button class="back-link" onclick="navigate('materie')">
+                        <svg class="ic ic-sm" aria-hidden="true"><use href="#i-arrow-left"/></svg> Materie
+                    </button>
+                    <div class="lobby-head">
+                        <div class="lobby-title-row">
+                            <span class="lobby-icon-big" id="lobby-icon-big" aria-hidden="true"></span>
+                            <div class="lobby-title-text">
+                                <h1 id="lobby-title"></h1>
+                                <p class="lobby-desc" id="lobby-desc"></p>
+                                <div class="lobby-meta">
+                                    <span class="online-dot" aria-hidden="true"></span>
+                                    <span id="lobby-online">0 online</span>
                                 </div>
                             </div>
-                            <div class="build-scene" id="build-scene">
-                                <div class="build-sky">
-                                    <div class="build-star" style="top:10%;left:15%">✦</div>
-                                    <div class="build-star" style="top:20%;left:70%">✦</div>
-                                    <div class="build-star" style="top:5%;left:45%">✧</div>
-                                    <div class="build-star" style="top:25%;left:85%">✦</div>
-                                </div>
-                                <div class="build-tower-container">
-                                    <div class="build-tower" id="build-tower">
-                                        <div class="build-block" data-floor="10"><span>🏆</span></div>
-                                        <div class="build-block" data-floor="9"><span>📚</span></div>
-                                        <div class="build-block" data-floor="8"><span>🧠</span></div>
-                                        <div class="build-block" data-floor="7"><span>✏️</span></div>
-                                        <div class="build-block" data-floor="6"><span>💡</span></div>
-                                        <div class="build-block" data-floor="5"><span>📖</span></div>
-                                        <div class="build-block" data-floor="4"><span>🔬</span></div>
-                                        <div class="build-block" data-floor="3"><span>📐</span></div>
-                                        <div class="build-block" data-floor="2"><span>💪</span></div>
-                                        <div class="build-block" data-floor="1"><span>🚀</span></div>
+                        </div>
+                        <div class="lobby-head-actions">
+                            <button class="btn btn-secondary" onclick="openVideoCall()">
+                                <svg class="ic ic-sm" aria-hidden="true"><use href="#i-video"/></svg> Videochiamata
+                            </button>
+                            <button class="btn btn-secondary panel-toggle" id="panel-toggle" onclick="toggleLobbyPanel()" aria-expanded="true" aria-controls="lobby-panel">
+                                <svg class="ic ic-sm" aria-hidden="true"><use href="#i-chat"/></svg> <span class="panel-toggle-label">Chat</span>
+                                <span class="unread-badge" id="chat-unread" hidden>0</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="lobby-tabs" role="tablist" aria-label="Sezioni della materia">
+                        <button role="tab" class="lobby-tab" id="tab-studia" data-tab="studia" aria-controls="panel-studia" onclick="setLobbyTab('studia')">Studia</button>
+                        <button role="tab" class="lobby-tab" id="tab-ripassa" data-tab="ripassa" aria-controls="panel-ripassa" onclick="setLobbyTab('ripassa')">Ripassa</button>
+                        <button role="tab" class="lobby-tab" id="tab-materiali" data-tab="materiali" aria-controls="panel-materiali" onclick="setLobbyTab('materiali')">Materiali</button>
+                        <button role="tab" class="lobby-tab" id="tab-esame" data-tab="esame" aria-controls="panel-esame" onclick="setLobbyTab('esame')">Com'è l'esame</button>
+                    </div>
+
+                    <div class="lobby-layout" id="lobby-layout">
+                        <div class="lobby-main">
+                            <!-- STUDIA -->
+                            <div class="lobby-panel" id="panel-studia" role="tabpanel" aria-labelledby="tab-studia" data-panel="studia">
+                                <div class="card pomodoro-card">
+                                    <div class="card-header">
+                                        <h3>Sessione di studio</h3>
+                                        <div class="pomodoro-controls" role="group" aria-label="Durata">
+                                            <button class="pomo-btn" onclick="setPomodoro(25)">25 min</button>
+                                            <button class="pomo-btn" onclick="setPomodoro(50)">50 min</button>
+                                            <button class="pomo-btn break" onclick="setPomodoro(5)">Pausa 5</button>
+                                        </div>
+                                    </div>
+                                    <div class="build-scene" id="build-scene">
+                                        <div class="build-sky">
+                                            <div class="build-star" style="top:10%;left:15%">✦</div>
+                                            <div class="build-star" style="top:20%;left:70%">✦</div>
+                                            <div class="build-star" style="top:5%;left:45%">✧</div>
+                                            <div class="build-star" style="top:25%;left:85%">✦</div>
+                                        </div>
+                                        <div class="build-tower-container">
+                                            <div class="build-tower" id="build-tower">
+                                                <div class="build-block" data-floor="10"><span>🏆</span></div>
+                                                <div class="build-block" data-floor="9"><span>📚</span></div>
+                                                <div class="build-block" data-floor="8"><span>🧠</span></div>
+                                                <div class="build-block" data-floor="7"><span>✏️</span></div>
+                                                <div class="build-block" data-floor="6"><span>💡</span></div>
+                                                <div class="build-block" data-floor="5"><span>📖</span></div>
+                                                <div class="build-block" data-floor="4"><span>🔬</span></div>
+                                                <div class="build-block" data-floor="3"><span>📐</span></div>
+                                                <div class="build-block" data-floor="2"><span>💪</span></div>
+                                                <div class="build-block" data-floor="1"><span>🚀</span></div>
+                                            </div>
+                                        </div>
+                                        <div class="build-ground"></div>
+                                        <div class="build-timer-small" id="build-timer-small">25:00</div>
+                                    </div>
+                                    <div class="timer-progress"><div class="timer-bar" id="timer-bar"></div></div>
+                                    <div class="timer-actions">
+                                        <button class="btn btn-primary" id="timer-start-btn" onclick="toggleTimer()">▶ Inizia a costruire</button>
+                                        <button class="btn btn-secondary" onclick="resetTimer()">↺ Reset</button>
+                                    </div>
+                                    <div class="pomo-stats">
+                                        <span>Pomodori: <strong id="pomo-count">0</strong></span>
+                                        <span>Tempo: <strong id="pomo-total">0h 0m</strong></span>
                                     </div>
                                 </div>
-                                <div class="build-ground"></div>
-                                <div class="build-timer-small" id="build-timer-small">25:00</div>
+
+                                <div class="card sounds-card">
+                                    <div class="card-header">
+                                        <h3>Suoni ambientali</h3>
+                                        <button class="btn btn-secondary btn-sm" id="sound-master-btn" onclick="toggleAllSounds()">🔇 Silenzia</button>
+                                    </div>
+                                    <div class="sounds-grid">
+                                        <div class="sound-item" id="sound-rain" onclick="toggleSound('rain')">
+                                            <span class="sound-icon">🌧️</span><span class="sound-name">Pioggia</span>
+                                            <div class="sound-bar"><div class="sound-level" id="level-rain"></div></div>
+                                        </div>
+                                        <div class="sound-item" id="sound-fire" onclick="toggleSound('fire')">
+                                            <span class="sound-icon">🔥</span><span class="sound-name">Camino</span>
+                                            <div class="sound-bar"><div class="sound-level" id="level-fire"></div></div>
+                                        </div>
+                                        <div class="sound-item" id="sound-cafe" onclick="toggleSound('cafe')">
+                                            <span class="sound-icon">☕</span><span class="sound-name">Caffetteria</span>
+                                            <div class="sound-bar"><div class="sound-level" id="level-cafe"></div></div>
+                                        </div>
+                                        <div class="sound-item" id="sound-nature" onclick="toggleSound('nature')">
+                                            <span class="sound-icon">🌿</span><span class="sound-name">Natura</span>
+                                            <div class="sound-bar"><div class="sound-level" id="level-nature"></div></div>
+                                        </div>
+                                        <div class="sound-item" id="sound-white" onclick="toggleSound('white')">
+                                            <span class="sound-icon">🌊</span><span class="sound-name">Cascata</span>
+                                            <div class="sound-bar"><div class="sound-level" id="level-white"></div></div>
+                                        </div>
+                                        <div class="sound-item" id="sound-brown" onclick="toggleSound('brown')">
+                                            <span class="sound-icon">🦗</span><span class="sound-name">Grilli</span>
+                                            <div class="sound-bar"><div class="sound-level" id="level-brown"></div></div>
+                                        </div>
+                                    </div>
+                                    <div class="sound-volume-control">
+                                        <span class="sound-vol-label" aria-hidden="true">🔊</span>
+                                        <input type="range" id="master-volume" aria-label="Volume dei suoni ambientali" min="0" max="100" value="65" oninput="setMasterVolume(this.value)">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="timer-progress"><div class="timer-bar" id="timer-bar"></div></div>
-                            <div class="timer-actions">
-                                <button class="btn btn-primary" id="timer-start-btn" onclick="toggleTimer()">▶ Inizia a costruire</button>
-                                <button class="btn btn-secondary" onclick="resetTimer()">↺ Reset</button>
+
+                            <!-- RIPASSA -->
+                            <div class="lobby-panel" id="panel-ripassa" role="tabpanel" aria-labelledby="tab-ripassa" data-panel="ripassa" hidden>
+                                <div class="card quiz-card">
+                                    <div class="card-header">
+                                        <h3>Quiz</h3>
+                                        <button class="btn btn-primary btn-sm" onclick="startQuiz()">Nuova sfida</button>
+                                    </div>
+                                    <div id="quiz-area">
+                                        <div class="quiz-placeholder">
+                                            <span class="quiz-placeholder-icon">🧠</span>
+                                            <p>Premi "Nuova sfida" per iniziare un quiz!</p>
+                                            <p class="quiz-sub">+50 XP per risposta corretta</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="tool-row" onclick="openFlashcards()">
+                                    <span class="tool-row-icon"><svg class="ic" aria-hidden="true"><use href="#i-layers"/></svg></span>
+                                    <span class="tool-row-text"><strong>Flashcard</strong><span>Ripetizione spaziata delle domande della materia</span></span>
+                                    <svg class="ic ic-sm tool-row-arrow" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+                                </button>
                             </div>
-                            <div class="pomo-stats">
-                                <span>Pomodori: <strong id="pomo-count">0</strong></span>
-                                <span>Tempo: <strong id="pomo-total">0h 0m</strong></span>
+
+                            <!-- MATERIALI -->
+                            <div class="lobby-panel" id="panel-materiali" role="tabpanel" aria-labelledby="tab-materiali" data-panel="materiali" hidden>
+                                <div class="tool-rows">
+                                    <button class="tool-row" onclick="openNotes()">
+                                        <span class="tool-row-icon"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg></span>
+                                        <span class="tool-row-text"><strong>Appunti</strong><span>I tuoi appunti, salvati nel cloud, e quelli condivisi</span></span>
+                                        <svg class="ic ic-sm tool-row-arrow" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+                                    </button>
+                                    <button class="tool-row" onclick="openDispense()">
+                                        <span class="tool-row-icon"><svg class="ic" aria-hidden="true"><use href="#i-external"/></svg></span>
+                                        <span class="tool-row-text"><strong>Dispense</strong><span>Cerca dispense e riassunti su Studocu</span></span>
+                                        <svg class="ic ic-sm tool-row-arrow" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+                                    </button>
+                                    <button class="tool-row" onclick="openMindmap()">
+                                        <span class="tool-row-icon"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg></span>
+                                        <span class="tool-row-text"><strong>Mappa concettuale</strong><span>Organizza gli argomenti in una mappa</span></span>
+                                        <svg class="ic ic-sm tool-row-arrow" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+                                    </button>
+                                    <button class="tool-row" onclick="openAI()">
+                                        <span class="tool-row-icon"><svg class="ic" aria-hidden="true"><use href="#i-bot"/></svg></span>
+                                        <span class="tool-row-text"><strong>AI Tutor</strong><span>Fai una domanda sulla materia</span></span>
+                                        <svg class="ic ic-sm tool-row-arrow" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- COM'È L'ESAME: recensioni sull'esame, mai sulle persone -->
+                            <div class="lobby-panel" id="panel-esame" role="tabpanel" aria-labelledby="tab-esame" data-panel="esame" hidden>
+                                <div class="card exam-card" id="exam-card">
+                                    <div class="card-header">
+                                        <h3>Com'è l'esame</h3>
+                                        <button class="btn btn-secondary btn-sm" id="exam-write-btn" onclick="openReviewForm()">Scrivi la tua</button>
+                                    </div>
+                                    <div class="exam-scope" id="exam-scope" role="group" aria-label="Filtra per ateneo">
+                                        <button class="exam-scope-btn active" data-scope="mine" onclick="setReviewScope('mine')">Il mio ateneo</button>
+                                        <button class="exam-scope-btn" data-scope="all" onclick="setReviewScope('all')">Tutti gli atenei</button>
+                                    </div>
+                                    <div id="exam-summary"></div>
+                                    <div id="exam-reviews" class="exam-reviews"></div>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- AMBIENT SOUNDS -->
-                        <div class="card sounds-card">
-                            <div class="card-header">
-                                <h3>🎧 Suoni Ambientali</h3>
-                                <button class="btn btn-secondary btn-sm" id="sound-master-btn" onclick="toggleAllSounds()">🔇 Silenzia</button>
+                        <!-- PERSONE + CHAT -->
+                        <aside class="lobby-sidebar" id="lobby-panel" aria-label="Persone e chat">
+                            <div class="lobby-sheet-head">
+                                <strong>Persone e chat</strong>
+                                <button class="icon-btn" onclick="toggleLobbyPanel(false)" aria-label="Chiudi chat">
+                                    <svg class="ic" aria-hidden="true"><use href="#i-x"/></svg>
+                                </button>
                             </div>
-                            <div class="sounds-grid">
-                                <div class="sound-item" id="sound-rain" onclick="toggleSound('rain')">
-                                    <span class="sound-icon">🌧️</span><span class="sound-name">Pioggia</span>
-                                    <div class="sound-bar"><div class="sound-level" id="level-rain"></div></div>
-                                </div>
-                                <div class="sound-item" id="sound-fire" onclick="toggleSound('fire')">
-                                    <span class="sound-icon">🔥</span><span class="sound-name">Camino</span>
-                                    <div class="sound-bar"><div class="sound-level" id="level-fire"></div></div>
-                                </div>
-                                <div class="sound-item" id="sound-cafe" onclick="toggleSound('cafe')">
-                                    <span class="sound-icon">☕</span><span class="sound-name">Caffetteria</span>
-                                    <div class="sound-bar"><div class="sound-level" id="level-cafe"></div></div>
-                                </div>
-                                <div class="sound-item" id="sound-nature" onclick="toggleSound('nature')">
-                                    <span class="sound-icon">🌿</span><span class="sound-name">Natura</span>
-                                    <div class="sound-bar"><div class="sound-level" id="level-nature"></div></div>
-                                </div>
-                                <div class="sound-item" id="sound-white" onclick="toggleSound('white')">
-                                    <span class="sound-icon">🌊</span><span class="sound-name">Cascata</span>
-                                    <div class="sound-bar"><div class="sound-level" id="level-white"></div></div>
-                                </div>
-                                <div class="sound-item" id="sound-brown" onclick="toggleSound('brown')">
-                                    <span class="sound-icon">🦗</span><span class="sound-name">Grilli</span>
-                                    <div class="sound-bar"><div class="sound-level" id="level-brown"></div></div>
+                            <div class="card students-card">
+                                <div class="card-header"><h3>In questa stanza</h3></div>
+                                <div class="students-list" id="students-list"></div>
+                            </div>
+                            <div class="card chat-card">
+                                <div class="card-header"><h3>Chat</h3></div>
+                                <div class="chat-messages" id="chat-messages" aria-live="polite"></div>
+                                <div class="chat-input-area">
+                                    <input type="text" id="chat-input" aria-label="Scrivi un messaggio in chat" placeholder="Scrivi…" onkeypress="handleChatKey(event)">
+                                    <button class="btn btn-primary chat-send" aria-label="Invia messaggio" onclick="sendChat()">→</button>
                                 </div>
                             </div>
-                            <div class="sound-volume-control">
-                                <span class="sound-vol-label">🔊</span>
-                                <input type="range" id="master-volume" aria-label="Volume dei suoni ambientali" min="0" max="100" value="65" oninput="setMasterVolume(this.value)">
-                            </div>
-                        </div>
-
-                        <!-- COM'È L'ESAME: recensioni sull'esame, mai sulle persone -->
-                        <div class="card exam-card" id="exam-card">
-                            <div class="card-header">
-                                <h3>📋 Com'è l'esame</h3>
-                                <button class="btn btn-secondary btn-sm" id="exam-write-btn" onclick="openReviewForm()">Scrivi la tua</button>
-                            </div>
-                            <div class="exam-scope" id="exam-scope" role="group" aria-label="Filtra per ateneo">
-                                <button class="exam-scope-btn active" data-scope="mine" onclick="setReviewScope('mine')">Il mio ateneo</button>
-                                <button class="exam-scope-btn" data-scope="all" onclick="setReviewScope('all')">Tutti gli atenei</button>
-                            </div>
-                            <div id="exam-summary"></div>
-                            <div id="exam-reviews" class="exam-reviews"></div>
-                        </div>
-
-                        <!-- QUIZ -->
-                        <div class="card quiz-card">
-                            <div class="card-header">
-                                <h3>⚔️ Zona Sfida</h3>
-                                <button class="btn btn-accent" onclick="startQuiz()">Nuova Sfida</button>
-                            </div>
-                            <div id="quiz-area">
-                                <div class="quiz-placeholder">
-                                    <span class="quiz-placeholder-icon">🧠</span>
-                                    <p>Premi "Nuova Sfida" per iniziare un quiz!</p>
-                                    <p class="quiz-sub">+50 XP per risposta corretta</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- TOOLS -->
-                        <div class="card tools-card">
-                            <div class="card-header"><h3>🛠️ Strumenti</h3></div>
-                            <div class="tools-grid">
-                                <div class="tool-item tool-video" onclick="openVideoCall()">
-                                    <span class="tool-icon">📹</span><span class="tool-name">Videochiamata</span>
-                                    <span class="tool-desc">Studiate in video insieme</span>
-                                </div>
-                                <div class="tool-item" onclick="openFlashcards()">
-                                    <span class="tool-icon">🃏</span><span class="tool-name">Flashcard</span>
-                                    <span class="tool-desc">Ripetizione spaziata</span>
-                                </div>
-                                <div class="tool-item" onclick="openNotes()">
-                                    <span class="tool-icon">📝</span><span class="tool-name">Appunti</span>
-                                    <span class="tool-desc">Note condivise</span>
-                                </div>
-                                <div class="tool-item" onclick="openDispense()">
-                                    <span class="tool-icon">📄</span><span class="tool-name">Dispense</span>
-                                    <span class="tool-desc">Cerca su Studocu</span>
-                                </div>
-                                <div class="tool-item" onclick="openMindmap()">
-                                    <span class="tool-icon">🗺️</span><span class="tool-name">Mappa</span>
-                                    <span class="tool-desc">Mappa concettuale</span>
-                                </div>
-                                <div class="tool-item" onclick="openAI()">
-                                    <span class="tool-icon">🤖</span><span class="tool-name">AI Tutor</span>
-                                    <span class="tool-desc">Chiedi all'AI</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- RIGHT SIDEBAR: Members + Chat -->
-                    <div class="lobby-sidebar">
-                        <div class="card students-card">
-                            <div class="card-header"><h3>👥 In Lobby</h3></div>
-                            <div class="students-list" id="students-list"></div>
-                        </div>
-                        <div class="card chat-card">
-                            <div class="card-header"><h3>💬 Chat</h3></div>
-                            <div class="chat-messages" id="chat-messages"></div>
-                            <div class="chat-input-area">
-                                <input type="text" id="chat-input" aria-label="Scrivi un messaggio in chat" placeholder="Scrivi..." onkeypress="handleChatKey(event)">
-                                <button class="btn btn-primary chat-send" aria-label="Invia messaggio" onclick="sendChat()">→</button>
-                            </div>
-                        </div>
+                        </aside>
                     </div>
                 </div>
+
+                <!-- ============ PROFILO ============ -->
+                <div id="page-profile" class="page">
+                    <div class="page-head page-head-row">
+                        <h1>Il tuo profilo</h1>
+                        <button class="btn-logout" onclick="signOut()">Esci</button>
+                    </div>
+                    <div class="profile-header-section">
+                        <div class="profile-big-avatar" aria-hidden="true">🎓</div>
+                        <div class="profile-info">
+                            <h2 id="profile-name">Studente</h2>
+                            <p class="profile-uni-label" id="profile-uni-label"></p>
+                            <p class="profile-course-label" id="profile-course-label"></p>
+                            <div class="profile-level">
+                                <span class="level-badge" id="profile-level">Livello 1</span>
+                                <span class="level-title" id="profile-title">Matricola</span>
+                            </div>
+                            <div class="profile-xp-bar">
+                                <div class="profile-xp-fill" id="profile-xp-fill"></div>
+                                <span class="profile-xp-text" id="profile-xp-text">0 / 500 XP</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile-stats-grid">
+                        <div class="stat-card"><span class="stat-value" id="stat-hours">0</span><span class="stat-label">Ore studio</span></div>
+                        <div class="stat-card"><span class="stat-value" id="stat-streak">0</span><span class="stat-label">Streak</span></div>
+                        <div class="stat-card"><span class="stat-value" id="stat-quizzes">0</span><span class="stat-label">Quiz</span></div>
+                        <div class="stat-card"><span class="stat-value" id="stat-pomodoros">0</span><span class="stat-label">Pomodori</span></div>
+                    </div>
+                    <div class="profile-sections">
+                        <div class="card">
+                            <div class="card-header"><h3>Badge</h3></div>
+                            <div class="badges-grid" id="badges-grid"></div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header"><h3>Attività recente</h3></div>
+                            <div class="activity-list" id="activity-list"></div>
+                        </div>
+                    </div>
+                    <footer class="profile-footer">
+                        <button class="link-btn" onclick="openFeedbackWidget()">Invia feedback</button>
+                        <a href="privacy.html" target="_blank" rel="noopener">Privacy</a>
+                        <a href="termini.html" target="_blank" rel="noopener">Termini</a>
+                        <a href="cookie.html" target="_blank" rel="noopener">Cookie</a>
+                        <a href="crediti.html" target="_blank" rel="noopener">Crediti</a>
+                        <a href="mailto:fra.cata2006@gmail.com?subject=Segnalazione%20su%20Studyo">Segnala un problema</a>
+                    </footer>
+                </div>
+            </main>
+        </div>
+
+        <!-- ============ BARRA IN BASSO (mobile) ============ -->
+        <nav class="bottom-nav" aria-label="Navigazione principale">
+            <button class="bottom-item" data-nav="home" onclick="navigate('home')">
+                <svg class="ic" aria-hidden="true"><use href="#i-home"/></svg><span>Home</span>
+            </button>
+            <button class="bottom-item" data-nav="materie" onclick="navigate('materie')">
+                <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg><span>Materie</span>
+            </button>
+            <button class="bottom-item" data-nav="insieme" onclick="navigate('insieme')">
+                <svg class="ic" aria-hidden="true"><use href="#i-users"/></svg><span>Insieme</span>
+            </button>
+            <button class="bottom-item" data-nav="profile" onclick="navigate('profile')">
+                <svg class="ic" aria-hidden="true"><use href="#i-user"/></svg><span>Profilo</span>
+            </button>
+        </nav>
+
+        <!-- Timer sempre visibile quando la sessione gira fuori vista -->
+        <button class="mini-timer" id="mini-timer" onclick="returnToTimer()" hidden>
+            <span aria-hidden="true">🍅</span>
+            <b id="mini-timer-time">25:00</b>
+            <span class="mini-timer-name" id="mini-timer-name"></span>
+        </button>
+
+        <!-- Chat su mobile: apre il pannello dal basso -->
+        <button class="chat-fab" id="chat-fab" onclick="toggleLobbyPanel(true)" aria-label="Apri persone e chat" hidden>
+            <svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>
+            <span class="unread-badge" id="chat-fab-unread" hidden>0</span>
+        </button>
+        <div class="sheet-backdrop" id="sheet-backdrop" onclick="toggleLobbyPanel(false)" hidden></div>
+    </div>
+
+    <!-- ============ RICERCA RAPIDA (Ctrl+K) ============ -->
+    <div class="cmdk" id="cmdk" hidden>
+        <div class="cmdk-backdrop" onclick="closeCommandPalette()"></div>
+        <div class="cmdk-box" role="dialog" aria-modal="true" aria-label="Ricerca rapida">
+            <div class="cmdk-input-row">
+                <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg>
+                <input type="text" id="cmdk-input" placeholder="Cerca materia, gruppo o azione…" autocomplete="off"
+                       role="combobox" aria-expanded="true" aria-controls="cmdk-results" aria-autocomplete="list"
+                       oninput="renderCommandResults()" onkeydown="handleCommandKey(event)">
+                <kbd class="topbar-kbd">Esc</kbd>
             </div>
-
-            <!-- PROFILE PAGE -->
-            <div id="page-profile" class="page">
-                <div class="main-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
-                    <h1>Il tuo profilo</h1>
-                    <button class="btn-logout" onclick="signOut()">🚪 Esci</button>
-                </div>
-                <div class="profile-header-section">
-                    <div class="profile-big-avatar">🎓</div>
-                    <div class="profile-info">
-                        <h1 id="profile-name">Studente</h1>
-                        <p class="profile-uni-label" id="profile-uni-label"></p>
-                        <p class="profile-course-label" id="profile-course-label"></p>
-                        <div class="profile-level">
-                            <span class="level-badge" id="profile-level">Livello 1</span>
-                            <span class="level-title" id="profile-title">Matricola</span>
-                        </div>
-                        <div class="profile-xp-bar">
-                            <div class="profile-xp-fill" id="profile-xp-fill"></div>
-                            <span class="profile-xp-text" id="profile-xp-text">0 / 500 XP</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="profile-stats-grid">
-                    <div class="stat-card"><span class="stat-value" id="stat-hours">0</span><span class="stat-label">Ore studio</span></div>
-                    <div class="stat-card"><span class="stat-value" id="stat-streak">0</span><span class="stat-label">Streak</span></div>
-                    <div class="stat-card"><span class="stat-value" id="stat-quizzes">0</span><span class="stat-label">Quiz</span></div>
-                    <div class="stat-card"><span class="stat-value" id="stat-pomodoros">0</span><span class="stat-label">Pomodori</span></div>
-                </div>
-                <div class="profile-sections">
-                    <div class="card">
-                        <div class="card-header"><h3>🏆 Badge</h3></div>
-                        <div class="badges-grid" id="badges-grid"></div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header"><h3>📊 Attività recente</h3></div>
-                        <div class="activity-list" id="activity-list"></div>
-                    </div>
-                </div>
-            </div>
+            <div class="cmdk-results" id="cmdk-results" role="listbox"></div>
         </div>
     </div>
 
@@ -997,14 +1162,6 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- FLOATING FEEDBACK WIDGET -->
-    <div class="feedback-fab" id="feedback-fab" onclick="openFeedbackWidget()">
-        <span class="feedback-fab-icon">💬</span>
-        <span class="feedback-fab-pulse"></span>
-        <span class="feedback-fab-label">Feedback</span>
-        <span class="feedback-fab-badge">BETA</span>
     </div>
 
     <!-- FEEDBACK WELCOME BANNER (appears on first visit) -->
