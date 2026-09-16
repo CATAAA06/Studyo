@@ -358,8 +358,7 @@ function completeSetup() {
     // Guided tour right after setup (first impression)
     setTimeout(() => startOnboarding(), 500);
 
-    // Show feedback welcome later (skipped while the tour is open)
-    setTimeout(() => showFeedbackWelcome(), 12000);
+    // Il feedback si chiede dal badge "Beta" sempre visibile: niente popup a sorpresa
 }
 
 /* =============================================
@@ -3299,20 +3298,12 @@ function sendFeedback() {
 const OB_STEPS = [
     {
         visual: `<div class="ob-scene ob-scene-lobby">
-            <div class="ob-row on"><span>📐</span> Analisi 1 <b>14</b></div>
-            <div class="ob-row"><span>⚛️</span> Fisica 1 <b>9</b></div>
-            <div class="ob-row"><span>💻</span> Informatica <b>21</b></div>
+            <div class="ob-row on"><span>📐</span> Analisi 1</div>
+            <div class="ob-row"><span>⚛️</span> Fisica 1</div>
+            <div class="ob-row"><span>💻</span> Informatica</div>
         </div>`,
-        title: 'Ogni materia ha la sua lobby',
-        text: 'In Home trovi gli esami del tuo corso, in Materie tutte le altre. Il numero dice quante persone ci sono adesso.'
-    },
-    {
-        visual: `<div class="ob-scene ob-scene-people">
-            <div class="ob-person"><span class="ob-av">🎓</span><div><b>Giulia</b><i>sta studiando ora</i></div></div>
-            <div class="ob-person"><span class="ob-av">🧑‍💻</span><div><b>Marco</b><i>sta studiando ora</i></div></div>
-        </div>`,
-        title: 'Non sei da solo',
-        text: 'Vedi in tempo reale chi sta studiando nella tua stessa materia. Potete scrivervi in chat o aprire una videochiamata.'
+        title: 'Ogni materia ha la sua stanza',
+        text: 'In Home trovi gli esami del tuo corso, in Materie tutte le altre. Dentro vedi chi sta studiando adesso e potete scrivervi in chat o aprire una videochiamata.'
     },
     {
         visual: `<div class="ob-scene ob-scene-timer">
@@ -4239,12 +4230,6 @@ function init() {
         if (state.setupDone) startOnboarding();
     }, 900);
 
-    // Show feedback welcome after a short delay (only if logged in)
-    setTimeout(() => {
-        if (state.setupDone) {
-            showFeedbackWelcome();
-        }
-    }, 6000);
 }
 
 init();

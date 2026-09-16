@@ -18,6 +18,7 @@
     <meta property="og:description" content="Entra in lobby di studio, guadagna XP, mantieni lo streak. Lo studio diventa un gioco. 🎓">
     <meta property="og:url" content="https://cataaa06.github.io/Studyo/">
     <meta property="og:image" content="https://cataaa06.github.io/Studyo/icons/icon-512.png">
+    <meta property="og:image:alt" content="Logo di Studyo: una S nera su quadrato lime">
     <meta property="og:site_name" content="Studyo">
     <meta property="og:locale" content="it_IT">
 
@@ -38,6 +39,8 @@
     <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
     <link rel="apple-touch-icon" href="icons/icon-180.png">
 
+    <link rel="preload" href="fonts/Manrope-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/BricolageGrotesque-800-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/layout.css">
     <!-- Font ospitati in locale: nessun dato inviato a server di terze parti -->
@@ -145,6 +148,11 @@
                 </button>
 
                 <div class="topbar-right">
+                    <button class="beta-chip" onclick="openFeedbackWidget()" aria-label="Sei in beta: mandaci un feedback">
+                        <span class="beta-tag">BETA</span>
+                        <span class="beta-text">Sei in beta — <u>mandaci un feedback</u></span>
+                        <span class="beta-text-short">Feedback</span>
+                    </button>
                     <span class="topbar-streak" id="topbar-streak" title="Giorni di studio consecutivi">🔥 <b id="topbar-streak-num">0</b></span>
                     <div class="avatar-wrap">
                         <button class="avatar-btn" id="avatar-btn" onclick="toggleAvatarMenu()" aria-haspopup="menu" aria-expanded="false" aria-controls="avatar-menu" aria-label="Menu account">
@@ -689,23 +697,23 @@
             <p class="group-intro">Fissa quando studierai: gli altri possono unirsi e ricevete un promemoria poco prima.</p>
 
             <div class="form-group">
-                <label>Materia o gruppo</label>
+                <label for="session-lobby">Materia o gruppo</label>
                 <select id="session-lobby"></select>
             </div>
 
             <div class="session-when">
                 <div class="form-group">
-                    <label>Giorno</label>
+                    <label for="session-date">Giorno</label>
                     <input type="date" id="session-date">
                 </div>
                 <div class="form-group">
-                    <label>Ora</label>
+                    <label for="session-time">Ora</label>
                     <input type="time" id="session-time" value="15:00">
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Nota (facoltativa)</label>
+                <label for="session-note">Nota (facoltativa)</label>
                 <input type="text" id="session-note" placeholder="Es: ripasso capitoli 4-6" maxlength="80">
             </div>
 
@@ -724,7 +732,7 @@
             <p class="group-intro">Crea un gruppo privato e invita i tuoi amici con un link. Dentro avete la vostra stanza: presenza, chat, timer e videochiamata solo per voi.</p>
 
             <div class="group-block">
-                <label class="group-label">Crea un nuovo gruppo</label>
+                <label class="group-label" for="group-name">Crea un nuovo gruppo</label>
                 <div class="group-row">
                     <input type="text" id="group-name" placeholder="Es: Analisi con i ragazzi" maxlength="40">
                     <button class="btn btn-primary" onclick="doCreateGroup()">Crea</button>
@@ -734,7 +742,7 @@
             <div class="group-sep"><span>oppure</span></div>
 
             <div class="group-block">
-                <label class="group-label">Entra con un codice</label>
+                <label class="group-label" for="group-code">Entra con un codice</label>
                 <div class="group-row">
                     <input type="text" id="group-code" placeholder="ABC123" maxlength="6" style="text-transform:uppercase">
                     <button class="btn btn-secondary" onclick="doJoinGroup()">Entra</button>
@@ -875,7 +883,7 @@
             <p style="color:var(--text-secondary);font-size:14px;margin-bottom:12px">Aiutaci a migliorare Studyo! Ogni feedback conta.</p>
             <div class="feedback-question-hint" id="feedback-question-hint" style="background:rgba(108,92,231,0.1);border-left:3px solid var(--primary);padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:16px;font-size:13px;color:var(--primary-light);font-style:italic;line-height:1.4"></div>
             <div class="form-group">
-                <label>Tipo di feedback</label>
+                <label for="feedback-type">Tipo di feedback</label>
                 <select id="feedback-type">
                     <option value="idea">💡 Ho un'idea</option>
                     <option value="bug">🐛 Ho trovato un problema</option>
@@ -885,10 +893,11 @@
                 </select>
             </div>
             <div class="form-group">
-                <label>Il tuo feedback</label>
+                <label for="feedback-text">Il tuo feedback</label>
                 <textarea id="feedback-text" style="width:100%;min-height:120px;background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:inherit;font-size:14px;padding:12px;outline:none;resize:vertical" placeholder="Descrivi il tuo feedback..."></textarea>
             </div>
             <button class="btn btn-primary btn-large" onclick="sendFeedback()">📤 Invia Feedback</button>
+            <p class="feedback-alt">Preferisci l'email? Scrivici a <a href="mailto:fra.cata2006@gmail.com?subject=Feedback%20su%20Studyo">fra.cata2006@gmail.com</a>.</p>
         </div>
     </div>
 
@@ -908,6 +917,14 @@
                 <button class="inapp-copy" onclick="copyAppLink()">Oppure copia il link e aprilo in Chrome/Safari</button>
             </div>
 
+            <div class="consent-box consent-top">
+                <label class="consent-row">
+                    <input type="checkbox" id="consent-terms" aria-label="Accetto termini, privacy ed età minima">
+                    <span>Ho almeno <strong>14 anni</strong> e accetto i <a href="termini.html" target="_blank" rel="noopener">Termini</a> e l'<a href="privacy.html" target="_blank" rel="noopener">Informativa privacy</a>.</span>
+                </label>
+                <p class="consent-note">Se hai meno di 14 anni serve il consenso di un genitore: <a href="mailto:fra.cata2006@gmail.com">scrivici</a>.</p>
+            </div>
+
             <button class="btn btn-google btn-large" onclick="signInWithGoogle()">
                 <svg width="18" height="18" viewBox="0 0 18 18" style="margin-right:8px"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
                 Accedi con Google
@@ -918,22 +935,15 @@
             </div>
 
             <div class="form-group">
-                <label>Email</label>
+                <label for="auth-email">Email</label>
                 <input type="email" id="auth-email" autocomplete="email" aria-label="Indirizzo email" placeholder="La tua email...">
             </div>
             <div class="form-group">
-                <label>Password</label>
+                <label for="auth-password">Password</label>
                 <input type="password" id="auth-password" autocomplete="current-password" aria-label="Password" placeholder="Min 6 caratteri..." onkeypress="if(event.key==='Enter')loginWithEmail()">
             </div>
             <button class="btn btn-primary btn-large" onclick="loginWithEmail()">Accedi / Registrati</button>
 
-            <div class="consent-box">
-                <label class="consent-row">
-                    <input type="checkbox" id="consent-terms" aria-label="Accetto termini, privacy ed età minima">
-                    <span>Ho almeno <strong>14 anni</strong> e accetto i <a href="termini.html" target="_blank" rel="noopener">Termini</a> e l'<a href="privacy.html" target="_blank" rel="noopener">Informativa privacy</a>.</span>
-                </label>
-                <p class="consent-note">Se hai meno di 14 anni serve il consenso di un genitore: <a href="mailto:fra.cata2006@gmail.com">scrivici</a>.</p>
-            </div>
 
             <p style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:12px">Se non hai un account, ne creiamo uno automaticamente.</p>
         </div>
@@ -949,11 +959,11 @@
             </div>
             <div class="setup-form" id="setup-step-1">
                 <div class="form-group">
-                    <label>Come ti chiami?</label>
-                    <input type="text" id="setup-name" placeholder="Il tuo nome...">
+                    <label for="setup-name">Come ti chiami?</label>
+                    <input type="text" id="setup-name" placeholder="Il tuo nome..." autocomplete="given-name" onkeydown="if(event.key==='Enter')completeSetup()">
                 </div>
                 <div class="form-group">
-                    <label>Dove studi?</label>
+                    <label for="setup-school">Dove studi?</label>
                     <select id="setup-school" onchange="toggleSchoolField()">
                         <option value="universita" selected>Università</option>
                         <option value="superiori">Scuola Superiore</option>
@@ -963,7 +973,7 @@
                 <!-- UNIVERSITY FIELDS -->
                 <div id="setup-uni-group">
                     <div class="form-group">
-                        <label>La tua università</label>
+                        <label for="setup-uni">La tua università</label>
                         <input type="text" id="setup-uni" list="uni-list" placeholder="Cerca la tua università...">
                         <datalist id="uni-list">
                             <option value="Politecnico di Milano">
@@ -999,7 +1009,7 @@
                         </datalist>
                     </div>
                     <div class="form-group">
-                        <label>Corso di Laurea</label>
+                        <label for="setup-corso">Corso di laurea</label>
                         <select id="setup-corso">
                             <option value="">Seleziona il corso...</option>
                             <optgroup label="Economia e Management">
@@ -1060,7 +1070,7 @@
                 <!-- HIGH SCHOOL FIELDS -->
                 <div id="setup-scuola-group" style="display:none">
                     <div class="form-group">
-                        <label>Tipo di scuola</label>
+                        <label for="setup-tipo-scuola">Tipo di scuola</label>
                         <select id="setup-tipo-scuola">
                             <option value="">Seleziona il tipo...</option>
                             <optgroup label="Licei">
@@ -1086,11 +1096,11 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Nome della tua scuola</label>
+                        <label for="setup-scuola">Nome della tua scuola <span class="optional">(facoltativo)</span></label>
                         <input type="text" id="setup-scuola" placeholder="Es: Liceo Tassoni, Modena">
                     </div>
                     <div class="form-group">
-                        <label>Classe</label>
+                        <label for="setup-classe">Classe</label>
                         <select id="setup-classe">
                             <option value="1">1° anno</option>
                             <option value="2">2° anno</option>
@@ -1177,20 +1187,19 @@
     </div>
 
     <!-- Firebase SDK (CDN) -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
-    <script src="js/data.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/firebase-config.js"></script>
+    <script defer src="js/data.js"></script>
+    <script defer src="js/app.js"></script>
+    <script defer src="js/firebase-config.js"></script>
 
     <!-- PWA: register service worker (offline support + installability) -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('[Studyo] Service worker registrato:', reg.scope))
                     .catch(err => console.warn('[Studyo] Service worker non registrato:', err));
             });
         }

@@ -9,18 +9,45 @@
 <link rel="canonical" href="https://cataaa06.github.io/Studyo/">
 
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Studyo">
 <meta property="og:title" content="Studyo — Studiare insieme, anche quando siete lontani">
-<meta property="og:description" content="Entra in una lobby della tua materia e trova altri studenti che stanno studiando adesso. Gratis, nato a UNIMORE.">
+<meta property="og:description" content="Entra in una lobby della tua materia e trova altri studenti che stanno studiando adesso. Gratis, in beta aperta.">
 <meta property="og:url" content="https://cataaa06.github.io/Studyo/">
+<!-- [IMMAGINE DA INSERIRE: anteprima social 1200×630 px, es. og-image.png — per ora si usa l'icona] -->
 <meta property="og:image" content="https://cataaa06.github.io/Studyo/icons/icon-512.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta property="og:image:alt" content="Logo di Studyo: una S nera su quadrato lime">
 <meta property="og:locale" content="it_IT">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Studyo — Studiare insieme, anche quando siete lontani">
+<meta name="twitter:description" content="Entra in una lobby della tua materia e trova altri studenti che stanno studiando adesso. Gratis, in beta aperta.">
+<meta name="twitter:image" content="https://cataaa06.github.io/Studyo/icons/icon-512.png">
 
 <meta name="theme-color" content="#0A0A0B">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="manifest" href="manifest.json">
 
-<!-- Font ospitati in locale: nessun dato inviato a server di terze parti -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Studyo",
+  "url": "https://cataaa06.github.io/Studyo/",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "it",
+  "description": "Lobby di studio per materia con presenza in tempo reale, chat, videochiamata, timer, quiz, flashcard e stanze immersive Focus Pocus.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }
+}
+</script>
+
+<!-- Font ospitati in locale: nessun dato inviato a server di terze parti.
+     I due file del primo schermo si caricano subito per evitare il cambio di carattere. -->
+<link rel="preload" href="fonts/BricolageGrotesque-800-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/Manrope-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="fonts/fonts.css">
 
 <style>
@@ -120,9 +147,9 @@ h1{font-size:clamp(46px,8.2vw,98px);margin-bottom:26px;padding-bottom:.06em}
 .ps.off{color:var(--dim)}
 
 /* ---------- SECTIONS ---------- */
-section{padding:104px 0}
-.tag{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--lime);margin-bottom:16px}
-h2{font-size:clamp(34px,5.2vw,60px);margin-bottom:20px}
+section{padding:128px 0}
+.tag{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--lime);margin-bottom:20px}
+h2{font-size:clamp(34px,5.2vw,60px);margin-bottom:24px}
 .slede{color:var(--muted);font-size:17.5px;max-width:620px}
 
 /* story */
@@ -203,33 +230,154 @@ footer{border-top:1px solid var(--line);padding:40px 0;color:var(--dim);font-siz
   .metric:nth-child(2){border-right:none}
   .metric:nth-child(1),.metric:nth-child(2){border-bottom:1px solid var(--line)}
   .nav-links{display:none}
-  section{padding:74px 0}
-  header{padding:56px 0 40px}
+  section{padding:88px 0}
+  header{padding:56px 0 48px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- ACCESSIBILITÀ ---------- */
+:focus-visible{outline:2px solid var(--lime);outline-offset:3px;border-radius:4px}
+.skip{position:absolute;left:12px;top:-60px;z-index:100;background:var(--lime);color:var(--ink);padding:10px 16px;border-radius:8px;font-weight:700}
+.skip:focus{top:12px}
+
+/* ---------- FOCUS POCUS: definizione in apertura ---------- */
+#focus{padding-top:24px}
+.fp-def{margin-top:18px;padding:14px 16px;border:1px solid var(--line-2);border-radius:10px;background:rgba(255,255,255,.02);color:var(--muted);font-size:15.5px;max-width:560px}
+.fp-def strong{color:var(--text)}
+
+.fp-teaser{display:flex;align-items:center;gap:14px;margin-top:28px;max-width:640px;padding:14px 18px;border:1px solid #2E2548;border-radius:12px;background:linear-gradient(100deg,#17122A,#111113 75%);color:var(--muted);font-size:15px;line-height:1.45;transition:border-color .18s}
+.fp-teaser:hover{border-color:#4A3B78}
+.fp-teaser strong{color:var(--text)}
+.fp-teaser-icon{font-size:24px}
+.fp-teaser-more{margin-left:auto;font-weight:700;color:#C9B6FF;white-space:nowrap}
+
+/* ---------- ANTEPRIME DELL'APP (mockup in HTML, sostituibili con screenshot veri) ---------- */
+.m2{display:grid;grid-template-columns:1fr 250px;min-height:360px;background:#0C0C0E;text-align:left}
+.m2-main{padding:22px 24px}
+.m2-back{font-size:12px;color:var(--dim);font-weight:600}
+.m2-title{display:flex;align-items:center;gap:10px;margin-top:8px;font-family:var(--display);font-size:24px;font-weight:800;letter-spacing:-.03em}
+.m2-sub{font-size:13px;color:var(--muted);margin-top:4px}
+.m2-tabs{display:flex;gap:18px;margin-top:18px;border-bottom:1px solid var(--line);font-size:13.5px;font-weight:600;color:var(--dim)}
+.m2-tabs span{padding-bottom:10px}
+.m2-tabs .on{color:#fff;box-shadow:inset 0 -2px 0 var(--lime)}
+.m2-timer{margin-top:18px;border:1px solid var(--line);border-radius:10px;background:#111113;padding:22px;text-align:center}
+.m2-btn{display:inline-block;margin-top:16px;background:var(--lime);color:var(--ink);font-weight:700;font-size:13px;padding:8px 16px;border-radius:7px}
+.m2-side{border-left:1px solid var(--line);background:#111113;padding:18px 16px;display:flex;flex-direction:column;gap:12px}
+.m2-side-h{font-size:12.5px;font-weight:700;color:var(--muted)}
+.m2-msg{font-size:12.5px;color:var(--muted);line-height:1.45}
+.m2-msg b{color:#fff;font-weight:700}
+.m2-input{margin-top:auto;border:1px solid var(--line);border-radius:7px;padding:8px 10px;font-size:12px;color:var(--dim)}
+
+.screens{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:20px;margin-top:56px;align-items:start}
+.screen figcaption{margin-top:14px;font-size:14.5px;color:var(--muted)}
+.screen figcaption strong{display:block;color:var(--text);font-family:var(--display);font-size:17px;letter-spacing:-.02em;margin-bottom:2px}
+.phone{max-width:260px;margin:0 auto;border:1px solid var(--line-2);border-radius:28px;padding:10px;background:#0F0F11}
+.phone-in{border-radius:20px;overflow:hidden;background:#0C0C0E;min-height:420px;padding:16px 14px;display:flex;flex-direction:column;gap:10px}
+.ph-h{font-family:var(--display);font-size:19px;font-weight:800;letter-spacing:-.03em}
+.ph-sub{font-size:11.5px;color:var(--dim);margin-top:-6px}
+.ph-card{border:1px solid var(--line);border-radius:10px;background:#141416;padding:12px}
+.ph-eyebrow{font-size:10.5px;font-weight:700;color:var(--lime)}
+.ph-big{font-family:var(--display);font-size:17px;font-weight:800;letter-spacing:-.02em;margin-top:2px}
+.ph-row{display:flex;justify-content:space-between;gap:8px;font-size:11.5px;color:var(--muted)}
+.ph-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ph-stat{border:1px solid var(--line);border-radius:9px;background:#141416;padding:9px}
+.ph-stat small{display:block;font-size:9.5px;font-weight:700;color:var(--dim);letter-spacing:.04em}
+.ph-stat b{font-family:var(--display);font-size:18px;font-weight:800}
+.ph-bar{height:6px;border-radius:3px;background:#232328;overflow:hidden}
+.ph-bar span{display:block;height:100%;background:var(--lime)}
+.ph-dist{display:grid;grid-template-columns:70px 1fr;gap:6px 8px;align-items:center;font-size:10.5px;color:var(--muted)}
+.ph-btn{background:var(--lime);color:var(--ink);font-weight:700;font-size:12px;text-align:center;padding:9px;border-radius:8px}
+.ph-subj{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ph-subj div{border:1px solid var(--line);border-radius:9px;background:#141416;padding:9px;font-size:11.5px;font-weight:700;line-height:1.3}
+.ph-subj span{display:block;font-size:15px;margin-bottom:4px}
+.ph-subj-3{grid-template-columns:repeat(3,1fr)}
+.ph-subj em{display:block;font-style:normal;font-weight:600;font-size:10px;color:var(--dim);margin-top:3px}
+.ph-nav{margin-top:auto;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);padding-top:9px;font-size:9.5px;color:var(--dim);text-align:center;font-weight:600}
+.ph-nav .on{color:var(--lime)}
+.shot-note{margin-top:22px;font-size:13px;color:var(--dim)}
+
+/* ---------- GRATIS ADESSO / IN ARRIVO ---------- */
+.plans{display:grid;grid-template-columns:1.25fr 1fr;gap:20px;margin-top:56px}
+.plan{border:1px solid var(--line);border-radius:14px;padding:32px;background:var(--surface)}
+.plan-now{border-color:rgba(200,240,49,.45)}
+.plan-badge{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.08em;padding:4px 10px;border-radius:6px;margin-bottom:14px}
+.plan-now .plan-badge{background:var(--lime);color:var(--ink)}
+.plan-next .plan-badge{border:1px solid var(--line-2);color:var(--muted)}
+.plan h3{font-size:24px;margin-bottom:8px}
+.plan>p{color:var(--muted);font-size:15px}
+.plan ul{list-style:none;margin-top:20px;display:grid;gap:2px}
+.plan li{position:relative;padding:9px 0 9px 28px;font-size:15px;color:var(--text);border-top:1px solid var(--line)}
+.plan li:first-child{border-top:0}
+.plan li small{display:block;color:var(--dim);font-size:13px;margin-top:2px}
+.plan-now li:before{content:'';position:absolute;left:2px;top:15px;width:12px;height:7px;border-left:2px solid var(--lime);border-bottom:2px solid var(--lime);transform:rotate(-45deg)}
+.plan-next li:before{content:'';position:absolute;left:3px;top:17px;width:10px;height:2px;background:var(--dim)}
+.plan-foot{margin-top:22px;font-size:14px;color:var(--dim)}
+
+@media(max-width:1100px){.nav-links{gap:20px}.nav-links a{font-size:14px}}
+@media(max-width:920px){.nav-links{display:none}}
+@media(max-width:980px){
+  .m2{grid-template-columns:1fr}.m2-side{display:none}
+  .screens{grid-template-columns:1fr 1fr}
+  .screens .screen:first-child{grid-column:1/-1}
+  .plans{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .screens{grid-template-columns:1fr;gap:40px}
+  .plan{padding:24px 20px}
+}
+/* Telefoni stretti (320–375px) */
+@media(max-width:480px){
+  .wrap{padding:0 18px}
+  h1{font-size:clamp(31px,9.8vw,46px)}
+  h2{font-size:clamp(28px,8.6vw,34px)}
+  .cta-row .btn{width:100%}
+  .nav-in .btn-lime{padding:10px 14px;font-size:14px}
+  .kicker{font-size:12px;padding:6px 10px}
+  .metric{padding:18px 14px}
+  .metric b{font-size:28px}
+  .band-l{padding:26px 20px}
+  .step{padding:26px 20px}
+  .feat,.aud{padding:22px 20px}
+  .m2-main{padding:18px 16px}
+  .m2-tabs{gap:12px;font-size:12.5px;overflow:hidden}
+  summary{font-size:16px}
+  .fp-teaser{padding:12px 14px;font-size:14px}
+  .fp-teaser-more{display:none}
+  .furl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;margin-left:4px}
+  .furl-demo{white-space:nowrap;flex-shrink:0}
+  .m2-title{font-size:19px}
+  .ph-subj-3{grid-template-columns:1fr 1fr}
+  .ph-subj-3 div:nth-child(3){display:none}
+  .m2-tabs span{white-space:nowrap}
+  .tnum{font-size:44px}
+}
 </style>
 </head>
 <body>
 
-<nav id="nav">
+<a class="skip" href="#contenuto">Salta al contenuto</a>
+
+<nav id="nav" aria-label="Navigazione principale">
   <div class="wrap nav-in">
     <a href="#" class="brand">
-      <svg width="26" height="26" viewBox="0 0 32 32" fill="none">
+      <svg width="26" height="26" viewBox="0 0 32 32" fill="none" aria-hidden="true">
         <rect width="32" height="32" rx="7" fill="#C8F031"/>
         <path d="M20.6 11c-.95-.9-2.5-1.45-4.25-1.45-2.8 0-4.65 1.35-4.65 3.4 0 1.95 1.45 2.9 4.05 3.5 2.3.55 3 .95 3 1.9 0 .95-.95 1.55-2.5 1.55-1.65 0-3.1-.6-4.15-1.65" stroke="#0A0A0B" stroke-width="2.6" stroke-linecap="round" fill="none"/>
       </svg>
       Studyo
     </a>
     <div class="nav-links">
+      <a href="#focus">Focus Pocus</a>
       <a href="#come">Come funziona</a>
       <a href="#dentro">Cosa c'è dentro</a>
-      <a href="#perchi">Per chi</a>
+      <a href="#gratis">Gratis e in arrivo</a>
       <a href="#faq">FAQ</a>
     </div>
     <a href="app.html" class="btn btn-lime">Entra gratis</a>
   </div>
 </nav>
 
+<main id="contenuto">
 <header>
   <div class="wrap">
     <span class="kicker"><span class="live"></span> BETA APERTA · NATO A UNIMORE</span>
@@ -239,13 +387,19 @@ footer{border-top:1px solid var(--line);padding:40px 0;color:var(--dim);font-siz
       <a href="app.html" class="btn btn-lime btn-xl">Inizia a studiare</a>
       <a href="#come" class="btn btn-out btn-xl">Come funziona</a>
     </div>
-    <p class="micro">Gratis, per sempre. Trenta secondi e il tuo account Google.</p>
+    <p class="micro">Gratis in beta: tutto quello che c'è oggi resta gratuito. Trenta secondi, con Google o con la tua email. <a href="#gratis" style="color:var(--muted);text-decoration:underline">Cosa è incluso</a></p>
+
+    <a class="fp-teaser" href="#focus">
+      <span class="fp-teaser-icon" aria-hidden="true">🔮</span>
+      <span><strong>Focus Pocus</strong> — stanze immersive a schermo intero per studiare senza distrazioni: suono ambientale, atmosfera e timer.</span>
+      <span class="fp-teaser-more">Scopri</span>
+    </a>
 
     <div class="metrics">
       <div class="metric"><b>100+</b><span>Materie e lobby</span></div>
       <div class="metric"><b>6</b><span>Stanze Focus Pocus</span></div>
       <div class="metric"><b>8</b><span>Percorsi TOLC</span></div>
-      <div class="metric"><b>0€</b><span>Costo, sempre</span></div>
+      <div class="metric"><b>0€</b><span>Per le funzioni di oggi</span></div>
     </div>
 
     <div class="shot">
@@ -255,43 +409,66 @@ footer{border-top:1px solid var(--line);padding:40px 0;color:var(--dim);font-siz
           <span class="furl">studyo / analisi-matematica-1</span>
           <span class="furl-demo">esempio dell'interfaccia</span>
         </div>
-        <div class="mock">
-          <div class="mc mside">
-            <div class="mh">I TUOI ESAMI</div>
-            <div class="ch on"><span>📐</span> Analisi 1 <b>14</b></div>
-            <div class="ch"><span>⚛️</span> Fisica 1 <b>9</b></div>
-            <div class="ch"><span>💻</span> Informatica <b>21</b></div>
-            <div class="ch"><span>📏</span> Algebra <b>7</b></div>
-            <div class="mh">ESPLORA</div>
-            <div class="ch"><span>📊</span> Microecon. <b>12</b></div>
-            <div class="ch"><span>⚖️</span> Dir. Privato <b>15</b></div>
-          </div>
-          <div class="mc mmain">
-            <div class="mtitle">Analisi Matematica 1</div>
-            <div class="msub"><span class="gdot"></span> 14 studenti online adesso</div>
-            <div class="tcard">
+        <!-- [SCREENSHOT DA INSERIRE: pagina di una materia su desktop, tab "Studia" con chat aperta.
+             Per ora è un mockup in HTML che riproduce l'interfaccia attuale; nomi e numeri sono di esempio.] -->
+        <div class="m2">
+          <div class="m2-main">
+            <div class="m2-back">← Materie</div>
+            <div class="m2-title"><span aria-hidden="true">📐</span> Analisi Matematica 1</div>
+            <div class="m2-sub">Limiti, derivate e integrali di funzioni di una variabile.</div>
+            <div class="m2-tabs" aria-hidden="true"><span class="on">Studia</span><span>Ripassa</span><span>Materiali</span><span>Com'è l'esame</span></div>
+            <div class="m2-timer">
               <div class="tnum">18:24</div>
-              <div class="tlbl">SESSIONE IN CORSO</div>
+              <div class="tlbl">SESSIONE DI STUDIO</div>
               <div class="tbar"><span></span></div>
               <div class="chips">
-                <span class="chip">🎧 Pioggia</span>
-                <span class="chip">📹 Video</span>
-                <span class="chip">🃏 Flashcard</span>
+                <span class="chip">🌧️ Pioggia</span>
+                <span class="chip">25 min</span>
               </div>
+              <span class="m2-btn">⏸ Pausa</span>
             </div>
           </div>
-          <div class="mc mright">
-            <div class="mh">IN LOBBY</div>
+          <div class="m2-side">
+            <div class="m2-side-h">In questa stanza</div>
             <div class="pr"><span class="pav">🎓</span><div><div class="pn">Giulia</div><div class="ps"><span class="gdot"></span> sta studiando</div></div></div>
             <div class="pr"><span class="pav">🧑‍💻</span><div><div class="pn">Marco</div><div class="ps"><span class="gdot"></span> sta studiando</div></div></div>
-            <div class="pr"><span class="pav">✨</span><div><div class="pn">Sara</div><div class="ps"><span class="gdot"></span> sta studiando</div></div></div>
-            <div class="pr"><span class="pav">🔥</span><div><div class="pn">Andrea</div><div class="ps off">in pausa</div></div></div>
+            <div class="m2-side-h" style="margin-top:6px">Chat</div>
+            <div class="m2-msg"><b>Giulia:</b> ultimo pomodoro e poi pausa?</div>
+            <div class="m2-msg"><b>Marco:</b> ci sto, poi esercizi sui limiti</div>
+            <div class="m2-input">Scrivi…</div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </header>
+
+<!-- FOCUS POCUS — spiegato subito, prima di tutto il resto -->
+<section id="focus">
+  <div class="wrap">
+    <div class="band">
+      <div class="band-l">
+        <span class="tag">FOCUS POCUS</span>
+        <h2 style="font-size:clamp(30px,3.6vw,42px)">Il posto dove ti immagini per concentrarti.</h2>
+        <p class="fp-def"><strong>Cos'è:</strong> una modalità a schermo intero dentro Studyo. Scegli una delle sei stanze immersive, ognuna con il suo suono ambientale, un'atmosfera animata e un timer. Niente chat e niente menu: solo tu e quello che studi. È inclusa gratis.</p>
+        <p class="slede" style="margin-top:16px">Schermo intero, tutto il resto sparisce. Scegli il luogo, parte l'atmosfera e il timer: restate solo tu e quello che devi studiare.</p>
+        <div class="rooms">
+          <span class="room">Biblioteca Piovosa</span>
+          <span class="room">Baita sul Fuoco</span>
+          <span class="room">Caffè Letterario</span>
+          <span class="room">Foresta Silenziosa</span>
+          <span class="room">Notte Stellata</span>
+          <span class="room">Cascata Zen</span>
+        </div>
+        <div style="margin-top:30px"><a href="app.html" class="btn btn-lime">Provalo ora</a></div>
+      </div>
+      <div class="band-r" aria-hidden="true">
+        <div class="sky" id="sky"></div>
+        <div class="band-timer"><b>24:31</b><span>NOTTE STELLATA</span></div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- STORY -->
 <section>
@@ -327,6 +504,86 @@ footer{border-top:1px solid var(--line);padding:40px 0;color:var(--dim);font-siz
         <p>Avvii il timer, metti un suono di sottofondo, fai un quiz. Ogni sessione vale XP e tiene viva la streak.</p>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ANTEPRIME DELL'APP -->
+<section id="anteprime">
+  <div class="wrap">
+    <span class="tag">DENTRO L'APP</span>
+    <h2>Com'è fatta, prima<br>ancora di entrare.</h2>
+    <p class="slede">Tre schermate di Studyo così come le trovi oggi, dal computer e dal telefono.</p>
+
+    <div class="screens">
+      <!-- [SCREENSHOT DA INSERIRE: Home su desktop (card "Riprendi", Le tue materie, Prossime sessioni).
+           Sostituire il blocco .frame con <img src="img/home.webp" width="…" height="…" alt="…" loading="lazy">] -->
+      <figure class="screen">
+        <div class="frame" aria-hidden="true">
+          <div class="fbar"><span class="tl"></span><span class="tl"></span><span class="tl"></span><span class="furl">studyo / home</span></div>
+          <div class="phone-in" style="min-height:0;border-radius:0;padding:18px">
+            <div class="ph-h" style="font-size:22px">Ciao, Giulia</div>
+            <div class="ph-card" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+              <div><div class="ph-eyebrow">Riprendi</div><div class="ph-big">📐 Analisi Matematica 1</div></div>
+              <span class="ph-btn" style="padding:9px 14px">Entra e studia →</span>
+            </div>
+            <div class="ph-row" style="margin-top:4px"><b style="color:#fff">Le tue materie</b><span>Tutte →</span></div>
+            <div class="ph-subj ph-subj-3">
+              <div><span>📐</span>Analisi 1<em>● 3 online</em></div>
+              <div><span>⚛️</span>Fisica 1<em>Nessuno online</em></div>
+              <div><span>💻</span>Programmazione<em>● 1 online</em></div>
+            </div>
+            <div class="ph-card"><div class="ph-row"><b style="color:#fff">Prossime sessioni</b><span>+ Programma</span></div>
+              <div class="ph-row" style="margin-top:8px"><span>Oggi alle 18:00 · Fisica 1</span><span>Partecipa</span></div></div>
+          </div>
+        </div>
+        <figcaption><strong>Home</strong>Riprendi da dove avevi lasciato e vedi subito chi sta studiando le tue materie.</figcaption>
+      </figure>
+
+      <!-- [SCREENSHOT DA INSERIRE: tab "Com'è l'esame" da telefono] -->
+      <figure class="screen">
+        <div class="phone" aria-hidden="true">
+          <div class="phone-in">
+            <div class="ph-h">Com'è l'esame</div>
+            <div class="ph-sub">Analisi Matematica 1 · il tuo ateneo</div>
+            <div class="ph-grid">
+              <div class="ph-stat"><small>DIFFICOLTÀ</small><b>4,2</b>/5</div>
+              <div class="ph-stat"><small>ORE DI STUDIO</small><b>80</b> h</div>
+            </div>
+            <div class="ph-dist">
+              <span>5 · Molto diff.</span><div class="ph-bar"><span style="width:40%"></span></div>
+              <span>4 · Impegnativo</span><div class="ph-bar"><span style="width:45%"></span></div>
+              <span>3 · Nella media</span><div class="ph-bar"><span style="width:15%"></span></div>
+            </div>
+            <div class="ph-card">
+              <div class="ph-row"><b style="color:#fff">Consiglio</b><span>2025</span></div>
+              <div class="m2-msg" style="margin-top:6px">Parti dagli esercizi degli anni precedenti fin dal primo giorno.</div>
+            </div>
+            <div class="ph-btn">Scrivi la tua</div>
+          </div>
+        </div>
+        <figcaption><strong>Com'è l'esame</strong>Difficoltà, ore di studio e consigli di chi l'ha già dato. Si parla dell'esame, mai delle persone.</figcaption>
+      </figure>
+
+      <!-- [SCREENSHOT DA INSERIRE: pagina Materie da telefono] -->
+      <figure class="screen">
+        <div class="phone" aria-hidden="true">
+          <div class="phone-in">
+            <div class="ph-h">Materie</div>
+            <div class="ph-card" style="padding:9px 10px;font-size:11.5px;color:var(--dim)">🔍 Cerca una materia…</div>
+            <div class="ph-row"><b style="color:#fff">1° anno</b><span>6</span></div>
+            <div class="ph-subj">
+              <div><span>📐</span>Analisi 1<em>● 3 online</em></div>
+              <div><span>📏</span>Algebra lineare<em>Nessuno online</em></div>
+              <div><span>⚛️</span>Fisica 1<em>● 2 online</em></div>
+              <div><span>🧪</span>Chimica<em>Nessuno online</em></div>
+            </div>
+            <div class="ph-nav"><span>Home</span><span class="on">Materie</span><span>Insieme</span><span>Profilo</span></div>
+          </div>
+        </div>
+        <figcaption><strong>Materie</strong>Le lobby seguono il tuo piano di studi. Le altre materie sono a una ricerca di distanza.</figcaption>
+      </figure>
+    </div>
+    <p class="shot-note">Anteprime illustrative: nomi, numeri e recensioni mostrati sono di esempio.</p>
   </div>
 </section>
 
@@ -370,27 +627,41 @@ footer{border-top:1px solid var(--line);padding:40px 0;color:var(--dim);font-siz
   </div>
 </section>
 
-<!-- FOCUS -->
-<section>
+
+<!-- GRATIS ADESSO / IN ARRIVO -->
+<section id="gratis">
   <div class="wrap">
-    <div class="band">
-      <div class="band-l">
-        <span class="tag">FOCUS POCUS</span>
-        <h2 style="font-size:clamp(30px,3.6vw,42px)">Il posto dove ti immagini per concentrarti.</h2>
-        <p class="slede" style="margin-top:16px">Schermo intero, tutto il resto sparisce. Scegli il luogo, parte l'atmosfera e il timer: restate solo tu e quello che devi studiare.</p>
-        <div class="rooms">
-          <span class="room">Biblioteca Piovosa</span>
-          <span class="room">Baita sul Fuoco</span>
-          <span class="room">Caffè Letterario</span>
-          <span class="room">Foresta Silenziosa</span>
-          <span class="room">Notte Stellata</span>
-          <span class="room">Cascata Zen</span>
-        </div>
-        <div style="margin-top:30px"><a href="app.html" class="btn btn-lime">Provalo ora</a></div>
+    <span class="tag">COSA È GRATIS</span>
+    <h2>Cosa c'è oggi,<br>cosa arriverà.</h2>
+    <p class="slede">Durante la beta tutto quello che trovi nell'app è gratuito, senza carta e senza pubblicità. Quello che è gratis oggi resta gratis.</p>
+
+    <div class="plans">
+      <div class="plan plan-now">
+        <span class="plan-badge">GRATIS ADESSO</span>
+        <h3>Incluso nella beta</h3>
+        <p>Funziona già: lo usi appena entri.</p>
+        <ul>
+          <li>Lobby per ogni materia<small>Presenza in tempo reale e chat</small></li>
+          <li>Videochiamata integrata<small>Una stanza video per materia, camera e microfono facoltativi</small></li>
+          <li>Gruppi privati e sessioni programmate<small>Invito con link, promemoria prima dell'inizio</small></li>
+          <li>Timer Pomodoro e sei suoni ambientali</li>
+          <li>Focus Pocus<small>Sei stanze immersive a schermo intero</small></li>
+          <li>Quiz, flashcard e appunti salvati nel cloud</li>
+          <li>Com'è l'esame<small>Recensioni sugli esami scritte da altri studenti</small></li>
+          <li>XP, livelli, streak, badge e sfide del giorno</li>
+          <li>AI Tutor<small>Modalità base inclusa. Collegare un'AI esterna richiede una tua chiave API, facoltativa e a tuo carico</small></li>
+        </ul>
       </div>
-      <div class="band-r">
-        <div class="sky" id="sky"></div>
-        <div class="band-timer"><b>24:31</b><span>NOTTE STELLATA</span></div>
+      <div class="plan plan-next">
+        <span class="plan-badge">IN ARRIVO</span>
+        <h3>Ci stiamo lavorando</h3>
+        <p>Non ancora disponibile. Niente date finché non sono sicure.</p>
+        <ul>
+          <li>Piani di studio ateneo per ateneo<small>Si parte dai corsi già presenti e si aggiungono gli altri atenei</small></li>
+          <li>Eventuali funzioni extra opzionali<small>Ancora da definire. Se arriveranno, non toglieranno nulla di quello che oggi è gratis</small></li>
+          <!-- [DATO DA INSERIRE: altre funzioni in programma, una riga di descrizione ciascuna. Nessuna data se non confermata.] -->
+        </ul>
+        <p class="plan-foot">Manca qualcosa che ti serve? Diccelo dal pulsante feedback dentro l'app.</p>
       </div>
     </div>
   </div>
@@ -475,6 +746,8 @@ footer{border-top:1px solid var(--line);padding:40px 0;color:var(--dim);font-siz
     <p class="micro">Gratis · Nessuna carta richiesta · Beta aperta</p>
   </div>
 </section>
+
+</main>
 
 <footer>
   <div class="wrap foot">

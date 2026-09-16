@@ -762,3 +762,59 @@
 @media (min-width: 901px) and (max-width: 1240px) {
     .lobby-layout { grid-template-columns: minmax(0, 1fr) 290px; gap: 20px; }
 }
+
+/* =============================================
+   BADGE BETA — sempre visibile, mai invadente
+   ============================================= */
+.beta-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    height: 36px; padding: 0 12px 0 5px;
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px;
+    color: var(--text-secondary); font: 500 13px var(--font-body); cursor: pointer; white-space: nowrap;
+}
+.beta-chip:hover { border-color: var(--border-strong); color: var(--text); }
+.beta-tag {
+    padding: 3px 7px; border-radius: 999px;
+    background: var(--primary); color: var(--on-primary);
+    font: 800 10.5px var(--font-body); letter-spacing: .06em;
+}
+.beta-chip u { text-underline-offset: 2px; }
+.beta-text-short { display: none; }
+@media (max-width: 1180px) {
+    .beta-text { display: none; }
+    .beta-text-short { display: inline; }
+}
+@media (max-width: 768px) {
+    .beta-chip { height: 34px; padding: 0 10px 0 4px; gap: 6px; font-size: 12.5px; }
+}
+@media (max-width: 374px) {
+    .beta-text-short { display: none; }
+    .beta-chip { padding: 0 4px; }
+    .topbar-streak { display: none; }
+}
+
+/* Feedback: canale alternativo via email */
+.feedback-alt { margin-top: 14px; font-size: 13px; color: var(--text-muted); text-align: center; }
+.feedback-alt a { color: var(--text-secondary); text-decoration: underline; }
+
+/* =============================================
+   ONBOARDING: consenso prima dei pulsanti di accesso
+   ============================================= */
+.consent-box.consent-top { margin: 4px 0 16px; }
+.optional { font-weight: 400; color: var(--text-muted); }
+
+/* =============================================
+   CONTRASTO (WCAG AA 4,5:1)
+   Il bianco su lime, arancio, verde e rosso non raggiunge la soglia:
+   su questi fondi il testo diventa nero, i colori restano quelli del brand.
+   ============================================= */
+.ai-user { color: var(--on-primary) !important; }
+.btn-accent, .btn-success, .btn-danger { color: var(--on-primary) !important; }
+.unread-badge { color: var(--on-primary); }
+.level-badge { color: var(--on-primary) !important; }
+
+/* Tour iniziale: su telefoni stretti "Salta" non copre più l'illustrazione */
+@media (max-width: 480px) {
+    .ob-visual { height: 210px; padding-top: 44px; }
+    .ob-scene { padding: 0 22px; }
+}
