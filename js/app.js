@@ -716,6 +716,8 @@ function openLobby(lobbyId) {
         });
         listenChat(lobbyId, (msgs) => renderChat(msgs));
     }
+
+    renderExamSection(lobby);
 }
 
 // Leaving the lobby page: stop presence + listeners + any open video call
@@ -1264,6 +1266,379 @@ async function showNotesTab(which) {
             <div class="shared-note-text">${escapeHTML(n.text).replace(/\n/g, '<br>')}</div>
         </div>
     `).join('');
+}
+
+/* =============================================
+   COM'È L'ESAME — recensioni sull'esame
+   Scelte di progetto:
+   - si parla della prova, mai delle persone (nessun campo sul docente)
+   - scrivono solo gli universitari (imposto anche dalle regole Firestore)
+   - 3 segnalazioni nascondono una recensione
+   ============================================= */
+
+const REVIEW_HIDE_AFTER = 3;
+
+const EXAM_TYPE_LABEL = {
+    scritto: 'Scritto', orale: 'Orale', crocette: 'Test a crocette',
+    progetto: 'Progetto', pratica: 'Prova pratica'
+};
+const DIFFICULTY_LABEL = { 1: 'Facile', 2: 'Abbordabile', 3: 'Nella media', 4: 'Impegnativo', 5: 'Molto difficile' };
+
+// L'ateneo è testo libero: "UNIMORE", "Unimore" e "Università di Modena
+// e Reggio Emilia" devono finire nella stessa chiave. L'ordine conta
+// (es. Politecnico e Bicocca prima della Statale di Milano).
+const UNI_ALIASES = [
+    [/unimore|modena|reggio emilia/, 'unimore'],
+    [/polimi|politecnico di milano/, 'polimi'],
+    [/bicocca|unimib/, 'unimib'],
+    [/bocconi/, 'bocconi'],
+    [/cattolica|unicatt/, 'unicatt'],
+    [/unimi|statale di milano|studi di milano/, 'unimi'],
+    [/polito|politecnico di torino/, 'polito'],
+    [/unito|torino/, 'unito'],
+    [/unibo|bologna|alma mater/, 'unibo'],
+    [/tor vergata|roma 2|uniroma2/, 'uniroma2'],
+    [/roma tre|roma 3|uniroma3/, 'uniroma3'],
+    [/sapienza|roma 1|uniroma1/, 'sapienza'],
+    [/unipd|padova/, 'unipd'],
+    [/unina|federico ii|napoli/, 'unina'],
+    [/unifi|firenze/, 'unifi'],
+    [/unipi|pisa/, 'unipi'],
+    [/unipr|parma/, 'unipr'],
+    [/unife|ferrara/, 'unife'],
+    [/univr|verona/, 'univr'],
+    [/unige|genova/, 'unige'],
+    [/unitn|trento/, 'unitn'],
+    [/unipv|pavia/, 'unipv'],
+    [/unisi|siena/, 'unisi'],
+    [/uniba|bari/, 'uniba'],
+    [/unipa|palermo/, 'unipa'],
+    [/unict|catania/, 'unict']
+];
+
+function uniKey(name) {
+    const s = normalizeText(name || '').replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
+    if (!s) return '';
+    for (const [re, key] of UNI_ALIASES) if (re.test(s)) return key;
+    return s.slice(0, 120);
+}
+
+let reviewState = { lobbyId: null, list: [], scope: 'mine', difficulty: 0, loading: false };
+
+function reviewsEnabledFor(lobby) {
+    return !!lobby && !lobby.isGroup && lobby.category !== 'superiori';
+}
+
+function canWriteReviews() {
+    return state.playerSchool === 'universita' && !!state.firebaseUid;
+}
+
+function visibleReviews() {
+    return reviewState.list.filter(r => {
+        const reported = Array.isArray(r.reportedBy) ? r.reportedBy : [];
+        if (reported.length >= REVIEW_HIDE_AFTER) return false;
+        if (reported.includes(state.firebaseUid)) return false;
+        return true;
+    });
+}
+
+function scopedReviews() {
+    const lobby = resolveLobby(reviewState.lobbyId);
+    const all = visibleReviews();
+    if (!lobby || lobby.category === 'tolc' || reviewState.scope === 'all') return all;
+    const mine = uniKey(state.playerUni);
+    return all.filter(r => r.uniKey && r.uniKey === mine);
+}
+
+async function renderExamSection(lobby) {
+    const card = document.getElementById('exam-card');
+    if (!card) return;
+
+    if (!reviewsEnabledFor(lobby)) { card.hidden = true; return; }
+    card.hidden = false;
+
+    reviewState.lobbyId = lobby.id;
+    reviewState.list = [];
+
+    const isTolc = lobby.category === 'tolc';
+    const scopeEl = document.getElementById('exam-scope');
+    if (scopeEl) scopeEl.hidden = isTolc || !state.playerUni;
+
+    const writeBtn = document.getElementById('exam-write-btn');
+    if (writeBtn) writeBtn.hidden = !canWriteReviews();
+
+    document.getElementById('exam-summary').innerHTML = '';
+    document.getElementById('exam-reviews').innerHTML = `<div class="community-loading">Carico le recensioni…</div>`;
+
+    const loaded = (typeof loadReviews === 'function') ? await loadReviews(lobby.id) : [];
+    if (reviewState.lobbyId !== lobby.id) return;          // l'utente ha cambiato lobby nel frattempo
+
+    if (loaded === null) {
+        document.getElementById('exam-reviews').innerHTML =
+            `<div class="session-empty"><p>Recensioni non disponibili al momento.</p><small>Controlla la connessione e riprova.</small></div>`;
+        return;
+    }
+
+    reviewState.list = loaded;
+
+    // Se il mio ateneo non ha ancora recensioni, mostro tutti gli atenei
+    const mineKey = uniKey(state.playerUni);
+    const hasMine = loaded.some(r => r.uniKey === mineKey);
+    setReviewScope(!isTolc && state.playerUni && hasMine ? 'mine' : 'all', true);
+}
+
+function setReviewScope(scope, silent) {
+    reviewState.scope = scope;
+    document.querySelectorAll('.exam-scope-btn').forEach(b => {
+        const on = b.dataset.scope === scope;
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    renderExamSummary();
+    renderReviewList();
+}
+
+function median(nums) {
+    if (!nums.length) return 0;
+    const s = [...nums].sort((a, b) => a - b);
+    const m = Math.floor(s.length / 2);
+    return s.length % 2 ? s[m] : Math.round((s[m - 1] + s[m]) / 2);
+}
+
+function renderExamSummary() {
+    const box = document.getElementById('exam-summary');
+    if (!box) return;
+    const list = scopedReviews();
+    if (!list.length) { box.innerHTML = ''; return; }
+
+    const avg = list.reduce((a, r) => a + (r.difficulty || 0), 0) / list.length;
+    const hours = median(list.map(r => r.hours || 0).filter(Boolean));
+
+    const typeCount = {};
+    list.forEach(r => (r.examTypes || []).forEach(t => typeCount[t] = (typeCount[t] || 0) + 1));
+    const topTypes = Object.entries(typeCount).sort((a, b) => b[1] - a[1]).slice(0, 2)
+        .map(([t]) => EXAM_TYPE_LABEL[t] || t);
+
+    const withParziali = list.filter(r => r.parziali === 'si' || r.parziali === 'no');
+    const parzialiSi = withParziali.filter(r => r.parziali === 'si').length;
+    const parzialiTxt = withParziali.length
+        ? `${Math.round(parzialiSi / withParziali.length * 100)}% sì`
+        : 'n.d.';
+
+    const dots = [1, 2, 3, 4, 5].map(i =>
+        `<span class="diff-dot ${i <= Math.round(avg) ? 'on' : ''}"></span>`).join('');
+
+    // Distribuzione dei voti di difficoltà, in percentuale
+    const pct = n => Math.round(n / list.length * 100);
+    const distribution = [5, 4, 3, 2, 1].map(v => {
+        const p = pct(list.filter(r => r.difficulty === v).length);
+        return `<div class="exam-dist-row">
+            <span class="exam-dist-label">${v} · ${DIFFICULTY_LABEL[v]}</span>
+            <span class="exam-dist-bar"><span style="width:${p}%"></span></span>
+            <span class="exam-dist-pct">${p}%</span>
+        </div>`;
+    }).join('');
+
+    const typeShare = Object.entries(typeCount).sort((a, b) => b[1] - a[1])
+        .map(([t, n]) => `${EXAM_TYPE_LABEL[t] || escapeHTML(t)} ${pct(n)}%`).join(' · ');
+
+    box.innerHTML = `
+        <div class="exam-summary">
+            <div class="exam-stat">
+                <span class="exam-stat-label">Difficoltà</span>
+                <span class="exam-stat-value">${avg.toFixed(1)}<small>/5</small></span>
+                <span class="diff-dots" aria-hidden="true">${dots}</span>
+            </div>
+            <div class="exam-stat">
+                <span class="exam-stat-label">Ore di studio</span>
+                <span class="exam-stat-value">${hours || '—'}<small>${hours ? ' h' : ''}</small></span>
+                <span class="exam-stat-note">valore tipico</span>
+            </div>
+            <div class="exam-stat">
+                <span class="exam-stat-label">Prova</span>
+                <span class="exam-stat-value exam-stat-text">${topTypes.join(' + ') || '—'}</span>
+                <span class="exam-stat-note">Parziali: ${parzialiTxt}</span>
+            </div>
+        </div>
+        <div class="exam-dist" aria-label="Distribuzione della difficoltà">${distribution}</div>
+        ${typeShare ? `<p class="exam-types-share">Tipo di prova: ${typeShare}</p>` : ''}
+        <p class="exam-basis">Basato su ${list.length} ${list.length === 1 ? 'recensione' : 'recensioni'}${reviewState.scope === 'mine' ? ' del tuo ateneo' : ''}.</p>`;
+}
+
+function renderReviewList() {
+    const box = document.getElementById('exam-reviews');
+    if (!box) return;
+    const list = scopedReviews().sort((a, b) => {
+        if ((b.year || 0) !== (a.year || 0)) return (b.year || 0) - (a.year || 0);
+        const ta = a.updatedAt && a.updatedAt.toMillis ? a.updatedAt.toMillis() : 0;
+        const tb = b.updatedAt && b.updatedAt.toMillis ? b.updatedAt.toMillis() : 0;
+        return tb - ta;
+    });
+
+    if (!list.length) {
+        const cta = canWriteReviews()
+            ? `<button class="btn btn-primary btn-sm" onclick="openReviewForm()">Scrivi la prima</button>`
+            : '';
+        const where = reviewState.scope === 'mine' ? ' per il tuo ateneo' : '';
+        box.innerHTML = `<div class="session-empty">
+            <p>Ancora nessuna recensione${where}.</p>
+            <small>${canWriteReviews() ? "Hai già dato questo esame? Racconta com'è: aiuti chi lo deve preparare." : "Le recensioni vengono scritte da chi ha già sostenuto l'esame."}</small>
+            ${cta ? `<div style="margin-top:12px">${cta}</div>` : ''}
+        </div>`;
+        return;
+    }
+
+    box.innerHTML = list.map(r => {
+        const mine = r.uid === state.firebaseUid;
+        const types = (r.examTypes || []).map(t => `<span class="review-tag">${EXAM_TYPE_LABEL[t] || escapeHTML(t)}</span>`).join('');
+        const parz = r.parziali === 'si' ? '<span class="review-tag">Con parziali</span>'
+                   : r.parziali === 'no' ? '<span class="review-tag">Senza parziali</span>' : '';
+        return `
+        <article class="review ${mine ? 'is-mine' : ''}">
+            <header class="review-head">
+                <span class="review-avatar" aria-hidden="true">${avatarFor(r.uid)}</span>
+                <div class="review-who">
+                    <span class="review-author">${escapeHTML(r.authorName || 'Studente')}${mine ? ' <span class="student-you">(tu)</span>' : ''}</span>
+                    <span class="review-meta">Sostenuto nel ${r.year || '—'}${reviewState.scope === 'all' && r.uni ? ' · ' + escapeHTML(r.uni) : ''}</span>
+                </div>
+                <span class="review-diff diff-${r.difficulty}">${r.difficulty}/5 · ${DIFFICULTY_LABEL[r.difficulty] || ''}</span>
+            </header>
+            <div class="review-tags">
+                <span class="review-tag">${r.hours} ore</span>${types}${parz}
+            </div>
+            ${r.material ? `<div class="review-block"><strong>Cosa è servito</strong><p>${escapeHTML(r.material)}</p></div>` : ''}
+            ${r.tip ? `<div class="review-block"><strong>Consiglio</strong><p>${escapeHTML(r.tip)}</p></div>` : ''}
+            <footer class="review-foot">
+                ${mine
+                    ? `<button class="review-link" onclick="openReviewForm()">Modifica</button>`
+                    : `<button class="review-link" onclick="doReportReview('${r.id}')">Segnala</button>`}
+            </footer>
+        </article>`;
+    }).join('');
+}
+
+/* --- Modulo --- */
+
+function setReviewDifficulty(v) {
+    reviewState.difficulty = v;
+    document.querySelectorAll('#review-difficulty button').forEach(b => {
+        const on = +b.dataset.v === v;
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+}
+
+function openReviewForm() {
+    if (!canWriteReviews()) {
+        showNotification("Le recensioni d'esame possono scriverle solo gli studenti universitari.");
+        return;
+    }
+    const lobby = resolveLobby(reviewState.lobbyId || state.currentLobby);
+    if (!lobby) return;
+
+    document.getElementById('review-subject').textContent =
+        `${lobby.name}${state.playerUni ? ' · ' + state.playerUni : ''}`;
+
+    // Anni: dal corrente indietro di 8
+    const yearSel = document.getElementById('review-year');
+    const now = new Date().getFullYear();
+    yearSel.innerHTML = Array.from({ length: 9 }, (_, i) => now - i)
+        .map(y => `<option value="${y}">${y}</option>`).join('');
+
+    // Precompilo se ho già scritto una recensione su questo esame
+    const mine = reviewState.list.find(r => r.uid === state.firebaseUid);
+    setReviewDifficulty(mine ? mine.difficulty : 0);
+    document.getElementById('review-hours').value = mine ? mine.hours : '';
+    yearSel.value = mine ? String(mine.year) : String(now);
+    document.querySelectorAll('#review-types input').forEach(cb => {
+        cb.checked = !!(mine && (mine.examTypes || []).includes(cb.value));
+    });
+    document.querySelectorAll('input[name="review-parziali"]').forEach(rb => {
+        rb.checked = rb.value === (mine ? mine.parziali : 'nonso');
+    });
+    document.getElementById('review-material').value = mine ? (mine.material || '') : '';
+    document.getElementById('review-tip').value = mine ? (mine.tip || '') : '';
+    document.getElementById('review-delete').hidden = !mine;
+    checkPersonMention();
+
+    openModal('review');
+}
+
+// Avviso gentile se il testo sembra parlare di una persona: non blocca
+// (dire "il prof dà gli esercizi del libro" va bene), ma ricorda la regola.
+const PERSON_HINT = /\b(prof|professore|professoressa|docente|assistente|tutor|lui|lei)\b/i;
+function checkPersonMention() {
+    const text = (document.getElementById('review-material').value || '') + ' ' +
+                 (document.getElementById('review-tip').value || '');
+    const warn = document.getElementById('review-warn');
+    if (warn) warn.hidden = !PERSON_HINT.test(normalizeText(text));
+}
+
+async function submitReview() {
+    const lobbyId = reviewState.lobbyId || state.currentLobby;
+    const difficulty = reviewState.difficulty;
+    const hours = parseInt(document.getElementById('review-hours').value, 10);
+    const year = parseInt(document.getElementById('review-year').value, 10);
+    const examTypes = [...document.querySelectorAll('#review-types input:checked')].map(i => i.value);
+    const parzialiEl = document.querySelector('input[name="review-parziali"]:checked');
+    const material = document.getElementById('review-material').value.trim();
+    const tip = document.getElementById('review-tip').value.trim();
+
+    if (!difficulty) { showNotification('Indica quanto è difficile l\'esame.'); return; }
+    if (!hours || hours < 1 || hours > 1000) { showNotification('Indica le ore di studio (tra 1 e 1000).'); document.getElementById('review-hours').focus(); return; }
+    if (!examTypes.length) { showNotification('Scegli almeno un tipo di prova.'); return; }
+    if (!material && !tip) { showNotification('Scrivi almeno cosa ti è servito o un consiglio.'); document.getElementById('review-material').focus(); return; }
+
+    const isNew = !reviewState.list.some(r => r.uid === state.firebaseUid);
+
+    const ok = await saveReview(lobbyId, {
+        difficulty, hours, year, examTypes,
+        parziali: parzialiEl ? parzialiEl.value : 'nonso',
+        material: material.slice(0, 800),
+        tip: tip.slice(0, 800),
+        uni: (state.playerUni || '').slice(0, 120),
+        uniKey: uniKey(state.playerUni)
+    });
+
+    if (!ok) { showNotification('Non riesco a pubblicare la recensione. Riprova tra poco.'); return; }
+
+    closeModal('review');
+    showNotification(isNew ? '📋 Recensione pubblicata. Grazie, aiuti chi viene dopo!' : 'Recensione aggiornata.');
+    // XP una sola volta per esame, anche se la cancello e la riscrivo
+    const reviewed = state.reviewedLobbies || [];
+    if (isNew && !reviewed.includes(lobbyId)) {
+        state.reviewedLobbies = [...reviewed, lobbyId];
+        addXP(30, 'Recensione d\'esame');
+        bumpStat('reviewsWritten');
+    }
+    const lobby = resolveLobby(lobbyId);
+    if (lobby) renderExamSection(lobby);
+}
+
+async function deleteMyReview() {
+    const lobbyId = reviewState.lobbyId || state.currentLobby;
+    if (!confirm('Vuoi eliminare la tua recensione su questo esame?')) return;
+    const ok = await deleteReview(lobbyId);
+    if (!ok) { showNotification('Non riesco a eliminarla. Riprova.'); return; }
+    closeModal('review');
+    showNotification('Recensione eliminata.');
+    const lobby = resolveLobby(lobbyId);
+    if (lobby) renderExamSection(lobby);
+}
+
+async function doReportReview(reviewId) {
+    const reason = prompt(
+        'Perché segnali questa recensione?\n\nEs: parla di una persona, è offensiva, contiene informazioni false o dati personali.'
+    );
+    if (reason === null) return;                  // annullato
+    const ok = await reportReview(reviewId, reason);
+    if (!ok) { showNotification('Segnalazione non inviata. Riprova.'); return; }
+    // La nascondo subito a chi ha segnalato
+    const r = reviewState.list.find(x => x.id === reviewId);
+    if (r) r.reportedBy = [...(r.reportedBy || []), state.firebaseUid];
+    renderExamSummary();
+    renderReviewList();
+    showNotification('Grazie, la valuteremo. Non vedrai più questa recensione.');
 }
 
 /* =============================================

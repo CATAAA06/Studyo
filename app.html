@@ -316,6 +316,20 @@
                             </div>
                         </div>
 
+                        <!-- COM'È L'ESAME: recensioni sull'esame, mai sulle persone -->
+                        <div class="card exam-card" id="exam-card">
+                            <div class="card-header">
+                                <h3>📋 Com'è l'esame</h3>
+                                <button class="btn btn-secondary btn-sm" id="exam-write-btn" onclick="openReviewForm()">Scrivi la tua</button>
+                            </div>
+                            <div class="exam-scope" id="exam-scope" role="group" aria-label="Filtra per ateneo">
+                                <button class="exam-scope-btn active" data-scope="mine" onclick="setReviewScope('mine')">Il mio ateneo</button>
+                                <button class="exam-scope-btn" data-scope="all" onclick="setReviewScope('all')">Tutti gli atenei</button>
+                            </div>
+                            <div id="exam-summary"></div>
+                            <div id="exam-reviews" class="exam-reviews"></div>
+                        </div>
+
                         <!-- QUIZ -->
                         <div class="card quiz-card">
                             <div class="card-header">
@@ -424,6 +438,81 @@
     </div>
 
     <!-- ============ MODALS ============ -->
+
+    <!-- RECENSIONE ESAME MODAL -->
+    <div class="modal" id="modal-review">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📋 Com'è l'esame</h2>
+                <button class="modal-close" aria-label="Chiudi finestra" onclick="closeModal('review')">✕</button>
+            </div>
+
+            <p class="group-intro" id="review-subject"></p>
+
+            <div class="review-rule">
+                <strong>Parla dell'esame, non delle persone.</strong>
+                Niente giudizi su docenti o compagni: racconta com'è la prova e cosa ti è servito per prepararla. Le recensioni che parlano di persone vengono rimosse.
+            </div>
+
+            <fieldset class="review-field">
+                <legend>Quanto è difficile?</legend>
+                <div class="review-difficulty" id="review-difficulty">
+                    <button type="button" data-v="1" onclick="setReviewDifficulty(1)">1<span>Facile</span></button>
+                    <button type="button" data-v="2" onclick="setReviewDifficulty(2)">2<span>Abbordabile</span></button>
+                    <button type="button" data-v="3" onclick="setReviewDifficulty(3)">3<span>Nella media</span></button>
+                    <button type="button" data-v="4" onclick="setReviewDifficulty(4)">4<span>Impegnativo</span></button>
+                    <button type="button" data-v="5" onclick="setReviewDifficulty(5)">5<span>Molto difficile</span></button>
+                </div>
+            </fieldset>
+
+            <div class="review-row">
+                <div class="form-group">
+                    <label for="review-hours">Ore di studio servite</label>
+                    <input type="number" id="review-hours" min="1" max="1000" placeholder="Es: 60">
+                </div>
+                <div class="form-group">
+                    <label for="review-year">Anno in cui l'hai sostenuto</label>
+                    <select id="review-year"></select>
+                </div>
+            </div>
+
+            <fieldset class="review-field">
+                <legend>Com'è fatta la prova?</legend>
+                <div class="review-chips" id="review-types">
+                    <label><input type="checkbox" value="scritto"> Scritto</label>
+                    <label><input type="checkbox" value="orale"> Orale</label>
+                    <label><input type="checkbox" value="crocette"> Test a crocette</label>
+                    <label><input type="checkbox" value="progetto"> Progetto</label>
+                    <label><input type="checkbox" value="pratica"> Prova pratica</label>
+                </div>
+            </fieldset>
+
+            <fieldset class="review-field">
+                <legend>Ci sono i parziali?</legend>
+                <div class="review-chips review-radio">
+                    <label><input type="radio" name="review-parziali" value="si"> Sì</label>
+                    <label><input type="radio" name="review-parziali" value="no"> No</label>
+                    <label><input type="radio" name="review-parziali" value="nonso" checked> Non so</label>
+                </div>
+            </fieldset>
+
+            <div class="form-group">
+                <label for="review-material">Cosa ti è servito per prepararlo</label>
+                <textarea id="review-material" oninput="checkPersonMention()" maxlength="800" rows="3" placeholder="Libri, dispense, esercizi, esami degli anni precedenti…"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="review-tip">Il tuo consiglio a chi lo deve dare</label>
+                <textarea id="review-tip" oninput="checkPersonMention()" maxlength="800" rows="3" placeholder="Es: inizia dagli esercizi dal primo giorno, la teoria all'orale la chiedono tutta"></textarea>
+                <p class="review-warn" id="review-warn" hidden>Stai parlando di una persona? Ricorda di descrivere l'esame, non chi lo tiene.</p>
+            </div>
+
+            <div class="review-actions">
+                <button class="btn btn-primary btn-large" onclick="submitReview()">Pubblica recensione</button>
+                <button class="btn btn-secondary" id="review-delete" onclick="deleteMyReview()" hidden>Elimina la mia recensione</button>
+            </div>
+        </div>
+    </div>
 
     <!-- NUOVA SESSIONE MODAL -->
     <div class="modal" id="modal-session">

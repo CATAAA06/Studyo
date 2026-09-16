@@ -1936,6 +1936,10 @@ const BADGES = [
       check: s => (s.groupsJoined || 0) >= 1,
       progress: s => [Math.min(s.groupsJoined || 0, 1), 1] },
 
+    { icon: "📋", name: "Mentore",      desc: "Racconta com'è 3 esami che hai dato",
+      check: s => (s.reviewsWritten || 0) >= 3,
+      progress: s => [Math.min(s.reviewsWritten || 0, 3), 3] },
+
     { icon: "🏆", name: "Top 10",       desc: "Entra nella top 10 del tuo ateneo",
       check: s => s.bestRank > 0 && s.bestRank <= 10,
       progress: s => [s.bestRank > 0 && s.bestRank <= 10 ? 1 : 0, 1] },

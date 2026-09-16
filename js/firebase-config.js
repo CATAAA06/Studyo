@@ -574,6 +574,78 @@ async function loadSharedNotes(lobbyId) {
 }
 
 /* =============================================
+   RECENSIONI D'ESAME
+   Una per utente per esame: id documento = uid_lobbyId.
+   ============================================= */
+
+function reviewDocId(lobbyId) { return state.firebaseUid + '_' + lobbyId; }
+
+async function loadReviews(lobbyId) {
+    if (!state.firebaseUid) return [];
+    try {
+        const snap = await db.collection('reviews').where('lobbyId', '==', lobbyId).limit(200).get();
+        return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    } catch (e) {
+        console.warn('loadReviews failed:', e.code || e.message);
+        return null; // null = errore (regole non pubblicate / offline)
+    }
+}
+
+async function saveReview(lobbyId, fields) {
+    if (!state.firebaseUid) return false;
+    const ref = db.collection('reviews').doc(reviewDocId(lobbyId));
+    try {
+        // Chi modifica non può azzerare le segnalazioni ricevute
+        const existing = await ref.get();
+        const prev = existing.exists ? existing.data() : null;
+        await ref.set({
+            ...fields,
+            uid: state.firebaseUid,
+            lobbyId: lobbyId,
+            authorName: state.playerName || 'Studente',
+            reportedBy: prev && Array.isArray(prev.reportedBy) ? prev.reportedBy : [],
+            createdAt: prev && prev.createdAt ? prev.createdAt : firebase.firestore.FieldValue.serverTimestamp(),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        return true;
+    } catch (e) {
+        console.warn('saveReview failed:', e.code || e.message);
+        return false;
+    }
+}
+
+async function deleteReview(lobbyId) {
+    if (!state.firebaseUid) return false;
+    try {
+        await db.collection('reviews').doc(reviewDocId(lobbyId)).delete();
+        return true;
+    } catch (e) {
+        console.warn('deleteReview failed:', e.code || e.message);
+        return false;
+    }
+}
+
+async function reportReview(reviewId, reason) {
+    if (!state.firebaseUid) return false;
+    try {
+        await db.collection('reviews').doc(reviewId).update({
+            reportedBy: firebase.firestore.FieldValue.arrayUnion(state.firebaseUid)
+        });
+        await db.collection('reports').add({
+            type: 'review',
+            targetId: reviewId,
+            reporterUid: state.firebaseUid,
+            reason: (reason || '').slice(0, 500),
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        return true;
+    } catch (e) {
+        console.warn('reportReview failed:', e.code || e.message);
+        return false;
+    }
+}
+
+/* =============================================
    SESSIONI PROGRAMMATE
    ============================================= */
 

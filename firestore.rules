@@ -113,6 +113,76 @@ service cloud.firestore {
       allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
     }
 
+    // ---- COM'È L'ESAME (recensioni sull'esame) ----
+    // Id documento = uid_materia: una sola recensione per persona per esame.
+    // Scrivono solo gli universitari; nessun campo parla del docente.
+    function isUniStudent() {
+      let u = get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+      return !('school' in u) || u.school == 'universita';
+    }
+
+    function isValidReview(reviewId) {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['uid', 'lobbyId', 'authorName', 'uni', 'uniKey',
+                               'difficulty', 'hours', 'year', 'examTypes', 'parziali',
+                               'material', 'tip', 'reportedBy', 'createdAt', 'updatedAt'])
+             && d.uid == request.auth.uid
+             && d.lobbyId is string && d.lobbyId.size() > 0 && d.lobbyId.size() < 80
+             && reviewId == request.auth.uid + '_' + d.lobbyId
+             && d.authorName is string && d.authorName.size() < 100
+             && d.uni is string && d.uni.size() <= 120
+             && d.uniKey is string && d.uniKey.size() <= 120
+             && d.difficulty is int && d.difficulty >= 1 && d.difficulty <= 5
+             && d.hours is int && d.hours >= 1 && d.hours <= 1000
+             && d.year is int && d.year >= 2000 && d.year <= 2100
+             && d.examTypes is list && d.examTypes.size() >= 1 && d.examTypes.size() <= 5
+             && d.parziali in ['si', 'no', 'nonso']
+             && d.material is string && d.material.size() <= 800
+             && d.tip is string && d.tip.size() <= 800
+             && d.updatedAt == request.time;
+    }
+
+    match /reviews/{reviewId} {
+      allow read: if request.auth != null;
+
+      allow create: if request.auth != null
+                    && isValidReview(reviewId)
+                    && request.resource.data.reportedBy == []
+                    && request.resource.data.createdAt == request.time
+                    && isUniStudent();
+
+      // L'autore modifica la sua, ma non può azzerare le segnalazioni
+      allow update: if request.auth != null
+                    && resource.data.uid == request.auth.uid
+                    && isValidReview(reviewId)
+                    && request.resource.data.reportedBy == resource.data.reportedBy
+                    && request.resource.data.createdAt == resource.data.createdAt;
+
+      // Gli altri possono solo aggiungere il proprio uid alle segnalazioni
+      allow update: if request.auth != null
+                    && resource.data.uid != request.auth.uid
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reportedBy'])
+                    && !(request.auth.uid in resource.data.reportedBy)
+                    && request.resource.data.reportedBy.size() == resource.data.reportedBy.size() + 1
+                    && request.resource.data.reportedBy.hasAll(resource.data.reportedBy)
+                    && request.auth.uid in request.resource.data.reportedBy;
+
+      allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
+    }
+
+    // ---- SEGNALAZIONI ----
+    // Si creano soltanto; le leggi dalla Console per moderare.
+    match /reports/{reportId} {
+      allow create: if request.auth != null
+                    && request.resource.data.reporterUid == request.auth.uid
+                    && request.resource.data.type is string
+                    && request.resource.data.targetId is string
+                    && request.resource.data.targetId.size() < 200
+                    && request.resource.data.reason is string
+                    && request.resource.data.reason.size() <= 500;
+      allow read, update, delete: if false;
+    }
+
     // ---- DEFAULT DENY ----
     match /{document=**} {
       allow read, write: if false;
