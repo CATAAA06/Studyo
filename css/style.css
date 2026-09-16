@@ -3501,7 +3501,9 @@ h1, h2, h3, .sidebar-title, .fp-title, .ob-title,
     .exam-summary { grid-template-columns: 1fr 1fr; }
     .exam-summary .exam-stat:last-child { grid-column: 1 / -1; }
     .review-row { grid-template-columns: 1fr; }
-    .review-difficulty button span { display: none; }
+    .review-difficulty { gap: 4px; }
+    .review-difficulty button { padding: 7px 1px; }
+    .review-difficulty button span { font-size: 9.5px; }
     .review-head { flex-wrap: wrap; }
 }
 
