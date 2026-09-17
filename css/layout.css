@@ -1043,3 +1043,41 @@ button.topbar-streak:hover { border-color: var(--border-strong); color: var(--te
     .quiz-feedback .btn { width: 100%; justify-content: center; }
     .ed-item input[type="text"] { font-size: 16px; }   /* evita lo zoom automatico su iOS */
 }
+
+/* =============================================
+   ALLEGATI DEGLI APPUNTI
+   ============================================= */
+.notes-files { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+.notes-files .block-head h3 { font: 700 16px var(--font-display); letter-spacing: -0.02em; }
+.nf-count { font-size: 13px; color: var(--text-muted); }
+.nf-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.nf-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px; background: var(--bg-input);
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+}
+.nf-preview {
+    display: grid; place-items: center; flex-shrink: 0;
+    width: 44px; height: 44px; border-radius: var(--radius-xs);
+    background: var(--surface-3); overflow: hidden; color: var(--primary);
+}
+.nf-preview img { width: 100%; height: 100%; object-fit: cover; }
+.nf-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.nf-meta a { font-size: 14px; font-weight: 600; color: var(--text); text-decoration: none; overflow-wrap: anywhere; }
+.nf-meta a:hover { text-decoration: underline; }
+.nf-meta span { font-size: 12.5px; color: var(--text-muted); }
+.nf-hint { margin-top: 10px; font-size: 12.5px; color: var(--text-muted); line-height: 1.5; }
+.nf-progress { height: 4px; margin-top: 10px; border-radius: 2px; background: var(--bg-input); overflow: hidden; }
+.nf-progress[hidden] { display: none; }
+.nf-progress span { display: block; height: 100%; width: 0; background: var(--primary); transition: width .2s linear; }
+#nf-add:disabled { opacity: .5; cursor: not-allowed; }
+
+.shared-note-files { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.nf-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 10px; border: 1px solid var(--border); border-radius: 999px;
+    background: var(--bg-input); color: var(--text-secondary);
+    font-size: 12.5px; font-weight: 600; text-decoration: none; max-width: 100%;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.nf-chip:hover { color: var(--text); border-color: var(--border-strong); }

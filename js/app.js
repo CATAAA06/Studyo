@@ -1461,6 +1461,97 @@ function rateFlashcard(rating) {
 
 let noteSaveTimer = null;
 let noteIsShared = false;
+let noteFiles = [];              // allegati della nota aperta
+const NOTE_FILES_MAX = 5;
+const NOTE_FILE_MB = 10;
+
+function formatFileSize(bytes) {
+    if (!bytes) return '';
+    return bytes >= 1024 * 1024
+        ? (bytes / (1024 * 1024)).toFixed(1).replace('.', ',') + ' MB'
+        : Math.max(1, Math.round(bytes / 1024)) + ' KB';
+}
+
+function renderNoteFiles() {
+    const list = document.getElementById('nf-list');
+    const count = document.getElementById('nf-count');
+    const addBtn = document.getElementById('nf-add');
+    const hint = document.getElementById('nf-hint');
+    if (!list) return;
+
+    // Storage non attivo sul progetto: si dice, invece di far fallire un caricamento
+    const ready = typeof storageReady === 'function' && storageReady();
+    if (addBtn) addBtn.disabled = !ready || noteFiles.length >= NOTE_FILES_MAX;
+    if (hint && !ready) hint.textContent = 'Gli allegati non sono ancora attivi su questo progetto.';
+    if (count) count.textContent = noteFiles.length ? `${noteFiles.length} di ${NOTE_FILES_MAX}` : '';
+
+    if (!noteFiles.length) {
+        list.innerHTML = `<p class="muted-line">Nessun allegato: puoi aggiungere il PDF del professore o la foto di una lavagna.</p>`;
+        return;
+    }
+
+    list.innerHTML = noteFiles.map((f, i) => {
+        const isImg = (f.type || '').startsWith('image/');
+        const preview = isImg
+            ? `<img src="${f.url}" alt="" loading="lazy">`
+            : `<span class="nf-icon" aria-hidden="true"><svg class="ic"><use href="#i-file"/></svg></span>`;
+        return `<div class="nf-item">
+            <a class="nf-preview" href="${f.url}" target="_blank" rel="noopener" aria-label="Apri ${escapeHTML(f.name)}">${preview}</a>
+            <div class="nf-meta">
+                <a href="${f.url}" target="_blank" rel="noopener">${escapeHTML(f.name)}</a>
+                <span>${formatFileSize(f.size)}${isImg ? ' · immagine' : ' · PDF'}</span>
+            </div>
+            <button type="button" class="icon-btn" onclick="removeNoteFile(${i})" aria-label="Rimuovi ${escapeHTML(f.name)}">
+                <svg class="ic ic-sm" aria-hidden="true"><use href="#i-x"/></svg>
+            </button>
+        </div>`;
+    }).join('');
+}
+
+async function onNoteFilePicked(event) {
+    const input = event.target;
+    const file = input.files && input.files[0];
+    input.value = '';                      // così si può ricaricare lo stesso file
+    if (!file) return;
+
+    if (noteFiles.length >= NOTE_FILES_MAX) { showNotification(`Massimo ${NOTE_FILES_MAX} allegati per materia.`); return; }
+    if (!/^(image\/|application\/pdf$)/.test(file.type)) { showNotification('Puoi allegare solo PDF o immagini.'); return; }
+    if (file.size > NOTE_FILE_MB * 1024 * 1024) { showNotification(`Il file supera i ${NOTE_FILE_MB} MB.`); return; }
+
+    const box = document.getElementById('nf-progress');
+    const bar = document.getElementById('nf-bar');
+    if (box) box.hidden = false;
+    if (bar) bar.style.width = '0%';
+
+    const res = await uploadNoteFile(state.currentLobby, file, p => { if (bar) bar.style.width = p + '%'; });
+    if (box) box.hidden = true;
+
+    if (!res || res.error) {
+        const why = res && res.error;
+        showNotification(
+            why === 'storage/unauthorized' ? 'Caricamento rifiutato: le regole di Storage non lo permettono.'
+            : (why === 'storage/timeout' || why === 'storage/retry-limit-exceeded') ? 'Caricamento non riuscito: rete lenta, oppure Storage non è ancora attivo sul progetto.'
+            : 'Caricamento non riuscito. Riprova tra poco.');
+        return;
+    }
+
+    noteFiles.push(res);
+    renderNoteFiles();
+    const editor = document.getElementById('notes-editor');
+    await saveNote(state.currentLobby, editor ? editor.value : '', noteIsShared, noteFiles);
+    showNotification('Allegato caricato.');
+}
+
+async function removeNoteFile(index) {
+    const f = noteFiles[index];
+    if (!f) return;
+    if (!confirm(`Rimuovere "${f.name}"?`)) return;
+    await deleteNoteFile(f.path);
+    noteFiles.splice(index, 1);
+    renderNoteFiles();
+    const editor = document.getElementById('notes-editor');
+    await saveNote(state.currentLobby, editor ? editor.value : '', noteIsShared, noteFiles);
+}
 
 async function openNotes() {
     if (!requireAccount('salvare gli appunti nel cloud')) return;
@@ -1487,14 +1578,19 @@ async function openNotes() {
                 localStorage.setItem(`studyo_notes_${lobbyId}`, remote.text);
             }
             noteIsShared = !!remote.shared;
+            noteFiles = Array.isArray(remote.files) ? remote.files : [];
         } else {
             noteIsShared = false;
+            noteFiles = [];
         }
+        renderNoteFiles();
         const cb = document.getElementById('notes-shared');
         if (cb) cb.checked = noteIsShared;
         statusEl.textContent = 'Salvati sul tuo account';
     } else {
         statusEl.textContent = 'Salvati su questo dispositivo';
+        noteFiles = [];
+        renderNoteFiles();
     }
 
     // 3) Salvataggio: locale immediato, cloud con debounce
@@ -1504,7 +1600,7 @@ async function openNotes() {
         clearTimeout(noteSaveTimer);
         noteSaveTimer = setTimeout(async () => {
             if (typeof saveNote === 'function' && state.firebaseUid) {
-                const ok = await saveNote(lobbyId, editor.value, noteIsShared);
+                const ok = await saveNote(lobbyId, editor.value, noteIsShared, noteFiles);
                 statusEl.textContent = ok ? 'Salvato ✓' : 'Salvato solo qui';
             } else {
                 statusEl.textContent = 'Salvato su questo dispositivo';
@@ -1518,7 +1614,7 @@ async function toggleShareNote() {
     noteIsShared = !!(cb && cb.checked);
     const editor = document.getElementById('notes-editor');
     if (typeof saveNote === 'function' && state.firebaseUid) {
-        await saveNote(state.currentLobby, editor.value, noteIsShared);
+        await saveNote(state.currentLobby, editor.value, noteIsShared, noteFiles);
     }
     showNotification(noteIsShared
         ? '📤 I tuoi appunti sono ora visibili nella lobby'
@@ -1556,6 +1652,8 @@ async function showNotesTab(which) {
                 <span class="shared-note-author">${escapeHTML(n.authorName || 'Studente')}</span>
             </div>
             <div class="shared-note-text">${escapeHTML(n.text).replace(/\n/g, '<br>')}</div>
+            ${(n.files || []).length ? `<div class="shared-note-files">${n.files.map(f =>
+                `<a class="nf-chip" href="${f.url}" target="_blank" rel="noopener">${escapeHTML(f.name)}</a>`).join('')}</div>` : ''}
         </div>
     `).join('');
 }

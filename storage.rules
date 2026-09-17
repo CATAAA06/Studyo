@@ -1,0 +1,37 @@
+rules_version = '2';
+
+// =============================================
+// STUDYO — Regole di Firebase Storage
+// =============================================
+// Come applicarle:
+// Firebase Console -> Storage -> Regole -> incolla questo -> Pubblica
+//
+// Cosa contiene lo Storage: solo gli allegati degli appunti.
+// Percorso: notes/{materia}/{uid}/{file}
+//
+// Nota sui permessi di lettura: le regole di Storage non possono leggere
+// Firestore, quindi non sanno se una nota è condivisa. Per questo la lettura
+// è aperta a tutti gli utenti REGISTRATI (non al pubblico), mentre la
+// scrittura resta possibile solo nella propria cartella.
+// =============================================
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    match /notes/{lobbyId}/{uid}/{fileName} {
+      allow read: if request.auth != null;
+
+      allow write: if request.auth != null
+                   && request.auth.uid == uid
+                   && request.resource.size < 10 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*|application/pdf');
+
+      allow delete: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Tutto il resto è chiuso
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

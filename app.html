@@ -958,6 +958,21 @@
                         <span>Condividi con la lobby</span>
                     </label>
                 </div>
+
+                <!-- Allegati: PDF e immagini su Firebase Storage -->
+                <section class="notes-files" aria-labelledby="nf-title">
+                    <div class="block-head">
+                        <h3 id="nf-title">Allegati</h3>
+                        <span class="nf-count" id="nf-count"></span>
+                    </div>
+                    <div class="nf-list" id="nf-list"></div>
+                    <input type="file" id="nf-input" accept="image/*,application/pdf" hidden onchange="onNoteFilePicked(event)">
+                    <button type="button" class="btn btn-secondary btn-sm" id="nf-add" onclick="document.getElementById('nf-input').click()">
+                        <svg class="ic ic-sm" aria-hidden="true"><use href="#i-plus"/></svg> Aggiungi file
+                    </button>
+                    <div class="nf-progress" id="nf-progress" hidden><span id="nf-bar"></span></div>
+                    <p class="nf-hint" id="nf-hint">PDF o immagini, fino a 10 MB l'uno, massimo 5 file. Se condividi gli appunti, gli allegati sono visibili agli altri studenti registrati.</p>
+                </section>
             </div>
 
             <div id="notes-pane-shared" style="display:none">
@@ -1301,6 +1316,7 @@
     <script defer src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
 
     <script defer src="js/data.js"></script>
     <script defer src="js/app.js"></script>

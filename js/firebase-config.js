@@ -538,10 +538,11 @@ async function loadNote(lobbyId) {
     }
 }
 
-async function saveNote(lobbyId, text, shared) {
+async function saveNote(lobbyId, text, shared, files) {
     if (!state.firebaseUid) return false;
     try {
         await db.collection('notes').doc(noteDocId(lobbyId)).set({
+            files: Array.isArray(files) ? files.slice(0, 5) : [],
             uid: state.firebaseUid,
             authorName: state.playerName || 'Studente',
             lobbyId: lobbyId,
@@ -561,13 +562,16 @@ async function saveNote(lobbyId, text, shared) {
 async function loadSharedNotes(lobbyId) {
     if (!state.firebaseUid) return [];
     try {
+        // Il filtro su shared non è un dettaglio: senza, le regole rifiutano
+        // l'intera query (si chiederebbero anche gli appunti privati altrui).
         const snap = await db.collection('notes')
             .where('lobbyId', '==', lobbyId)
-            .limit(40)
+            .where('shared', '==', true)
+            .limit(20)
             .get();
         return snap.docs
             .map(d => ({ id: d.id, ...d.data() }))
-            .filter(n => n.shared && n.uid !== state.firebaseUid && (n.text || '').trim())
+            .filter(n => n.uid !== state.firebaseUid && ((n.text || '').trim() || (n.files || []).length))
             .sort((a, b) => {
                 const ta = a.updatedAt && a.updatedAt.toMillis ? a.updatedAt.toMillis() : 0;
                 const tb = b.updatedAt && b.updatedAt.toMillis ? b.updatedAt.toMillis() : 0;
@@ -577,6 +581,73 @@ async function loadSharedNotes(lobbyId) {
     } catch (e) {
         console.warn('loadSharedNotes failed:', e.code || e.message);
         return [];
+    }
+}
+
+/* =============================================
+   ALLEGATI DEGLI APPUNTI (Firebase Storage)
+   Percorso: notes/{materia}/{uid}/{timestamp}_{nome}
+   Limiti: 10 MB per file, solo immagini e PDF (vedi storage.rules).
+   ============================================= */
+
+const NOTE_FILE_MAX_BYTES = 10 * 1024 * 1024;
+const NOTE_FILE_TYPES = /^(image\/|application\/pdf$)/;
+
+// Lo Storage potrebbe non essere ancora attivo sul progetto: in quel caso
+// l'app continua a funzionare e lo dice, invece di rompersi.
+function storageReady() {
+    try { return typeof firebase !== 'undefined' && typeof firebase.storage === 'function' && !!firebase.storage(); }
+    catch (e) { return false; }
+}
+
+function safeFileName(name) {
+    return (name || 'file').normalize('NFD').replace(/[̀-ͯ]/g, '')
+        .replace(/[^a-zA-Z0-9._-]+/g, '-').slice(-60);
+}
+
+// L'SDK di Storage riprova da solo per due minuti: se il servizio non è attivo
+// l'utente resterebbe davanti a una barra ferma. Meglio accorgersene in fretta.
+const NOTE_FILE_TIMEOUT_MS = 30000;
+
+function storageInstance() {
+    const s = firebase.storage();
+    s.setMaxUploadRetryTime(20000);
+    s.setMaxOperationRetryTime(20000);
+    return s;
+}
+
+async function uploadNoteFile(lobbyId, file, onProgress) {
+    if (!state.firebaseUid || !storageReady()) return null;
+    const path = `notes/${lobbyId}/${state.firebaseUid}/${Date.now()}_${safeFileName(file.name)}`;
+    try {
+        const ref = storageInstance().ref(path);
+        const task = ref.put(file, { contentType: file.type });
+        if (onProgress) {
+            task.on('state_changed', s => onProgress(Math.round((s.bytesTransferred / s.totalBytes) * 100)));
+        }
+        let timer;
+        const timeout = new Promise((_, reject) => {
+            timer = setTimeout(() => { try { task.cancel(); } catch (e) {} reject(new Error('storage/timeout')); }, NOTE_FILE_TIMEOUT_MS);
+        });
+        await Promise.race([task, timeout]);
+        clearTimeout(timer);
+        const url = await ref.getDownloadURL();
+        return { path, url, name: file.name.slice(0, 120), size: file.size, type: file.type };
+    } catch (e) {
+        console.warn('uploadNoteFile failed:', e.code || e.message);
+        return { error: e.code || (/timeout/.test(e.message || '') ? 'storage/timeout' : 'storage/unknown') };
+    }
+}
+
+async function deleteNoteFile(path) {
+    if (!state.firebaseUid || !storageReady() || !path) return false;
+    try {
+        await storageInstance().ref(path).delete();
+        return true;
+    } catch (e) {
+        // Se il file non c'è più va bene lo stesso: l'importante è togliere il riferimento
+        console.warn('deleteNoteFile failed:', e.code || e.message);
+        return e.code === 'storage/object-not-found';
     }
 }
 
