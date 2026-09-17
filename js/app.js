@@ -31,7 +31,7 @@ let state = {
     firebaseUid: null,
     firebaseEmail: '',
     xp: 0,
-    streak: 1,
+    streak: 0,
     level: 1,
     studyHours: 0,
     quizzesCompleted: 0,
@@ -241,7 +241,8 @@ function updateNav() {
     const menuName = document.getElementById('avatar-menu-name');
     if (menuName) menuName.textContent = state.playerName || 'Studente';
     const streakNum = document.getElementById('topbar-streak-num');
-    if (streakNum) streakNum.textContent = state.streak || 0;
+    renderTopbarStreak();
+    renderEmptyStates();
     const homeDate = document.getElementById('home-date');
     if (homeDate) {
         const d = new Date().toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' });
@@ -259,7 +260,7 @@ function updateNav() {
     const homeQuizzes = document.getElementById('home-quizzes');
     const homePomodoros = document.getElementById('home-pomodoros');
     if (homeXp) homeXp.textContent = state.xp;
-    if (homeStreak) homeStreak.textContent = state.streak;
+    if (homeStreak) homeStreak.textContent = effectiveStreak();
     if (homeQuizzes) homeQuizzes.textContent = state.quizzesCompleted;
     if (homePomodoros) homePomodoros.textContent = state.pomodorosCompleted;
 }
@@ -334,7 +335,7 @@ function completeSetup() {
     }
 
     state.setupDone = true;
-    state.streak = 1;
+    state.streak = 0;          // la streak parte con il primo giorno di studio vero, non con la registrazione
 
     closeModal('setup');
     saveState();
@@ -789,7 +790,9 @@ function updateLobbyOnlineCount(lobby, realCount) {
     if (!el) return;
     const dot = document.querySelector('.lobby-meta .online-dot');
     if (dot) dot.classList.toggle('is-empty', realCount <= 0);
-    if (realCount <= 0) el.textContent = 'Nessuno online adesso';
+    const onlyMe = realCount === 1 && lobbyRealUsers.some(u => u.id === state.firebaseUid);
+    if (realCount <= 0) el.textContent = 'Nessuno qui adesso: inizia tu, chi entra ti vede studiare';
+    else if (onlyMe) el.textContent = 'Per ora ci sei solo tu: chi entra ti vede studiare';
     else if (realCount === 1) el.textContent = '1 persona online';
     else el.textContent = `${realCount} persone online`;
 }
@@ -2416,7 +2419,7 @@ function renderChallenges() {
     const claimed = getClaimedChallenges();
 
     list.innerHTML = CHALLENGE_DEFS.map(c => {
-        let current = c.metric === 'streak' ? (state.streak || 0) : (stats[c.metric] || 0);
+        let current = c.metric === 'streak' ? effectiveStreak() : (stats[c.metric] || 0);
         const pct = Math.min(100, Math.round((current / c.goal) * 100));
         const isDone = current >= c.goal;
         const isClaimed = claimed.includes(c.id);
@@ -2464,7 +2467,7 @@ function renderProfile() {
     document.getElementById('profile-xp-text').textContent = `${state.xp} / ${levelData.xpNeeded} XP`;
 
     document.getElementById('stat-hours').textContent = state.studyHours.toFixed(1);
-    document.getElementById('stat-streak').textContent = state.streak;
+    document.getElementById('stat-streak').textContent = effectiveStreak();
     document.getElementById('stat-quizzes').textContent = state.quizzesCompleted;
     document.getElementById('stat-pomodoros').textContent = state.pomodorosCompleted;
 
@@ -3572,6 +3575,50 @@ function renderNavSubjects() {
 
 /* --- Home --- */
 
+/* --- Stati vuoti ---
+   Uno zero nudo comunica "qui non succede niente": finché non c'è attività
+   vera mostriamo cosa fare, non una fila di numeri a zero. */
+
+function hasStudied() {
+    return (state.pomodorosCompleted || 0) + (state.quizzesCompleted || 0) > 0 || !!state.lastStudyDay;
+}
+
+// Una streak esiste solo dopo il primo giorno di studio reale
+function effectiveStreak() {
+    return hasStudied() ? (state.streak || 0) : 0;
+}
+
+function renderTopbarStreak() {
+    const btn = document.getElementById('topbar-streak');
+    const num = document.getElementById('topbar-streak-num');
+    if (!btn || !num) return;
+    const s = effectiveStreak();
+    num.textContent = s;
+    btn.classList.toggle('is-empty', s === 0);
+    const label = s === 0
+        ? 'Nessuna streak ancora: inizia una sessione'
+        : `${s} ${s === 1 ? 'giorno' : 'giorni'} di studio consecutivi`;
+    btn.setAttribute('aria-label', label);
+    btn.title = label;
+}
+
+function onStreakClick() {
+    if (effectiveStreak() === 0) startFirstSession(25);
+    else navigate('profile');
+}
+
+function renderEmptyStates() {
+    const studied = hasStudied();
+    const weekEmpty = document.getElementById('week-stats-empty');
+    const week = document.getElementById('week-stats');
+    // Se la scheda Primi passi è aperta, l'invito c'è già: niente doppioni
+    const firstStepsOpen = !state.firstStepsHidden && firstStepsStatus().some(s => !s.done);
+    if (week) week.hidden = !studied;
+    if (weekEmpty) weekEmpty.hidden = studied || firstStepsOpen;
+    const profileEmpty = document.getElementById('profile-empty');
+    if (profileEmpty) profileEmpty.hidden = studied;
+}
+
 /* --- Primi passi ---
    Sostituisce il vecchio tour a slide (che andava "saltato"): tre azioni vere,
    ognuna si spunta quando la fai davvero e lascia un risultato visibile. */
@@ -3766,7 +3813,7 @@ function renderHomeSubjects() {
         return `<button class="subject-card" onclick="navigate('lobby','${l.id}')">
             <span class="subject-card-icon" aria-hidden="true">${l.icon}</span>
             <span class="subject-card-name">${escapeHTML(l.name)}</span>
-            <span class="subject-card-online ${n > 0 ? 'is-live' : ''}">${n > 0 ? '<span class="live-dot"></span>' : ''}${onlineLabel(n)}</span>
+            <span class="subject-card-online ${n > 0 ? 'is-live' : ''}">${n > 0 ? '<span class="live-dot"></span>' : ''}${n > 0 ? onlineLabel(n) : 'Entra per primo'}</span>
         </button>`;
     }).join('');
 }

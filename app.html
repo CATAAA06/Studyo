@@ -153,7 +153,7 @@
                         <span class="beta-text">Sei in beta — <u>mandaci un feedback</u></span>
                         <span class="beta-text-short">Feedback</span>
                     </button>
-                    <span class="topbar-streak" id="topbar-streak" title="Giorni di studio consecutivi">🔥 <b id="topbar-streak-num">0</b></span>
+                    <button type="button" class="topbar-streak" id="topbar-streak" onclick="onStreakClick()">🔥 <b id="topbar-streak-num">0</b><span class="streak-start">Inizia la streak</span></button>
                     <div class="avatar-wrap">
                         <button class="avatar-btn" id="avatar-btn" onclick="toggleAvatarMenu()" aria-haspopup="menu" aria-expanded="false" aria-controls="avatar-menu" aria-label="Menu account">
                             <span class="avatar-emoji" aria-hidden="true">🎓</span>
@@ -229,7 +229,12 @@
                         <span class="focus-band-cta">Entra <svg class="ic ic-sm" aria-hidden="true"><use href="#i-arrow-right"/></svg></span>
                     </button>
 
-                    <section class="week-stats" aria-label="I tuoi numeri">
+                    <!-- Prima della prima sessione non mostriamo una fila di zeri -->
+                    <section class="week-stats week-stats-empty" id="week-stats-empty" hidden>
+                        <span>I tuoi numeri (XP, streak, pomodori, quiz) compaiono qui dopo la prima sessione.</span>
+                        <button class="link-btn" onclick="startFirstSession(25)">Inizia 25 minuti <svg class="ic ic-sm" aria-hidden="true"><use href="#i-arrow-right"/></svg></button>
+                    </section>
+                    <section class="week-stats" id="week-stats" aria-label="I tuoi numeri">
                         <span><b id="home-xp">0</b> XP</span>
                         <span><b id="home-streak">0</b> giorni di streak</span>
                         <span><b id="home-pomodoros">0</b> pomodori</span>
@@ -538,6 +543,13 @@
                                 <span class="profile-xp-text" id="profile-xp-text">0 / 500 XP</span>
                             </div>
                         </div>
+                    </div>
+                    <div class="profile-empty" id="profile-empty" hidden>
+                        <div>
+                            <strong>Qui si vede quanto studi</strong>
+                            <span>Ore, streak, quiz e pomodori si riempiono dalla prima sessione. I badge qui sotto mostrano già quanto manca a ognuno.</span>
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="startFirstSession(25)">Inizia 25 minuti</button>
                     </div>
                     <div class="profile-stats-grid">
                         <div class="stat-card"><span class="stat-value" id="stat-hours">0</span><span class="stat-label">Ore studio</span></div>

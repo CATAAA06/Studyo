@@ -861,3 +861,28 @@
 @media (max-width: 768px) {
     .first-steps { padding: 16px; margin-bottom: 24px; }
 }
+
+/* =============================================
+   STATI VUOTI — un invito invece di una fila di zeri
+   ============================================= */
+button.topbar-streak { font: inherit; font-size: 14px; cursor: pointer; }
+button.topbar-streak:hover { border-color: var(--border-strong); color: var(--text); }
+.topbar-streak .streak-start { display: none; }
+.topbar-streak.is-empty b { display: none; }
+.topbar-streak.is-empty .streak-start { display: inline; font-weight: 600; color: var(--text); }
+@media (max-width: 1180px) {
+    .topbar-streak.is-empty .streak-start { display: none; }
+    .topbar-streak.is-empty b { display: inline; color: var(--text-muted); }
+}
+
+.week-stats-empty span { color: var(--text-secondary); }
+
+.profile-empty {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    margin-bottom: 16px; padding: 16px 18px;
+    background: var(--surface-2); border: 1px dashed var(--border-strong); border-radius: var(--radius);
+}
+.profile-empty[hidden] { display: none; }
+.profile-empty div { display: flex; flex-direction: column; gap: 2px; min-width: 220px; flex: 1; }
+.profile-empty strong { font-size: 15px; }
+.profile-empty span { font-size: 14px; color: var(--text-secondary); }
