@@ -287,3 +287,53 @@ html:not(.fx) .rot-item:not(:first-child) { visibility: hidden; }
   .bento .feat-lg, .bento .feat-wide { grid-column: auto; }
   .bento .feat { min-height: 0; }
 }
+
+/* ============================================= 4. PER CHI — card che rivelano i dettagli =============================================
+   Senza JS (html senza .aud-js) l'elenco resta visibile come prima. */
+.aud-toggle { display: none; }
+.aud-js .aud {
+  position: relative; overflow: hidden; min-height: 290px;
+  display: flex; flex-direction: column; padding-bottom: 0;
+  transition: border-color var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease), opacity .7s var(--ease) var(--d, 0ms), translate .7s var(--ease) var(--d, 0ms);
+}
+.aud-js .aud-front { display: flex; flex-direction: column; flex: 1; }
+.aud-front p { color: var(--muted); font-size: 14.5px; }
+.aud-js .aud-toggle {
+  display: inline-flex; align-items: center; gap: 10px; align-self: flex-start;
+  margin: auto 0 22px; padding: 8px 14px 8px 0; position: relative; z-index: 3;
+  background: none; border: 0; cursor: pointer;
+  font: 700 14px 'Manrope', sans-serif; color: var(--text);
+}
+.aud-plus { position: relative; width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--line-2); transition: transform var(--t-med) var(--ease), border-color var(--t-fast) var(--ease), background-color var(--t-fast) var(--ease); }
+.aud-plus::before, .aud-plus::after { content: ''; position: absolute; left: 50%; top: 50%; width: 10px; height: 2px; background: var(--lime); translate: -50% -50%; }
+.aud-plus::after { rotate: 90deg; transition: rotate var(--t-med) var(--ease); }
+.aud-js .aud-more {
+  position: absolute; left: 0; right: 0; top: 0; bottom: 64px; z-index: 2;
+  padding: 26px 30px 8px; overflow: auto;
+  background: linear-gradient(180deg, var(--surface) 80%, rgba(22, 22, 25, .96));
+  transform: translate3d(0, 102%, 0); visibility: hidden;
+  transition: transform .5s var(--ease), visibility 0s linear .5s;
+}
+.aud-js .aud-more ul { margin-top: 10px; }
+.aud-eyebrow { display: none; }
+.aud-js .aud-eyebrow { display: block; font-family: var(--display); font-weight: 800; font-size: 20px; letter-spacing: -.02em; color: var(--text); }
+
+/* Aperta: al tocco, al click o con Invio/Spazio (.is-open) e al passaggio del mouse */
+.aud-js .aud.is-open .aud-more,
+.fx-pointer.aud-js .aud:hover .aud-more {
+  transform: translate3d(0, 0, 0); visibility: visible;
+  transition: transform .5s var(--ease), visibility 0s;
+}
+.aud-js .aud.is-open, .fx-pointer.aud-js .aud:hover { border-color: var(--lime); box-shadow: 0 18px 50px -26px var(--glow-lime); }
+.aud-js .aud.is-open .aud-plus::after, .fx-pointer.aud-js .aud:hover .aud-plus::after { rotate: 0deg; }
+.aud-js .aud.is-open .aud-plus, .fx-pointer.aud-js .aud:hover .aud-plus { border-color: var(--lime); background: rgba(200, 240, 49, .1); }
+.aud-js .aud-toggle:hover .aud-plus { border-color: var(--lime); }
+
+@media (max-width: 820px) {
+  .aud-js .aud { min-height: 290px; }
+}
+@media (max-width: 480px) {
+  .aud-js .aud { padding-left: 20px; padding-right: 20px; }
+  .aud-js .aud-more { padding: 20px 20px 4px; }
+  .aud-js .aud li { padding-top: 5px; padding-bottom: 5px; }
+}

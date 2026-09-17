@@ -728,31 +728,49 @@ footer{border-top:1px solid var(--line);padding:40px 0;color:var(--dim);font-siz
     <h2>Dal primo anno<br>alla maturità.</h2>
     <div class="auds">
       <div class="aud">
-        <h3>Università</h3>
-        <p>Le lobby seguono il tuo piano di studi: apri l'app e trovi già i tuoi esami.</p>
-        <ul>
+        <div class="aud-front">
+          <h3>Università</h3>
+          <p>Le lobby seguono il tuo piano di studi: apri l'app e trovi già i tuoi esami.</p>
+          <button type="button" class="aud-toggle" aria-expanded="false" aria-controls="aud-1">Cosa trovi <span class="aud-plus" aria-hidden="true"></span></button>
+        </div>
+        <div class="aud-more" id="aud-1">
+          <span class="aud-eyebrow" aria-hidden="true">Università</span>
+          <ul>
           <li>Ingegneria, Economia, Medicina, Giurisprudenza, Umanistiche</li>
           <li>Materie reali dei corsi italiani</li>
           <li>Community del tuo ateneo</li>
-        </ul>
+          </ul>
+        </div>
       </div>
       <div class="aud">
-        <h3>Superiori</h3>
-        <p>Materie divise per indirizzo, dal liceo classico all'alberghiero.</p>
-        <ul>
+        <div class="aud-front">
+          <h3>Superiori</h3>
+          <p>Materie divise per indirizzo, dal liceo classico all'alberghiero.</p>
+          <button type="button" class="aud-toggle" aria-expanded="false" aria-controls="aud-2">Cosa trovi <span class="aud-plus" aria-hidden="true"></span></button>
+        </div>
+        <div class="aud-more" id="aud-2">
+          <span class="aud-eyebrow" aria-hidden="true">Superiori</span>
+          <ul>
           <li>Licei, tecnici e professionali</li>
           <li>Dal latino a sistemi e reti</li>
           <li>Preparazione maturità</li>
-        </ul>
+          </ul>
+        </div>
       </div>
       <div class="aud">
-        <h3>TOLC</h3>
-        <p>Se sei in quinta e devi fare il test d'ingresso, hai una sezione dedicata.</p>
-        <ul>
+        <div class="aud-front">
+          <h3>TOLC</h3>
+          <p>Se sei in quinta e devi fare il test d'ingresso, hai una sezione dedicata.</p>
+          <button type="button" class="aud-toggle" aria-expanded="false" aria-controls="aud-3">Cosa trovi <span class="aud-plus" aria-hidden="true"></span></button>
+        </div>
+        <div class="aud-more" id="aud-3">
+          <span class="aud-eyebrow" aria-hidden="true">TOLC</span>
+          <ul>
           <li>TOLC-I, E, MED, SU, F, B, AV</li>
           <li>Logica, matematica, comprensione</li>
           <li>Studi con chi affronta il tuo stesso test</li>
-        </ul>
+          </ul>
+        </div>
       </div>
     </div>
   </div>

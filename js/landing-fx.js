@@ -294,6 +294,36 @@
   })();
 
   /* =============================================
+     4. PER CHI — ogni card rivela l'elenco (tocco, click, tastiera, hover)
+     Funziona anche con movimento ridotto: cambia solo che non scorre.
+     ============================================= */
+  (function audiences() {
+    var cards = [].slice.call(document.querySelectorAll('.aud'));
+    if (!cards.length) return;
+    root.classList.add('aud-js');
+
+    function setOpen(card, open) {
+      card.classList.toggle('is-open', open);
+      var btn = card.querySelector('.aud-toggle');
+      if (btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
+    cards.forEach(function (card) {
+      var btn = card.querySelector('.aud-toggle');
+      if (!btn) return;
+      btn.addEventListener('click', function () {
+        var open = !card.classList.contains('is-open');
+        // Su touch una sola card aperta alla volta
+        if (open && !POINTER) cards.forEach(function (c) { if (c !== card) setOpen(c, false); });
+        setOpen(card, open);
+      });
+      card.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && card.classList.contains('is-open')) { setOpen(card, false); btn.focus(); }
+      });
+    });
+  })();
+
+  /* =============================================
      3. BENTO — inclinazione 3D (max 4°) e luce che segue il cursore
      ============================================= */
   (function bento() {
