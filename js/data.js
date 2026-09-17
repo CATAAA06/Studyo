@@ -695,6 +695,49 @@ const FEEDBACK_QUESTIONS = [
 ];
 
 const QUIZZES = {
+    // ---- INGEGNERIA (lotto 1: informatica ed elettronica) ----
+    elettrotecnica: [
+        { question: "In un circuito resistivo, la legge di Ohm lega tensione, corrente e resistenza come:", options: ["V = I / R", "V = R / I", "V = R × I", "V = I × R²"], correct: 2, explain: "La tensione ai capi di un resistore è il prodotto della resistenza per la corrente che lo attraversa." },
+        { question: "La legge di Kirchhoff delle correnti afferma che in un nodo:", options: ["La somma delle correnti entranti è uguale alla somma di quelle uscenti", "La corrente è sempre nulla", "La somma delle tensioni è zero", "La potenza si conserva solo in continua"], correct: 0, explain: "Il nodo non accumula carica: quello che entra deve uscire. È la conseguenza diretta della conservazione della carica." },
+        { question: "Due resistori da 6 Ω collegati in parallelo equivalgono a:", options: ["12 Ω", "6 Ω", "3 Ω", "1,5 Ω"], correct: 2, explain: "In parallelo si sommano le conduttanze: 1/R = 1/6 + 1/6 = 1/3, quindi R = 3 Ω. Due resistori uguali in parallelo danno sempre metà del valore." },
+        { question: "In regime sinusoidale la potenza attiva assorbita da un carico vale:", options: ["V × I", "V × I × cos φ", "V × I × sen φ", "V² × I"], correct: 1, explain: "Solo la componente di corrente in fase con la tensione produce lavoro: cos φ è il fattore di potenza. La parte in quadratura dà la potenza reattiva." },
+        { question: "Il teorema di Thévenin permette di sostituire una rete lineare vista da due morsetti con:", options: ["Un generatore di corrente ideale", "Un generatore di tensione in serie a una resistenza", "Una sola resistenza", "Un condensatore equivalente"], correct: 1, explain: "Il generatore vale la tensione a vuoto ai morsetti e la resistenza è quella vista dagli stessi morsetti con i generatori spenti." }
+    ],
+    segnali: [
+        { question: "A cosa serve la trasformata di Fourier di un segnale?", options: ["A rappresentarlo nel dominio della frequenza", "A ridurne la potenza", "A eliminarne il rumore", "A campionarlo"], correct: 0, explain: "La trasformata scompone il segnale nelle sinusoidi che lo compongono: dal dominio del tempo si passa a quello della frequenza." },
+        { question: "Secondo il teorema del campionamento, per ricostruire un segnale di banda B occorre campionare ad almeno:", options: ["B", "2B", "B/2", "4B"], correct: 1, explain: "La frequenza di Nyquist è il doppio della banda: sotto quella soglia le repliche dello spettro si sovrappongono." },
+        { question: "Come si chiama il fenomeno per cui, campionando troppo lentamente, le alte frequenze si presentano come frequenze basse?", options: ["Quantizzazione", "Aliasing", "Dispersione", "Modulazione"], correct: 1, explain: "Le repliche spettrali si sovrappongono e il segnale originale non è più ricostruibile: si previene con un filtro anti-aliasing prima del campionatore." },
+        { question: "La convoluzione di due segnali nel dominio del tempo corrisponde, in frequenza, a:", options: ["Una somma", "Un prodotto", "Una derivata", "Un ritardo"], correct: 1, explain: "È la proprietà che rende comodo lavorare in frequenza: filtrare un segnale diventa moltiplicarlo per la risposta in frequenza del filtro." },
+        { question: "Un segnale si dice di energia quando:", options: ["La sua energia totale è finita e la potenza media è nulla", "La sua potenza media è infinita", "È periodico", "Ha valore medio nullo"], correct: 0, explain: "I segnali di durata limitata sono tipicamente segnali di energia; quelli periodici, che durano per sempre, sono segnali di potenza." }
+    ],
+    ingSoftware: [
+        { question: "La differenza principale tra modello a cascata e metodi agili è che:", options: ["I metodi agili non prevedono test", "La cascata procede per fasi sequenziali, gli agili per iterazioni brevi", "La cascata non prevede requisiti", "Gli agili non rilasciano software funzionante"], correct: 1, explain: "Nella cascata ogni fase si chiude prima della successiva; negli approcci agili si rilascia software funzionante a piccoli incrementi, rivedendo i requisiti man mano." },
+        { question: "Un test unitario verifica:", options: ["Il sistema completo in produzione", "Il comportamento di una singola unità di codice isolata", "Le prestazioni sotto carico", "L'usabilità dell'interfaccia"], correct: 1, explain: "Isolare l'unità, spesso sostituendo le dipendenze con dei mock, permette di capire subito dove sta l'errore." },
+        { question: "Nel pattern MVC il Controller ha il compito di:", options: ["Memorizzare i dati", "Disegnare l'interfaccia", "Gestire gli input e coordinare modello e vista", "Gestire il database"], correct: 2, explain: "Il Model tiene dati e regole, la View mostra, il Controller riceve le azioni dell'utente e decide che cosa aggiornare." },
+        { question: "Un buon progetto software punta ad avere:", options: ["Alto accoppiamento e bassa coesione", "Basso accoppiamento e alta coesione", "Alto accoppiamento e alta coesione", "Bassa coesione e nessun modulo"], correct: 1, explain: "Moduli con responsabilità ben definite (coesione) e poche dipendenze reciproche (accoppiamento) sono più facili da modificare e da testare." },
+        { question: "Che cos'è il debito tecnico?", options: ["Il costo delle licenze software", "Il lavoro extra futuro causato da scelte rapide fatte oggi", "Il tempo speso in riunioni", "Il numero di bug aperti"], correct: 1, explain: "Come un debito finanziario matura interessi: più si rimanda il refactoring, più ogni modifica successiva costa tempo." }
+    ],
+    automatica: [
+        { question: "Con retroazione negativa unitaria e funzione di trasferimento diretta G(s), la funzione ad anello chiuso vale:", options: ["G(s)", "G(s) / (1 + G(s))", "1 + G(s)", "1 / G(s)"], correct: 1, explain: "È la formula della retroazione: l'anello riduce il guadagno complessivo ma rende il sistema meno sensibile a disturbi e a variazioni di G." },
+        { question: "Un sistema lineare tempo-invariante è asintoticamente stabile se tutti i poli hanno:", options: ["Parte reale positiva", "Parte reale negativa", "Modulo maggiore di 1", "Parte immaginaria nulla"], correct: 1, explain: "Poli nel semipiano sinistro corrispondono a modi che si smorzano nel tempo; un polo a parte reale positiva fa divergere la risposta." },
+        { question: "Il criterio di Routh-Hurwitz serve a:", options: ["Calcolare la risposta al gradino", "Stabilire la stabilità senza calcolare i poli", "Progettare un filtro passa-basso", "Misurare il rumore"], correct: 1, explain: "Dalla tabella dei coefficienti si contano i cambi di segno nella prima colonna: sono i poli a parte reale positiva." },
+        { question: "L'azione integrale di un regolatore PID serve soprattutto a:", options: ["Annullare l'errore a regime", "Aumentare il rumore", "Ridurre l'ordine del sistema", "Rendere il sistema non lineare"], correct: 0, explain: "L'integrale continua ad accumulare finché l'errore non è zero; in cambio rallenta la risposta e riduce il margine di fase." },
+        { question: "Il tempo di assestamento di una risposta al gradino indica:", options: ["Il ritardo iniziale", "Il tempo per entrare stabilmente in una fascia attorno al valore finale", "Il picco massimo", "La frequenza di taglio"], correct: 1, explain: "Di solito si considera la fascia del 5% o del 2% attorno al valore di regime: misura quanto il sistema è pronto." }
+    ],
+    elettronica: [
+        { question: "Un diodo a giunzione pn conduce in modo apprezzabile quando:", options: ["È polarizzato inversamente", "È polarizzato direttamente oltre la tensione di soglia", "La corrente è nulla", "La temperatura è zero"], correct: 1, explain: "In diretta, superati circa 0,7 V nel silicio, la barriera di potenziale si abbassa e la corrente cresce in modo esponenziale." },
+        { question: "Per usare un BJT come amplificatore lineare occorre polarizzarlo in zona:", options: ["Interdizione", "Saturazione", "Attiva diretta", "Breakdown"], correct: 2, explain: "In zona attiva la corrente di collettore è proporzionale a quella di base secondo il guadagno β; in saturazione e interdizione il transistor lavora come interruttore." },
+        { question: "In un amplificatore operazionale ideale con retroazione negativa vale il principio del:", options: ["Cortocircuito virtuale tra i due ingressi", "Guadagno unitario", "Massimo trasferimento di potenza", "Bilanciamento termico"], correct: 0, explain: "Guadagno infinito e corrente di ingresso nulla implicano che la retroazione porta i due ingressi alla stessa tensione, senza che vi scorra corrente." },
+        { question: "Il guadagno di un amplificatore operazionale in configurazione invertente vale:", options: ["Rf / Rin", "−Rf / Rin", "1 + Rf / Rin", "Rin / Rf"], correct: 1, explain: "Il segno meno indica l'inversione di fase; nella configurazione non invertente il guadagno è invece 1 + Rf/Rin." },
+        { question: "In un MOSFET la tensione di soglia è la tensione gate-source:", options: ["Oltre la quale si forma il canale conduttivo", "Che distrugge il dispositivo", "Di alimentazione", "Che annulla la corrente di gate"], correct: 0, explain: "Sotto soglia il canale non si forma e il dispositivo è interdetto: è il parametro che separa lo stato spento da quello acceso." }
+    ],
+    telecomunicazioni: [
+        { question: "Perché si modula un segnale prima di trasmetterlo via radio?", options: ["Per ridurne l'informazione", "Per traslarlo in banda, usare antenne più piccole e far convivere più canali", "Per aumentarne il rumore", "Per campionarlo"], correct: 1, explain: "Portare il segnale ad alta frequenza riduce la dimensione delle antenne e permette di affiancare più trasmissioni su bande diverse." },
+        { question: "Nella formula di Shannon C = B log₂(1 + S/N), il termine S/N rappresenta:", options: ["Il rapporto segnale-rumore", "La banda del segnale", "Il numero di simboli", "La potenza di trasmissione"], correct: 0, explain: "La capacità cresce in modo lineare con la banda e solo logaritmico con il rapporto segnale-rumore: allargare la banda rende più che alzare la potenza." },
+        { question: "Nella multiplazione a divisione di tempo (TDM) gli utenti condividono il canale:", options: ["Occupando bande di frequenza diverse", "Usando intervalli di tempo diversi", "Usando codici diversi", "Usando antenne diverse"], correct: 1, explain: "Nella FDM si dividono le frequenze, nella TDM gli intervalli di tempo, nel CDMA i codici ortogonali." },
+        { question: "Nel modello ISO/OSI il livello che si occupa dell'instradamento dei pacchetti è:", options: ["Fisico", "Collegamento dati", "Rete", "Applicazione"], correct: 2, explain: "Il livello di rete, dove opera IP, sceglie il percorso tra sorgente e destinazione; il collegamento dati gestisce invece la singola tratta punto-punto." },
+        { question: "Un rapporto segnale-rumore di 20 dB corrisponde a un rapporto di potenza pari a:", options: ["2", "20", "100", "1000"], correct: 2, explain: "Per le potenze si usa 10 log₁₀: 20 dB significa un fattore 100 tra potenza del segnale e potenza del rumore." }
+    ],
     analisi1: [
         {
             question: "Qual è il limite di sin(x)/x per x→0?",
@@ -1885,6 +1928,63 @@ const QUIZZES = {
 };
 
 const FLASHCARDS = {
+    // ---- INGEGNERIA (lotto 1: informatica ed elettronica) ----
+    fisica1: [
+        { front: "Secondo principio della dinamica", back: "La forza risultante su un corpo è uguale al prodotto della massa per l'accelerazione: F = m·a." },
+        { front: "Quantità di moto e impulso", back: "La quantità di moto è m·v; l'impulso di una forza (F·Δt) è pari alla variazione della quantità di moto." },
+        { front: "Energia cinetica e potenziale", back: "Cinetica: ½mv². Potenziale gravitazionale vicino alla superficie: mgh. In assenza di attrito la loro somma si conserva." },
+        { front: "Moto circolare uniforme", back: "Il modulo della velocità è costante ma la direzione cambia: serve un'accelerazione centripeta v²/r diretta verso il centro." },
+        { front: "Lavoro di una forza", back: "Prodotto scalare tra forza e spostamento: è nullo se la forza è perpendicolare al moto, come la tensione nel moto circolare." }
+    ],
+    chimica: [
+        { front: "Mole e numero di Avogadro", back: "Una mole contiene 6,022·10²³ entità e ha massa in grammi pari alla massa atomica o molecolare." },
+        { front: "Legame ionico e legame covalente", back: "Nel legame ionico gli elettroni passano da un atomo all'altro; in quello covalente vengono condivisi." },
+        { front: "Regola dell'ottetto", back: "Gli atomi tendono a raggiungere otto elettroni nel guscio esterno, la configurazione stabile dei gas nobili." },
+        { front: "pH", back: "Logaritmo negativo della concentrazione di ioni H₃O⁺: sotto 7 acido, 7 neutro, sopra 7 basico." },
+        { front: "Principio di Le Châtelier", back: "Se si perturba un equilibrio (concentrazione, pressione, temperatura), il sistema reagisce spostandosi nel verso che riduce la perturbazione." }
+    ],
+    elettrotecnica: [
+        { front: "Legge di Ohm", back: "V = R·I: la tensione ai capi di un resistore è proporzionale alla corrente che lo attraversa." },
+        { front: "Leggi di Kirchhoff", back: "Ai nodi la somma delle correnti entranti eguaglia quella delle uscenti; lungo una maglia la somma algebrica delle tensioni è zero." },
+        { front: "Resistenze in serie e in parallelo", back: "In serie si sommano le resistenze; in parallelo si sommano i reciproci (le conduttanze)." },
+        { front: "Potenza attiva, reattiva, apparente", back: "Attiva P = VI cos φ (in watt), reattiva Q = VI sen φ (in var), apparente S = VI (in VA)." },
+        { front: "Teorema di Thévenin", back: "Ogni rete lineare vista da due morsetti equivale a un generatore di tensione pari alla tensione a vuoto in serie alla resistenza equivalente." }
+    ],
+    segnali: [
+        { front: "Trasformata di Fourier", back: "Rappresenta un segnale come somma di sinusoidi: dal dominio del tempo si passa a quello della frequenza." },
+        { front: "Teorema del campionamento", back: "Per ricostruire un segnale di banda B serve campionare ad almeno 2B (frequenza di Nyquist)." },
+        { front: "Aliasing", back: "Sovrapposizione delle repliche spettrali dovuta a un campionamento troppo lento: si previene con un filtro anti-aliasing." },
+        { front: "Convoluzione", back: "Nel tempo esprime l'uscita di un sistema LTI; in frequenza diventa un semplice prodotto con la risposta in frequenza." },
+        { front: "Segnali di energia e di potenza", back: "I primi hanno energia finita e durata limitata; i secondi, come i periodici, hanno potenza media finita ed energia infinita." }
+    ],
+    ingSoftware: [
+        { front: "Modello a cascata", back: "Requisiti, progettazione, sviluppo, test e manutenzione in sequenza: ogni fase si chiude prima della successiva." },
+        { front: "Metodi agili", back: "Iterazioni brevi con rilasci frequenti di software funzionante e requisiti rivisti man mano, insieme al cliente." },
+        { front: "Accoppiamento e coesione", back: "Obiettivo: basso accoppiamento tra moduli e alta coesione dentro ogni modulo." },
+        { front: "Piramide dei test", back: "Molti test unitari alla base, meno test di integrazione, pochi test end-to-end: i primi sono veloci e precisi, gli ultimi lenti e fragili." },
+        { front: "Refactoring", back: "Modificare la struttura interna del codice senza cambiarne il comportamento esterno, per ridurre il debito tecnico." }
+    ],
+    automatica: [
+        { front: "Funzione di trasferimento", back: "Rapporto tra trasformata di Laplace dell'uscita e dell'ingresso, a condizioni iniziali nulle." },
+        { front: "Retroazione negativa", back: "Con anello unitario la funzione ad anello chiuso è G/(1+G): riduce il guadagno ma rende il sistema robusto a disturbi e variazioni." },
+        { front: "Condizione di stabilità", back: "Un sistema LTI è asintoticamente stabile se tutti i poli hanno parte reale negativa." },
+        { front: "Regolatore PID", back: "Proporzionale sull'errore attuale, integrale sull'errore accumulato, derivativo sulla sua tendenza." },
+        { front: "Margine di fase e di guadagno", back: "Misurano quanto si può variare fase o guadagno prima che l'anello chiuso diventi instabile." }
+    ],
+    elettronica: [
+        { front: "Diodo a giunzione pn", back: "Conduce in polarizzazione diretta oltre circa 0,7 V (silicio) e blocca la corrente in inversa." },
+        { front: "Zone di funzionamento del BJT", back: "Interdizione e saturazione per l'uso come interruttore, zona attiva diretta per l'amplificazione." },
+        { front: "Cortocircuito virtuale", back: "In un operazionale ideale con retroazione negativa i due ingressi si trovano alla stessa tensione e non assorbono corrente." },
+        { front: "Amplificatore invertente e non invertente", back: "Invertente: guadagno −Rf/Rin. Non invertente: guadagno 1 + Rf/Rin." },
+        { front: "Tensione di soglia del MOSFET", back: "Tensione gate-source oltre la quale si forma il canale e il dispositivo conduce." }
+    ],
+    telecomunicazioni: [
+        { front: "Perché si modula", back: "Per traslare il segnale in banda: antenne più piccole, minore rumore in bassa frequenza e più canali sullo stesso mezzo." },
+        { front: "Capacità di canale (Shannon)", back: "C = B log₂(1 + S/N): la banda conta più della potenza, perché entra in modo lineare invece che logaritmico." },
+        { front: "FDM, TDM, CDMA", back: "Condivisione del canale rispettivamente per frequenze, intervalli di tempo e codici ortogonali." },
+        { front: "Livelli del modello ISO/OSI", back: "Fisico, collegamento dati, rete, trasporto, sessione, presentazione, applicazione." },
+        { front: "Decibel", back: "Per le potenze si usa 10 log₁₀ del rapporto: 3 dB ≈ doppio, 10 dB = dieci volte, 20 dB = cento volte." }
+    ],
     analisi1: [
         { front: "Cos'è un limite?", back: "Il valore a cui tende una funzione quando la variabile si avvicina a un punto dato." },
         { front: "Teorema di Weierstrass", back: "Una funzione continua su un intervallo chiuso e limitato ammette massimo e minimo assoluti." },
