@@ -1060,7 +1060,7 @@ ${1}background: rgba(200, 240, 49, 0.16);
 
 .setup-logo { font-size: 56px; display: block; margin-bottom: 12px; }
 
-.setup-header h1 {
+.setup-header h1, .setup-header h2 {
     font-size: 28px;
     font-weight: 800;
     margin-bottom: 8px;
@@ -1635,7 +1635,7 @@ ${1}background: rgba(200, 240, 49, 0.08);
 
     /* Setup modal */
     .setup-logo { font-size: 44px; }
-    .setup-header h1 { font-size: 22px; }
+    .setup-header h1, .setup-header h2 { font-size: 22px; }
     .setup-header p { font-size: 14px; }
 
     /* Flashcard */
