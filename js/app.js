@@ -243,6 +243,7 @@ function updateNav() {
     const streakNum = document.getElementById('topbar-streak-num');
     renderTopbarStreak();
     renderEmptyStates();
+    applyGuestUI();
     const homeDate = document.getElementById('home-date');
     if (homeDate) {
         const d = new Date().toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' });
@@ -350,7 +351,7 @@ function completeSetup() {
     }
 
     state.setupDone = true;
-    state.streak = 0;          // la streak parte con il primo giorno di studio vero, non con la registrazione
+    if (!hasStudied()) state.streak = 0;   // la streak parte dal primo giorno di studio vero, non dalla registrazione
 
     closeModal('setup');
     saveState();
@@ -778,7 +779,9 @@ function openLobby(lobbyId) {
     }
 
     // ---- REAL-TIME: announce presence + listen to people & chat ----
-    if (typeof enterLobbyPresence === 'function') {
+    if (state.guest) {
+        renderGuestLobbyPanels();
+    } else if (typeof enterLobbyPresence === 'function') {
         enterLobbyPresence(lobbyId);
         listenLobbyPresence(lobbyId, (users) => {
             lobbyRealUsers = users;
@@ -889,6 +892,7 @@ function renderChat(messages) {
 }
 
 function sendChat() {
+    if (state.guest) { requireAccount('scrivere in chat'); return; }
     const input = document.getElementById('chat-input');
     const text = input.value.trim();
     if (!text) return;
@@ -1263,6 +1267,7 @@ let noteSaveTimer = null;
 let noteIsShared = false;
 
 async function openNotes() {
+    if (!requireAccount('salvare gli appunti nel cloud')) return;
     openModal('notes');
     showNotesTab('mine');
 
@@ -1450,6 +1455,19 @@ async function renderExamSection(lobby) {
     reviewState.lobbyId = lobby.id;
     reviewState.list = [];
 
+    // In prova le recensioni non si caricano: servono login e regole del database
+    if (state.guest) {
+        document.getElementById('exam-scope').hidden = true;
+        document.getElementById('exam-write-btn').hidden = true;
+        document.getElementById('exam-summary').innerHTML = '';
+        document.getElementById('exam-reviews').innerHTML = `<div class="session-empty">
+            <p>Le recensioni sugli esami si leggono con un account.</p>
+            <small>Difficoltà, ore di studio e consigli di chi ha già dato questo esame.</small>
+            <div style="margin-top:12px"><button class="btn btn-secondary btn-sm" onclick="requireAccount('leggere le recensioni')">Crea un account</button></div>
+        </div>`;
+        return;
+    }
+
     const isTolc = lobby.category === 'tolc';
     const scopeEl = document.getElementById('exam-scope');
     if (scopeEl) scopeEl.hidden = isTolc || !state.playerUni;
@@ -1619,6 +1637,7 @@ function setReviewDifficulty(v) {
 }
 
 function openReviewForm() {
+    if (!requireAccount('scrivere una recensione')) return;
     if (!canWriteReviews()) {
         showNotification("Le recensioni d'esame possono scriverle solo gli studenti universitari.");
         return;
@@ -1744,6 +1763,7 @@ let upcomingSessions = [];
 let sessionReminders = {};
 
 function openNewSession() {
+    if (!requireAccount('programmare una sessione')) return;
     const sel = document.getElementById('session-lobby');
     if (sel) {
         // I miei esami in cima, poi i gruppi, poi il resto
@@ -1914,6 +1934,7 @@ let myGroups = [];
 function groupLobbyId(id) { return 'group_' + id; }
 
 function openGroups() {
+    if (!requireAccount('i gruppi privati')) return;
     renderGroupList();
     openModal('groups');
 }
@@ -2139,6 +2160,7 @@ function loadJitsiScript() {
 }
 
 async function openVideoCall() {
+    if (!requireAccount('la videochiamata')) return;
     if (!state.currentLobby) {
         showNotification('Entra in una lobby per avviare la videochiamata.');
         return;
@@ -2629,10 +2651,15 @@ function closeModal(name) {
 // Modals that must NOT be dismissible by Esc / backdrop (login gate).
 const PROTECTED_MODALS = ['auth', 'setup'];
 
+function isProtectedModal(name) {
+    if (name === 'auth' && state.guest) return false;
+    return PROTECTED_MODALS.includes(name);
+}
+
 function closeTopModal() {
     // Find the last-opened active modal that is dismissible
     const active = Array.from(document.querySelectorAll('.modal.active'))
-        .filter(m => !PROTECTED_MODALS.includes(m.id.replace('modal-', '')));
+        .filter(m => !isProtectedModal(m.id.replace('modal-', '')));
     if (active.length === 0) return false;
     const top = active[active.length - 1];
     top.classList.remove('active');
@@ -2697,9 +2724,8 @@ function setupGlobalUX() {
     // Click on backdrop (the .modal element itself, not its content) to close
     document.querySelectorAll('.modal').forEach(modal => {
         const name = modal.id.replace('modal-', '');
-        if (PROTECTED_MODALS.includes(name)) return;
         modal.addEventListener('mousedown', (e) => {
-            if (e.target === modal) closeModal(name);
+            if (e.target === modal && !isProtectedModal(name)) closeModal(name);
         });
     });
 
@@ -3301,6 +3327,10 @@ function avatarFor(seed) {
    ============================================= */
 
 function sendFeedback() {
+    if (state.guest) {
+        showNotification("Dall'app il feedback si invia con un account. Senza account scrivici via email: l'indirizzo è qui sotto.");
+        return;
+    }
     const type = document.getElementById('feedback-type').value;
     const text = document.getElementById('feedback-text').value.trim();
 
@@ -3610,6 +3640,92 @@ function renderNavSubjects() {
 }
 
 /* --- Home --- */
+
+/* --- Modalità prova (senza account) ---
+   Solo funzioni che girano sul dispositivo: timer, suoni, Focus Pocus, quiz,
+   flashcard, AI Tutor di base. Niente Firebase, niente dati inviati.
+   Presenza, chat, video, gruppi, sessioni, appunti e recensioni chiedono un account. */
+
+const GUEST_KEY = 'studyo_guest';
+
+function isGuestActive() {
+    return safeStorageGet(GUEST_KEY, '0') === '1';
+}
+
+function enterGuestMode() {
+    safeStorageSet(GUEST_KEY, '1');
+    state.guest = true;
+    if (!state.playerName) state.playerName = 'Ospite';
+    saveState();
+    closeModal('auth');
+    applyGuestUI();
+    navigate('home');
+}
+
+// Chiamata da firebase-config quando non c'è un utente ma la prova è attiva
+function onGuestReady() {
+    state.guest = true;
+    applyGuestUI();
+    if (state.currentPage === 'home') renderHome();
+}
+
+function leaveGuestMode() {
+    if (!state.guest && !isGuestActive()) return;
+    try { localStorage.removeItem(GUEST_KEY); } catch (e) {}
+    state.guest = false;
+    if (state.playerName === 'Ospite') state.playerName = '';
+    const reason = document.getElementById('auth-reason');
+    if (reason) reason.hidden = true;
+    applyGuestUI();
+}
+
+function applyGuestUI() {
+    const g = !!state.guest;
+    const show = (id, visible) => { const el = document.getElementById(id); if (el) el.hidden = !visible; };
+    show('guest-banner', g);
+    show('menu-login', g);
+    show('menu-logout', !g);
+    show('profile-login', g);
+    show('profile-logout', !g);
+    show('guest-box', !g);      // già in prova: nella finestra di accesso resta solo "crea un account"
+    show('auth-close', g);      // in prova la finestra di accesso si può chiudere
+
+    const chat = document.getElementById('chat-input');
+    if (chat) {
+        chat.disabled = g;
+        chat.placeholder = g ? 'Crea un account per scrivere' : 'Scrivi…';
+    }
+}
+
+// Ritorna true se si può procedere; in prova apre l'accesso spiegando perché
+function requireAccount(feature) {
+    if (!state.guest) return true;
+    const reason = document.getElementById('auth-reason');
+    if (reason) {
+        reason.textContent = feature
+            ? `Per ${feature} serve un account: è gratis e ci vuole mezzo minuto. Se ne crei uno nuovo, i progressi fatti finora restano.`
+            : 'Crea un account gratis: se è nuovo, i progressi fatti finora restano.';
+        reason.hidden = false;
+    }
+    applyGuestUI();
+    openModal('auth');
+    return false;
+}
+
+// Pannello persone + chat nella stanza, in prova
+function renderGuestLobbyPanels() {
+    const list = document.getElementById('students-list');
+    if (list) {
+        list.innerHTML = `<div class="group-nudge">
+            <p>Con un account vedi chi sta studiando questa materia adesso e ti vedono loro.</p>
+            <button class="btn btn-secondary btn-sm" onclick="requireAccount('vedere chi studia e scrivere in chat')">Crea un account</button>
+        </div>`;
+    }
+    const box = document.getElementById('chat-messages');
+    if (box) box.innerHTML = `<div class="chat-msg-system">La chat è per chi ha un account: così sai sempre con chi stai parlando.</div>`;
+    const online = document.getElementById('lobby-online');
+    if (online) online.textContent = 'Crea un account per vedere chi sta studiando qui';
+}
 
 /* --- Stati vuoti ---
    Uno zero nudo comunica "qui non succede niente": finché non c'è attività
@@ -4012,6 +4128,13 @@ function goToCatalogSearch(q) {
 function renderInsiemeGroups() {
     const el = document.getElementById('insieme-groups');
     if (!el) return;
+    if (state.guest) {
+        el.innerHTML = `<div class="empty-inline">
+            <p>I gruppi privati e le sessioni programmate sono per chi ha un account: servono a sapere con chi studi.</p>
+            <button class="btn btn-secondary btn-sm" onclick="requireAccount('i gruppi privati')">Crea un account</button>
+        </div>`;
+        return;
+    }
     if (!myGroups.length) {
         el.innerHTML = `<div class="empty-inline">
             <p>Non sei ancora in nessun gruppo. Crea un gruppo privato e invita i tuoi compagni con un link, oppure entra con un codice.</p>
@@ -4277,7 +4400,7 @@ function isCommandPaletteOpen() {
 
 function openCommandPalette() {
     const el = document.getElementById('cmdk');
-    if (!el || !state.setupDone) return;
+    if (!el || !(state.setupDone || state.guest)) return;
     closeAvatarMenu();
     cmdkReturnFocus = document.activeElement;
     el.hidden = false;
@@ -4439,6 +4562,19 @@ function setupShell() {
 
 function init() {
     loadState();
+
+    // Modalità prova: dal link della landing (?prova=1) o già attiva su questo dispositivo
+    if (new URLSearchParams(location.search).get('prova') === '1') {
+        safeStorageSet(GUEST_KEY, '1');
+        history.replaceState({}, '', location.pathname);
+    }
+    if (isGuestActive()) {
+        state.guest = true;
+        if (!state.playerName) state.playerName = 'Ospite';
+        closeModal('auth');
+    } else {
+        state.guest = false;
+    }
 
     // Break the streak if the user skipped one or more full days
     reconcileStreak();

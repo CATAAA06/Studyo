@@ -173,7 +173,8 @@
                             <a role="menuitem" href="cookie.html" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg>Cookie</a>
                             <a role="menuitem" href="mailto:fra.cata2006@gmail.com?subject=Segnalazione%20su%20Studyo"><svg class="ic" aria-hidden="true"><use href="#i-flag"/></svg>Segnala un problema</a>
                             <div class="avatar-menu-sep" role="separator"></div>
-                            <button role="menuitem" class="avatar-menu-danger" onclick="closeAvatarMenu();signOut()"><svg class="ic" aria-hidden="true"><use href="#i-logout"/></svg>Esci</button>
+                            <button role="menuitem" id="menu-login" onclick="closeAvatarMenu();requireAccount()" hidden><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>Accedi o crea un account</button>
+                            <button role="menuitem" id="menu-logout" class="avatar-menu-danger" onclick="closeAvatarMenu();signOut()"><svg class="ic" aria-hidden="true"><use href="#i-logout"/></svg>Esci</button>
                         </div>
                     </div>
                 </div>
@@ -186,6 +187,15 @@
                         <h1>Ciao, <span id="main-welcome-name">Studente</span></h1>
                         <p class="page-sub" id="home-date"></p>
                     </div>
+
+                    <!-- Modalità prova: cosa funziona e come salvare i progressi -->
+                    <section class="guest-banner" id="guest-banner" hidden>
+                        <div>
+                            <strong>Stai provando Studyo senza account</strong>
+                            <span>Timer, suoni, Focus Pocus, quiz e flashcard funzionano. I progressi restano su questo dispositivo finché non crei un account.</span>
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="requireAccount()">Crea un account</button>
+                    </section>
 
                     <!-- Primi passi: tre azioni vere al posto di un tour da leggere -->
                     <section class="first-steps" id="first-steps" aria-labelledby="first-steps-title" hidden></section>
@@ -528,7 +538,8 @@
                 <div id="page-profile" class="page">
                     <div class="page-head page-head-row">
                         <h1>Il tuo profilo</h1>
-                        <button class="btn-logout" onclick="signOut()">Esci</button>
+                        <button class="btn-logout" id="profile-logout" onclick="signOut()">Esci</button>
+                        <button class="btn btn-primary btn-sm" id="profile-login" onclick="requireAccount()" hidden>Crea un account</button>
                     </div>
                     <div class="profile-header-section">
                         <div class="profile-big-avatar" aria-hidden="true">🎓</div>
@@ -1010,11 +1021,13 @@
     <!-- AUTH MODAL (Login/Register) -->
     <div class="modal active" id="modal-auth">
         <div class="modal-content setup-modal">
+            <button class="modal-close auth-close" id="auth-close" aria-label="Chiudi e continua la prova" onclick="closeModal('auth')" hidden>✕</button>
             <div class="setup-header">
                 <span class="setup-logo"><svg width="54" height="54" viewBox="0 0 32 32" fill="none" aria-label="Studyo"><rect width="32" height="32" rx="7" fill="#C8F031"/><path d="M20.6 11c-.95-.9-2.5-1.45-4.25-1.45-2.8 0-4.65 1.35-4.65 3.4 0 1.95 1.45 2.9 4.05 3.5 2.3.55 3 .95 3 1.9 0 .95-.95 1.55-2.5 1.55-1.65 0-3.1-.6-4.15-1.65" stroke="#0A0A0B" stroke-width="2.6" stroke-linecap="round" fill="none"/></svg></span>
                 <h1>Entra su <span class="highlight">Studyo</span></h1>
                 <p>Lo studio diventa multiplayer.</p>
             </div>
+            <p class="auth-reason" id="auth-reason" role="status" hidden></p>
 
             <div class="inapp-warning" id="inapp-warning" style="display:none">
                 <strong>Accedi con email qui sotto ↓</strong>
@@ -1052,6 +1065,13 @@
 
 
             <p style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:12px">Se non hai un account, ne creiamo uno automaticamente.</p>
+
+            <!-- Modalità prova: solo funzioni locali, nessun dato inviato -->
+            <div class="guest-box" id="guest-box">
+                <div class="auth-divider"><span>oppure</span></div>
+                <button class="btn btn-secondary btn-large" onclick="enterGuestMode()">Prova senza account</button>
+                <p>Timer, suoni, Focus Pocus, quiz e flashcard funzionano subito. Stanze condivise, chat e gruppi chiedono un account. I progressi restano su questo dispositivo.</p>
+            </div>
         </div>
     </div>
 

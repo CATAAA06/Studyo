@@ -911,3 +911,31 @@ button.topbar-streak:hover { border-color: var(--border-strong); color: var(--te
 .setup-error { margin: 4px 0 12px; font-size: 14px; color: #FF8080; }
 .setup-error[hidden] { display: none; }
 .form-group [aria-invalid="true"] { border-color: #FF8080 !important; }
+
+/* =============================================
+   MODALITÀ PROVA (senza account)
+   ============================================= */
+.guest-banner {
+    display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+    margin-bottom: 20px; padding: 14px 18px;
+    background: rgba(255, 90, 31, .06); border: 1px solid rgba(255, 90, 31, .35); border-radius: var(--radius);
+}
+.guest-banner[hidden] { display: none; }
+.guest-banner div { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 220px; }
+.guest-banner strong { font-size: 15px; }
+.guest-banner span { font-size: 14px; color: var(--text-secondary); }
+
+.guest-box { margin-top: 4px; text-align: center; }
+.guest-box[hidden] { display: none; }
+.guest-box .btn { width: 100%; justify-content: center; }
+.guest-box p { margin-top: 10px; font-size: 12.5px; line-height: 1.5; color: var(--text-muted); }
+
+.auth-close { position: absolute; top: 12px; right: 12px; z-index: 2; }
+.auth-close[hidden] { display: none; }
+#modal-auth .modal-content { position: relative; }
+.auth-reason {
+    margin: 0 0 16px; padding: 10px 12px; font-size: 14px; line-height: 1.45; color: var(--text);
+    background: rgba(200, 240, 49, .08); border: 1px solid rgba(200, 240, 49, .3); border-radius: var(--radius-sm);
+}
+.auth-reason[hidden] { display: none; }
+#chat-input:disabled { opacity: .6; cursor: not-allowed; }

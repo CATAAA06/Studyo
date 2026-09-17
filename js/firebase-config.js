@@ -141,8 +141,9 @@ async function signInWithEmail(email, password) {
 
 function signOut() {
     auth.signOut().then(() => {
-        // Reset state
+        // Reset state (anche la modalità prova: uscendo si torna alla schermata di accesso)
         localStorage.removeItem('studyo_state');
+        localStorage.removeItem('studyo_guest');
         location.reload();
     });
 }
@@ -152,6 +153,9 @@ function signOut() {
    ============================================= */
 
 async function handleUserLogin(user, isNew = false) {
+    // Chi arriva dalla modalità prova diventa un utente vero: i progressi locali restano
+    if (typeof leaveGuestMode === 'function') leaveGuestMode();
+
     const userDoc = await db.collection('users').doc(user.uid).get();
 
     if (userDoc.exists && !isNew) {
@@ -753,6 +757,12 @@ auth.onAuthStateChanged(async (user) => {
         // No user — show auth modal
         authReady = true;
         closeModal('setup');
+        // In modalità prova non blocchiamo l'accesso: l'app funziona in locale
+        if (typeof isGuestActive === 'function' && isGuestActive()) {
+            closeModal('auth');
+            if (typeof onGuestReady === 'function') onGuestReady();
+            return;
+        }
         openModal('auth');
 
         // Nel browser di un'altra app: niente Google, si va dritti su email
