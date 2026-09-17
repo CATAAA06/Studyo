@@ -355,8 +355,7 @@ function completeSetup() {
 
     addXP(50, 'Benvenuto su Studyo!');
 
-    // Guided tour right after setup (first impression)
-    setTimeout(() => startOnboarding(), 500);
+    // Niente tour a slide: in home compare la scheda "Primi passi" con azioni vere
 
     // Il feedback si chiede dal badge "Beta" sempre visibile: niente popup a sorpresa
 }
@@ -2020,6 +2019,7 @@ function copyAppLink() {
 }
 
 function copyInvite() {
+    markInvited();
     const input = document.getElementById('invite-link');
     input.select();
     const done = () => showNotification('🔗 Link copiato! Incollalo dove vuoi.');
@@ -2031,6 +2031,7 @@ function copyInvite() {
 }
 
 function shareInvite() {
+    markInvited();
     const link = document.getElementById('invite-link').value;
     const text = `Studiamo insieme su Studyo! Entra nel gruppo: ${link}`;
     if (navigator.share) {
@@ -3292,90 +3293,6 @@ function sendFeedback() {
 }
 
 /* =============================================
-   ONBOARDING — primi 60 secondi
-   ============================================= */
-
-const OB_STEPS = [
-    {
-        visual: `<div class="ob-scene ob-scene-lobby">
-            <div class="ob-row on"><span>📐</span> Analisi 1</div>
-            <div class="ob-row"><span>⚛️</span> Fisica 1</div>
-            <div class="ob-row"><span>💻</span> Informatica</div>
-        </div>`,
-        title: 'Ogni materia ha la sua stanza',
-        text: 'In Home trovi gli esami del tuo corso, in Materie tutte le altre. Dentro vedi chi sta studiando adesso e potete scrivervi in chat o aprire una videochiamata.'
-    },
-    {
-        visual: `<div class="ob-scene ob-scene-timer">
-            <div class="ob-timer">25:00</div>
-            <div class="ob-bar"><span></span></div>
-            <div class="ob-xp">+75 XP</div>
-        </div>`,
-        title: 'Ogni sessione lascia un segno',
-        text: 'Avvia il timer e studia. Al termine guadagni XP, sali di livello e mantieni viva la streak dei giorni consecutivi.'
-    },
-    {
-        visual: `<div class="ob-scene ob-scene-focus">
-            <div class="ob-stars"></div>
-            <div class="ob-focus-label">🔮 Focus Pocus</div>
-        </div>`,
-        title: 'E quando serve silenzio totale',
-        text: 'Apri Focus Pocus dalla Home: schermo intero, atmosfera immersiva e solo il timer. Tutto il resto sparisce.'
-    }
-];
-
-let obIndex = 0;
-
-function obShouldRun() {
-    return !localStorage.getItem('studyo_onboarded');
-}
-
-function startOnboarding() {
-    if (!obShouldRun()) return;
-    obIndex = 0;
-    obRender();
-    document.getElementById('onboarding').classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-
-function obRender() {
-    const s = OB_STEPS[obIndex];
-    if (!s) return;
-    document.getElementById('ob-visual').innerHTML = s.visual;
-    document.getElementById('ob-title').textContent = s.title;
-    document.getElementById('ob-text').textContent = s.text;
-    document.getElementById('ob-next').textContent = obIndex === OB_STEPS.length - 1 ? 'Inizia a studiare' : 'Avanti';
-    document.getElementById('ob-dots').innerHTML = OB_STEPS
-        .map((_, i) => `<span class="ob-dot ${i === obIndex ? 'on' : ''}"></span>`).join('');
-
-    // sprinkle stars for the focus step
-    const sky = document.querySelector('.ob-stars');
-    if (sky) {
-        let h = '';
-        for (let i = 0; i < 26; i++) {
-            h += `<span style="left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${(Math.random()*3).toFixed(2)}s"></span>`;
-        }
-        sky.innerHTML = h;
-    }
-}
-
-function obNext() {
-    if (obIndex < OB_STEPS.length - 1) {
-        obIndex++;
-        obRender();
-    } else {
-        obFinish();
-    }
-}
-
-function obFinish() {
-    localStorage.setItem('studyo_onboarded', '1');
-    const el = document.getElementById('onboarding');
-    if (el) el.classList.remove('active');
-    document.body.style.overflow = '';
-}
-
-/* =============================================
    FOCUS POCUS — immersive focus rooms
    ============================================= */
 
@@ -3655,8 +3572,135 @@ function renderNavSubjects() {
 
 /* --- Home --- */
 
+/* --- Primi passi ---
+   Sostituisce il vecchio tour a slide (che andava "saltato"): tre azioni vere,
+   ognuna si spunta quando la fai davvero e lascia un risultato visibile. */
+
+function markInvited() {
+    if (state.invitedOnce) return;
+    state.invitedOnce = true;
+    saveState();
+    if (state.currentPage === 'home') renderFirstSteps();
+}
+
+function firstStepsStatus() {
+    return [
+        {
+            id: 'lobby',
+            done: (state.lobbiesVisited || []).length > 0,
+            title: 'Entra nella stanza di una materia',
+            text: 'Vedi chi la sta preparando e cosa trovi dentro.',
+            actions: `<button class="btn btn-secondary btn-sm" onclick="goToFirstLobby()">Scegli una materia</button>`
+        },
+        {
+            id: 'session',
+            done: (state.pomodorosCompleted || 0) > 0,
+            title: 'Completa la tua prima sessione',
+            text: 'Alla fine guadagni XP e parte la tua streak.',
+            actions: `<button class="btn btn-primary btn-sm" onclick="startFirstSession(25)">Inizia 25 minuti</button>
+                      <button class="link-btn" onclick="startFirstSession(5)">Prova con 5</button>`
+        },
+        {
+            id: 'friend',
+            done: !!state.invitedOnce || (state.groupsJoined || 0) > 0,
+            title: 'Studia con qualcuno',
+            text: state.guest
+                ? 'Con un account crei un gruppo privato e inviti i tuoi compagni con un link.'
+                : 'Crea un gruppo privato e manda il link a un compagno di corso.',
+            actions: state.guest
+                ? `<button class="btn btn-secondary btn-sm" onclick="requireAccount('Gruppi')">Crea un account</button>`
+                : `<button class="btn btn-secondary btn-sm" onclick="openGroups()">Crea un gruppo</button>`
+        }
+    ];
+}
+
+function renderFirstSteps() {
+    const box = document.getElementById('first-steps');
+    if (!box) return;
+    if (state.firstStepsHidden) { box.hidden = true; return; }
+
+    const steps = firstStepsStatus();
+    const done = steps.filter(s => s.done).length;
+
+    if (done === steps.length) {
+        box.hidden = false;
+        box.className = 'first-steps is-complete';
+        box.innerHTML = `
+            <div class="fs-complete">
+                <span class="fs-check" aria-hidden="true"></span>
+                <div>
+                    <h2 id="first-steps-title">Primi passi completati</h2>
+                    <p>Hai visto una stanza, chiuso una sessione e portato qualcuno con te. Da qui in poi conta la costanza.</p>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="hideFirstSteps()">Chiudi</button>
+            </div>`;
+        return;
+    }
+
+    // La prima azione non ancora fatta è quella "attiva"
+    const nextId = (steps.find(s => !s.done) || {}).id;
+    box.hidden = false;
+    box.className = 'first-steps';
+    box.innerHTML = `
+        <div class="fs-head">
+            <div>
+                <h2 id="first-steps-title">Primi passi</h2>
+                <p class="fs-sub">${done} di ${steps.length} fatti</p>
+            </div>
+            <button class="link-btn" onclick="hideFirstSteps()">Nascondi</button>
+        </div>
+        <div class="fs-bar" aria-hidden="true"><span style="transform:scaleX(${(done / steps.length).toFixed(3)})"></span></div>
+        <ol class="fs-list">
+            ${steps.map((s, i) => `
+            <li class="fs-item ${s.done ? 'is-done' : ''} ${s.id === nextId ? 'is-next' : ''}">
+                <span class="fs-num" aria-hidden="true">${s.done ? '' : i + 1}</span>
+                <div class="fs-body">
+                    <strong>${s.title}${s.done ? '<span class="sr-only"> (fatto)</span>' : ''}</strong>
+                    <span>${s.text}</span>
+                    ${!s.done && s.id === nextId ? `<div class="fs-actions">${s.actions}</div>` : ''}
+                </div>
+            </li>`).join('')}
+        </ol>`;
+}
+
+function hideFirstSteps() {
+    state.firstStepsHidden = true;
+    saveState();
+    renderFirstSteps();
+}
+
+// Porta nella materia più probabile: l'ultima aperta o la prima del piano di studi
+function firstLobbyId() {
+    const recent = (state.recentLobbies || []).find(id => resolveLobby(id));
+    if (recent) return recent;
+    const mine = getMySubjects(1)[0];
+    return mine ? mine.id : null;
+}
+
+function goToFirstLobby() {
+    const id = firstLobbyId();
+    if (id) navigate('lobby', id);
+    else navigate('materie');
+}
+
+function startFirstSession(minutes) {
+    const id = firstLobbyId();
+    if (!id) {
+        navigate('materie');
+        showNotification('Scegli la materia che stai preparando: il timer parte da lì.');
+        return;
+    }
+    if (state.currentPage !== 'lobby' || state.currentLobby !== id) navigate('lobby', id);
+    setLobbyTab('studia');
+    if (state.timerRunning) return;
+    setPomodoro(minutes);
+    startTimer();
+    showNotification(minutes >= 25 ? '▶ 25 minuti: si parte.' : '▶ 5 minuti di prova: si parte.');
+}
+
 function renderHome() {
     updateNav();
+    renderFirstSteps();
     renderHomeResume();
     renderHomeSubjects();
     renderHomeSessions();
@@ -3671,6 +3715,8 @@ function renderHomeResume() {
     if (document.activeElement && document.activeElement.id === 'home-search') return;
 
     const last = (state.recentLobbies || []).map(id => resolveLobby(id)).find(Boolean);
+    // Un solo pulsante lime per schermata: se i Primi passi sono aperti, comandano loro
+    const ctaClass = (!state.firstStepsHidden && firstStepsStatus().some(s => !s.done)) ? 'btn-secondary' : 'btn-primary';
 
     if (last) {
         const n = lobbyOnline(last);
@@ -3682,7 +3728,7 @@ function renderHomeResume() {
                 <h2><span aria-hidden="true">${last.icon}</span> ${escapeHTML(last.name)}</h2>
                 <p>${people}${state.lastLobbyAt ? `<span>Ultima volta ${formatAgo(state.lastLobbyAt)}</span>` : ''}</p>
             </div>
-            <button class="btn btn-primary btn-large hero-cta" onclick="navigate('lobby','${last.id}')">
+            <button class="btn ${ctaClass} btn-large hero-cta" onclick="navigate('lobby','${last.id}')">
                 Entra e studia <svg class="ic ic-sm" aria-hidden="true"><use href="#i-arrow-right"/></svg>
             </button>`;
         return;
@@ -3698,7 +3744,7 @@ function renderHomeResume() {
         <form class="hero-search" onsubmit="event.preventDefault();goToCatalogSearch(document.getElementById('home-search').value)">
             <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg>
             <input type="search" id="home-search" placeholder="Es. Analisi 1, Diritto privato…" aria-label="Cerca una materia" autocomplete="off">
-            <button type="submit" class="btn btn-primary">Cerca</button>
+            <button type="submit" class="btn ${ctaClass}">Cerca</button>
         </form>
         ${suggestions.length ? `<div class="hero-chips">${suggestions.map(l =>
             `<button class="chip" onclick="navigate('lobby','${l.id}')"><span aria-hidden="true">${l.icon}</span> ${escapeHTML(l.name)}</button>`).join('')}</div>` : ''}`;
@@ -4224,11 +4270,6 @@ function init() {
 
     // Global UX: Esc / backdrop to close modals
     setupGlobalUX();
-
-    // Returning users who never saw the tour get it once
-    setTimeout(() => {
-        if (state.setupDone) startOnboarding();
-    }, 900);
 
 }
 
