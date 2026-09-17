@@ -230,11 +230,12 @@ html:not(.fx) .rot-item:not(:first-child) { visibility: hidden; }
   --glow: var(--lime); --glow-soft: var(--glow-lime);
   position: relative; overflow: hidden; isolation: isolate;
   display: flex; flex-direction: column; justify-content: flex-end; min-height: 188px;
-  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
   transition: opacity .7s var(--ease) var(--d, 0ms), translate .7s var(--ease) var(--d, 0ms),
               transform .5s var(--ease), border-color var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease);
 }
 .bento .feat[data-glow="orange"] { --glow: var(--orange); --glow-soft: var(--glow-orange); }
+/* Inclinazione solo con un mouse: su touch nessun livello 3D inutile */
+.fx-pointer .bento .feat { transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); }
 .bento .feat-lg .feat-viz { margin-bottom: auto; }
 .bento .feat-lg h3 { font-size: clamp(22px, 2.4vw, 30px); }
 .bento .feat-lg p { font-size: 16px; max-width: 420px; }
@@ -337,3 +338,62 @@ html:not(.fx) .rot-item:not(:first-child) { visibility: hidden; }
   .aud-js .aud-more { padding: 20px 20px 4px; }
   .aud-js .aud li { padding-top: 5px; padding-bottom: 5px; }
 }
+
+/* ============================================= 5. NAVIGAZIONE E SCROLL ============================================= */
+nav { transition: background-color var(--t-med) var(--ease), border-color var(--t-med) var(--ease), backdrop-filter var(--t-med) var(--ease); }
+nav.on {
+  background: rgba(10, 10, 11, .72);
+  -webkit-backdrop-filter: saturate(160%) blur(18px);
+          backdrop-filter: saturate(160%) blur(18px);
+}
+.nav-links a { position: relative; }
+.nav-links a::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -6px; height: 2px; border-radius: 2px;
+  background: var(--lime); transform: scaleX(0); transform-origin: left;
+  transition: transform var(--t-med) var(--ease);
+}
+.nav-links a:hover::after, .nav-links a.is-active::after { transform: scaleX(1); }
+.nav-links a.is-active { color: var(--text); }
+
+/* Barra di avanzamento: una sola trasformazione per fotogramma */
+.scroll-progress {
+  position: fixed; left: 0; right: 0; top: 0; z-index: 70; height: 2px; pointer-events: none;
+  background: var(--lime); box-shadow: 0 0 10px var(--glow-lime);
+  transform-origin: left; transform: scaleX(0);
+}
+html:not(.fx) .scroll-progress { display: none; }
+
+/* ============================================= 6. DETTAGLI TECH ============================================= */
+/* Anello che segue il cursore: solo con mouse, il cursore di sistema resta visibile */
+.cursor-ring {
+  position: fixed; left: 0; top: 0; z-index: 90; pointer-events: none;
+  width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%;
+  border: 1.5px solid var(--lime); opacity: 0;
+  transform: translate3d(-100px, -100px, 0) scale(1);
+  transition: opacity var(--t-med) var(--ease), background-color var(--t-med) var(--ease), border-color var(--t-med) var(--ease);
+  will-change: transform;
+}
+.cursor-ring.is-visible { opacity: .55; }
+.cursor-ring.is-hover { opacity: .9; background: rgba(200, 240, 49, .08); }
+.cursor-ring.is-hover-orange { border-color: var(--orange); background: rgba(255, 90, 31, .08); }
+html:not(.fx-pointer) .cursor-ring { display: none; }
+
+/* Linea di luce che attraversa un bordo, con lunghe pause: solo su due elementi */
+.scan { position: relative; overflow: hidden; }
+.scan::after {
+  content: ''; position: absolute; top: 0; left: 0; width: 35%; height: 1px; z-index: 5; pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--lime), transparent);
+  transform: translate3d(-100%, 0, 0); opacity: 0;
+}
+.fx .scan::after { animation: scan 7.5s var(--ease-in-out) 2s infinite; }
+.fx .plan-now.scan::after { animation-delay: 4.5s; }
+@keyframes scan {
+  0% { transform: translate3d(-100%, 0, 0); opacity: 0; }
+  4% { opacity: 1; }
+  28% { transform: translate3d(300%, 0, 0); opacity: 1; }
+  30%, 100% { transform: translate3d(300%, 0, 0); opacity: 0; }
+}
+
+/* Focus da tastiera: stesso anello lime ovunque, con un piccolo "respiro" in ingresso */
+.fx :focus-visible { animation: focusIn .3s var(--ease); }
+@keyframes focusIn { from { outline-offset: 0; } to { outline-offset: 3px; } }

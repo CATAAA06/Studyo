@@ -27,9 +27,38 @@
   (function navScrolled() {
     var nav = document.getElementById('nav');
     if (!nav) return;
-    var update = rafThrottle(function () { nav.classList.toggle('on', window.scrollY > 8); });
+    var bar = document.getElementById('scroll-progress');
+    var maxScroll = 1;
+    function measure() { maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight); }
+    var update = rafThrottle(function () {
+      var y = window.scrollY;
+      nav.classList.toggle('on', y > 8);
+      if (bar && FX) bar.style.transform = 'scaleX(' + Math.min(1, y / maxScroll).toFixed(4) + ')';
+    });
+    measure();
     window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', function () { measure(); update(); }, { passive: true });
+    window.addEventListener('load', function () { measure(); update(); });
     update();
+
+    // Link della sezione in cui ci si trova
+    var links = [].slice.call(nav.querySelectorAll('.nav-links a[href^="#"]'));
+    if (!links.length || !('IntersectionObserver' in window)) return;
+    var byId = {};
+    links.forEach(function (a) { byId[a.getAttribute('href').slice(1)] = a; });
+    var sections = Object.keys(byId).map(function (id) { return document.getElementById(id); }).filter(Boolean);
+    var visible = {};
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { visible[e.target.id] = e.isIntersecting; });
+      var current = null;
+      sections.forEach(function (s) { if (!current && visible[s.id]) current = s.id; });
+      links.forEach(function (a) {
+        var on = a === byId[current];
+        a.classList.toggle('is-active', on);
+        if (on) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current');
+      });
+    }, { rootMargin: '-35% 0px -55% 0px' });
+    sections.forEach(function (s) { spy.observe(s); });
   })();
 
   /* =============================================
@@ -291,6 +320,50 @@
       });
     }, { rootMargin: '0px 0px -8% 0px', threshold: .08 });
     els.forEach(function (el) { if (!el.classList.contains('is-in')) io.observe(el); });
+  })();
+
+  /* =============================================
+     6. CURSORE — anello che insegue il puntatore (solo mouse)
+     Il ciclo di animazione gira solo finché l'anello non ha raggiunto il cursore.
+     ============================================= */
+  (function cursorRing() {
+    var ring = document.getElementById('cursor-ring');
+    if (!ring || !FX || !POINTER) return;
+    var tx = -100, ty = -100, x = -100, y = -100, scale = 1, targetScale = 1, running = false, pressed = false;
+    var TARGETS = 'a, button, .feat, .aud, .room, summary';
+
+    function loop() {
+      x += (tx - x) * .22;
+      y += (ty - y) * .22;
+      scale += (targetScale * (pressed ? .8 : 1) - scale) * .2;
+      ring.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0) scale(' + scale.toFixed(3) + ')';
+      if (Math.abs(tx - x) < .1 && Math.abs(ty - y) < .1 && Math.abs(targetScale * (pressed ? .8 : 1) - scale) < .002) {
+        running = false;
+        return;
+      }
+      requestAnimationFrame(loop);
+    }
+    function kick() { if (!running) { running = true; requestAnimationFrame(loop); } }
+
+    document.addEventListener('pointermove', function (e) {
+      if (e.pointerType !== 'mouse') return;
+      tx = e.clientX; ty = e.clientY;
+      if (!ring.classList.contains('is-visible')) { x = tx; y = ty; ring.classList.add('is-visible'); }
+      kick();
+    }, { passive: true });
+
+    document.addEventListener('pointerover', function (e) {
+      var t = e.target.closest && e.target.closest(TARGETS);
+      targetScale = t ? 1.8 : 1;
+      ring.classList.toggle('is-hover', !!t);
+      var orange = t && t.closest('[data-glow="orange"]');
+      ring.classList.toggle('is-hover-orange', !!orange);
+      kick();
+    });
+    document.addEventListener('pointerdown', function () { pressed = true; kick(); });
+    document.addEventListener('pointerup', function () { pressed = false; kick(); });
+    document.documentElement.addEventListener('pointerleave', function () { ring.classList.remove('is-visible'); });
+    window.addEventListener('blur', function () { ring.classList.remove('is-visible'); });
   })();
 
   /* =============================================
