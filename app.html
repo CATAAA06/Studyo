@@ -291,6 +291,9 @@
                         </div>
                     </div>
 
+                    <!-- Crea/entra in un gruppo e programma sessione si aprono qui, non in una finestra -->
+                    <div class="inline-host" id="insieme-inline"></div>
+
                     <section class="panel">
                         <div class="block-head"><h2>I tuoi gruppi</h2></div>
                         <div id="insieme-groups"></div>
@@ -469,6 +472,8 @@
 
                             <!-- MATERIALI -->
                             <div class="lobby-panel" id="panel-materiali" role="tabpanel" aria-labelledby="tab-materiali" data-panel="materiali" hidden>
+                                <!-- Appunti e AI Tutor si aprono qui, dentro la materia -->
+                                <div class="inline-host" id="materiali-inline"></div>
                                 <div class="tool-rows">
                                     <button class="tool-row" onclick="openNotes()">
                                         <span class="tool-row-icon"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg></span>

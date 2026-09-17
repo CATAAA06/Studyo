@@ -186,6 +186,7 @@ function navigate(page, data) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
 
     state.currentPage = page;
+    closeInlinePanelsOutside(page);
 
     if (page === 'home') {
         document.getElementById('page-home').classList.add('active');
@@ -1268,6 +1269,7 @@ let noteIsShared = false;
 
 async function openNotes() {
     if (!requireAccount('salvare gli appunti nel cloud')) return;
+    if (state.currentPage === 'lobby') setLobbyTab('materiali');
     openModal('notes');
     showNotesTab('mine');
 
@@ -1764,6 +1766,9 @@ let sessionReminders = {};
 
 function openNewSession() {
     if (!requireAccount('programmare una sessione')) return;
+    // Il modulo vive nella pagina Insieme; se arrivo da una materia la preseleziono
+    const fromLobby = state.currentLobby;
+    if (state.currentPage !== 'insieme') navigate('insieme');
     const sel = document.getElementById('session-lobby');
     if (sel) {
         // I miei esami in cima, poi i gruppi, poi il resto
@@ -1783,7 +1788,7 @@ function openNewSession() {
         html += '<optgroup label="Tutte le materie">' +
             altre.map(l => `<option value="${l.id}">${l.name}</option>`).join('') + '</optgroup>';
         sel.innerHTML = html;
-        if (state.currentLobby) sel.value = state.currentLobby;
+        if (fromLobby) sel.value = fromLobby;
     }
 
     // Default: oggi (o domani se è tardi)
@@ -1935,6 +1940,7 @@ function groupLobbyId(id) { return 'group_' + id; }
 
 function openGroups() {
     if (!requireAccount('i gruppi privati')) return;
+    if (state.currentPage !== 'insieme') navigate('insieme');
     renderGroupList();
     openModal('groups');
 }
@@ -2231,6 +2237,7 @@ let aiHistory = [];
 function getAIKey() { return localStorage.getItem(AI_KEY_STORE) || ''; }
 
 function openAI() {
+    if (state.currentPage === 'lobby') setLobbyTab('materiali');
     openModal('ai');
     aiHistory = [];
     refreshAIMode();
@@ -2644,7 +2651,43 @@ function getCurrentLevel() {
    ============================================= */
 
 function openModal(name) {
-    document.getElementById(`modal-${name}`).classList.add('active');
+    const modal = document.getElementById(`modal-${name}`);
+    // Pannelli "in linea": uno solo aperto per contenitore, e ci si porta sopra
+    if (modal.classList.contains('modal-inline')) {
+        modal.parentElement.querySelectorAll('.modal-inline.active').forEach(m => { if (m !== modal) m.classList.remove('active'); });
+        modal.classList.add('active');
+        requestAnimationFrame(() => {
+            modal.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+            const first = modal.querySelector('input:not([type="checkbox"]):not([type="hidden"]), textarea, select');
+            if (first) first.focus({ preventScroll: true });
+        });
+        return;
+    }
+    modal.classList.add('active');
+}
+
+/* Meno finestre sopra la pagina: alcune "modali" vivono dentro la pagina a cui
+   appartengono. Gli id restano gli stessi, quindi openModal/closeModal non cambiano. */
+const INLINE_PANELS = { 'insieme-inline': ['groups', 'session'], 'materiali-inline': ['notes', 'ai'] };
+
+function setupInlinePanels() {
+    Object.keys(INLINE_PANELS).forEach(hostId => {
+        const host = document.getElementById(hostId);
+        if (!host) return;
+        INLINE_PANELS[hostId].forEach(name => {
+            const modal = document.getElementById('modal-' + name);
+            if (!modal) return;
+            modal.classList.add('modal-inline');
+            host.appendChild(modal);
+        });
+    });
+}
+
+function closeInlinePanelsOutside(page) {
+    document.querySelectorAll('.modal-inline.active').forEach(m => {
+        const inPage = m.closest('.page');
+        if (!inPage || inPage.id !== 'page-' + page) closeModal(m.id.replace('modal-', ''));
+    });
 }
 
 function closeModal(name) {
@@ -4262,6 +4305,10 @@ function setLobbyTab(tab, silent) {
     });
 
     currentLobbyTab = tab;
+    // Appunti e AI Tutor aperti restano legati alla scheda Materiali
+    if (tab !== 'materiali') {
+        document.querySelectorAll('#materiali-inline .modal-inline.active').forEach(m => closeModal(m.id.replace('modal-', '')));
+    }
     if (!silent && state.currentLobby) saveLobbyTab(state.currentLobby, tab);
     updateMiniTimer();
 }
@@ -4567,6 +4614,7 @@ function setupShell() {
 
 function init() {
     loadState();
+    setupInlinePanels();
 
     // Modalità prova: dal link della landing (?prova=1) o già attiva su questo dispositivo
     if (new URLSearchParams(location.search).get('prova') === '1') {

@@ -949,3 +949,31 @@ button.topbar-streak:hover { border-color: var(--border-strong); color: var(--te
 .ai-advanced summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text-muted); padding: 6px 0; }
 .ai-advanced summary:hover { color: var(--text); }
 .ai-advanced .ai-settings { margin-top: 8px; }
+
+/* =============================================
+   PANNELLI IN LINEA — gruppi e sessioni in Insieme, appunti e AI Tutor in Materiali
+   Stesse "modali" di prima (stessi id), ma dentro la pagina: niente velo scuro.
+   Selettori con :is(#…) per vincere sulle regole mobile a tutto schermo.
+   ============================================= */
+:is(#insieme-inline, #materiali-inline) .modal.modal-inline {
+    position: static; inset: auto; z-index: auto;
+    display: none; padding: 0;
+    background: none; backdrop-filter: none; -webkit-backdrop-filter: none;
+    animation: none;
+}
+:is(#insieme-inline, #materiali-inline) .modal.modal-inline.active { display: block; }
+:is(#insieme-inline, #materiali-inline) .modal.modal-inline .modal-content {
+    width: 100%; max-width: none; height: auto; max-height: none;
+    margin: 0 0 20px; padding: 20px 22px;
+    border: 1px solid rgba(200, 240, 49, .35); border-radius: var(--radius);
+    overflow: visible; animation: pageIn .18s ease;
+    scroll-margin-top: calc(var(--topbar-h) + 16px);
+}
+:is(#insieme-inline, #materiali-inline) .modal.modal-inline .modal-header {
+    position: static; margin: 0 0 14px; padding: 0; background: none; border: 0;
+}
+:is(#insieme-inline, #materiali-inline) .modal-inline .modal-header h2 { font: 700 18px var(--font-display); letter-spacing: -0.02em; }
+#materiali-inline .ai-chat { max-height: 50vh; }
+@media (max-width: 768px) {
+    :is(#insieme-inline, #materiali-inline) .modal.modal-inline .modal-content { padding: 16px; }
+}
