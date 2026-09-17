@@ -1465,6 +1465,12 @@ let noteFiles = [];              // allegati della nota aperta
 const NOTE_FILES_MAX = 5;
 const NOTE_FILE_MB = 10;
 
+/* Allegati: richiedono Firebase Storage attivo sul progetto (piano Blaze).
+   Finché è false la sezione resta nascosta, così nessuno prova a caricare
+   un file per poi vederselo rifiutare.
+   PER ATTIVARLI: metti true qui, attiva Storage in Console e pubblica storage.rules. */
+const NOTE_FILES_ENABLED = false;
+
 function formatFileSize(bytes) {
     if (!bytes) return '';
     return bytes >= 1024 * 1024
@@ -1473,6 +1479,10 @@ function formatFileSize(bytes) {
 }
 
 function renderNoteFiles() {
+    const section = document.querySelector('.notes-files');
+    if (section) section.hidden = !NOTE_FILES_ENABLED;
+    if (!NOTE_FILES_ENABLED) return;
+
     const list = document.getElementById('nf-list');
     const count = document.getElementById('nf-count');
     const addBtn = document.getElementById('nf-add');

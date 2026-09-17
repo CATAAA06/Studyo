@@ -1081,3 +1081,4 @@ button.topbar-streak:hover { border-color: var(--border-strong); color: var(--te
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .nf-chip:hover { color: var(--text); border-color: var(--border-strong); }
+.notes-files[hidden] { display: none; }
