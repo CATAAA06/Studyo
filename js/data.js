@@ -695,6 +695,177 @@ const FEEDBACK_QUESTIONS = [
 ];
 
 const QUIZZES = {
+    // ---- AREA UMANISTICA ----
+    antropologia: [
+        { question: "Il relativismo culturale invita a:", options: ["Giudicare ogni cultura secondo i propri parametri", "Comprendere una pratica all'interno del contesto culturale in cui si colloca", "Considerare tutte le culture identiche", "Rifiutare il confronto tra culture"], correct: 1, explain: "È un metodo di analisi e si contrappone all'etnocentrismo; non coincide con l'idea che ogni pratica sia moralmente accettabile." },
+        { question: "L'osservazione partecipante consiste nel:", options: ["Somministrare questionari a distanza", "Vivere a lungo nel contesto studiato prendendo parte alla vita quotidiana", "Analizzare solo documenti d'archivio", "Intervistare esperti"], correct: 1, explain: "Resa centrale da Malinowski, produce l'etnografia: la descrizione densa di una cultura dal punto di vista di chi la vive." },
+        { question: "Nel saggio di Marcel Mauss, il dono è:", options: ["Un atto puramente disinteressato", "Un fatto sociale totale che implica dare, ricevere e ricambiare", "Una forma di commercio moderno", "Un rito religioso"], correct: 1, explain: "L'obbligo di ricambiare crea legami duraturi: il dono tiene insieme economia, diritto, religione e parentela." },
+        { question: "I riti di passaggio, secondo Van Gennep, si articolano in:", options: ["Separazione, margine (liminalità), aggregazione", "Nascita, vita, morte", "Preghiera, sacrificio, festa", "Mito, rito, tabù"], correct: 0, explain: "La fase liminale, studiata poi da Victor Turner, è quella sospesa tra il vecchio e il nuovo status." },
+        { question: "L'etnocentrismo è:", options: ["La tendenza a valutare le altre culture con i criteri della propria", "Lo studio comparato delle lingue", "Il metodo dell'osservazione partecipante", "Il rifiuto della propria cultura"], correct: 0, explain: "È il presupposto implicito che l'antropologia cerca di rendere visibile e mettere in discussione." }
+    ],
+    letteraturaLat: [
+        { question: "L'Eneide di Virgilio è:", options: ["Un poema epico in esametri sulla fondazione mitica di Roma", "Una raccolta di orazioni", "Una commedia", "Un trattato filosofico"], correct: 0, explain: "In dodici libri; i primi sei richiamano l'Odissea per il viaggio, gli ultimi sei l'Iliade per le guerre nel Lazio." },
+        { question: "Il metro tipico dell'epica latina è:", options: ["L'endecasillabo", "L'esametro dattilico", "Il distico elegiaco", "Il trimetro giambico"], correct: 1, explain: "Il distico elegiaco, cioè esametro più pentametro, è invece il metro dell'elegia amorosa di Tibullo, Properzio e Ovidio." },
+        { question: "Il De rerum natura di Lucrezio espone la filosofia:", options: ["Stoica", "Epicurea", "Platonica", "Scettica"], correct: 1, explain: "Vuole liberare gli uomini dalla paura degli dèi e della morte spiegando il mondo attraverso gli atomi." },
+        { question: "Cicerone è ricordato soprattutto come:", options: ["Oratore e autore di opere retoriche e filosofiche", "Poeta epico", "Storico delle guerre puniche", "Commediografo"], correct: 0, explain: "Le Catilinarie e le Verrine restano modelli di eloquenza; la sua prosa ha fissato il latino classico come lingua di riferimento." },
+        { question: "Le Satire di Orazio si caratterizzano per:", options: ["L'invettiva violenta", "Un tono garbato e ironico che coglie i difetti umani", "La celebrazione dell'impero", "L'argomento mitologico"], correct: 1, explain: "Diversamente dall'indignatio di Giovenale, Orazio sorride dei vizi e propone la misura, l'aurea mediocritas." }
+    ],
+    storiaMedievale: [
+        { question: "La deposizione di Romolo Augustolo nel 476 segna convenzionalmente:", options: ["La fine dell'Impero romano d'Occidente", "L'inizio delle crociate", "La nascita del Sacro Romano Impero", "La caduta di Costantinopoli"], correct: 0, explain: "È una data simbolica: i processi di trasformazione erano in corso da tempo e l'Impero d'Oriente continuò fino al 1453." },
+        { question: "Il feudalesimo si basava sul rapporto tra:", options: ["Signore e vassallo, con concessione di un beneficio in cambio di fedeltà e servizio armato", "Stato e cittadini", "Comune e corporazioni", "Papa e imperatore soltanto"], correct: 0, explain: "Con il capitolare di Quierzy (877) i feudi maggiori divennero di fatto ereditari, indebolendo il potere centrale." },
+        { question: "La lotta per le investiture oppose:", options: ["Papato e Impero sul potere di nominare i vescovi", "Comuni e signorie", "Bizantini e Arabi", "Francia e Inghilterra"], correct: 0, explain: "Dopo Canossa si arrivò al concordato di Worms del 1122: investitura spirituale al papa, temporale all'imperatore." },
+        { question: "I Comuni italiani nascono tra XI e XII secolo come:", options: ["Associazioni cittadine che rivendicano autonomia dai poteri feudali", "Province imperiali", "Ordini monastici", "Leghe militari papali"], correct: 0, explain: "Dal consolare si passò al podestarile e poi al popolare, finché le lotte interne aprirono la strada alle signorie." },
+        { question: "La peste nera del 1347-1351 ebbe come conseguenza:", options: ["Un forte calo demografico con profonde ricadute economiche e sociali", "Un aumento della popolazione", "La fine delle città", "L'inizio dell'età antica"], correct: 0, explain: "La scarsità di manodopera fece salire i salari e incrinò i vincoli servili, contribuendo alla crisi del sistema feudale." }
+    ],
+    storiaModerna: [
+        { question: "La pace di Westfalia del 1648:", options: ["Chiuse la guerra dei Trent'anni e affermò il principio di sovranità territoriale degli Stati", "Avviò le crociate", "Unificò la Germania", "Concluse le guerre napoleoniche"], correct: 0, explain: "È considerata l'atto di nascita del moderno sistema di Stati sovrani e del diritto internazionale europeo." },
+        { question: "La rivoluzione scientifica del Seicento è legata soprattutto a:", options: ["Galileo e Newton", "Tommaso d'Aquino", "Carlo Magno", "Erasmo da Rotterdam"], correct: 0, explain: "Metodo sperimentale e matematizzazione della natura sostituiscono il principio di autorità come criterio di verità." },
+        { question: "L'assolutismo di Luigi XIV si caratterizza per:", options: ["La concentrazione del potere nel sovrano, con corte accentrata e burocrazia fedele", "La divisione dei poteri", "Il governo parlamentare", "L'autonomia dei feudatari"], correct: 0, explain: "Versailles serviva anche a controllare la nobiltà, trasformata in nobiltà di corte dipendente dal favore regio." },
+        { question: "La Dichiarazione dei diritti dell'uomo e del cittadino è del:", options: ["1776", "1789", "1799", "1815"], correct: 1, explain: "Approvata in agosto dall'Assemblea nazionale francese; il 1776 è la Dichiarazione d'indipendenza americana, il 1815 il congresso di Vienna." },
+        { question: "La prima rivoluzione industriale iniziò:", options: ["In Inghilterra nella seconda metà del Settecento", "In Francia nel Cinquecento", "In Germania nell'Ottocento", "In Italia nel Seicento"], correct: 0, explain: "Macchina a vapore, industria tessile e siderurgia trasformarono produzione, città e struttura sociale." }
+    ],
+    glottologia: [
+        { question: "Secondo Saussure il segno linguistico è formato da:", options: ["Significante e significato", "Suono e scrittura", "Parola e frase", "Lingua e dialetto"], correct: 0, explain: "Il legame tra i due è arbitrario: non c'è nulla nella sequenza di suoni /'ka:za/ che richiami necessariamente l'idea di casa." },
+        { question: "La distinzione tra langue e parole indica:", options: ["Il sistema condiviso della lingua e il suo uso individuale concreto", "La lingua scritta e quella parlata", "Il lessico e la grammatica", "La lingua madre e quella straniera"], correct: 0, explain: "La langue è sociale e sistematica, la parole è l'atto singolo del parlante: la linguistica strutturale studia soprattutto la prima." },
+        { question: "Il metodo comparativo serve a:", options: ["Ricostruire una lingua madre comune confrontando lingue imparentate", "Insegnare le lingue straniere", "Tradurre testi antichi", "Misurare la frequenza delle parole"], correct: 0, explain: "Dal confronto sistematico tra sanscrito, greco, latino e altre lingue è stato ricostruito l'indoeuropeo." },
+        { question: "Un fonema è:", options: ["La più piccola unità sonora capace di distinguere significati", "Una lettera dell'alfabeto", "Una sillaba", "Un morfema"], correct: 0, explain: "Coppie minime come pane/cane mostrano che /p/ e /k/ sono fonemi distinti in italiano." },
+        { question: "La sincronia e la diacronia nello studio della lingua riguardano rispettivamente:", options: ["Lo stato della lingua in un dato momento e la sua evoluzione nel tempo", "La lingua parlata e quella scritta", "Il lessico e la sintassi", "La fonetica e la fonologia"], correct: 0, explain: "Saussure ha rivendicato l'autonomia dell'analisi sincronica, fino ad allora subordinata alla prospettiva storica." }
+    ],
+    geografia: [
+        { question: "La differenza tra latitudine e longitudine è che la latitudine misura:", options: ["La distanza angolare dall'equatore", "La distanza dal meridiano di Greenwich", "L'altitudine", "La distanza dal polo magnetico"], correct: 0, explain: "La latitudine va da 0° all'equatore a 90° ai poli; la longitudine da 0° a Greenwich fino a 180° verso est o verso ovest." },
+        { question: "Il clima mediterraneo si caratterizza per:", options: ["Estati calde e secche, inverni miti e piovosi", "Piogge abbondanti tutto l'anno", "Inverni molto rigidi e secchi", "Temperature costanti tutto l'anno"], correct: 0, explain: "È tipico delle fasce temperate affacciate su mari caldi e sostiene una vegetazione adattata all'aridità estiva, come la macchia." },
+        { question: "La densità di popolazione si calcola come:", options: ["Abitanti diviso superficie", "Superficie diviso abitanti", "Nati meno morti", "Abitanti per famiglia"], correct: 0, explain: "Si esprime in abitanti per km²; media alta e distribuzione molto disomogenea possono convivere, come in Italia." },
+        { question: "Il fenomeno dell'urbanizzazione indica:", options: ["La crescita della quota di popolazione che vive nelle città", "L'abbandono delle città", "La costruzione di strade", "L'aumento della natalità"], correct: 0, explain: "Dal 2007 circa più della metà della popolazione mondiale vive in aree urbane, con forte crescita nelle megalopoli del Sud del mondo." },
+        { question: "La transizione demografica descrive il passaggio da:", options: ["Alta natalità e alta mortalità a bassa natalità e bassa mortalità", "Economia agricola a industriale", "Campagna a città", "Emigrazione a immigrazione"], correct: 0, explain: "Nella fase intermedia la mortalità cala prima della natalità: è il momento di maggiore crescita della popolazione." }
+    ],
+    // ---- AREA GIURIDICA E PSICOLOGICA ----
+    dirRomano: [
+        { question: "Le Istituzioni di Gaio sono:", options: ["Un manuale elementare di diritto del II secolo d.C.", "Una raccolta di sentenze imperiali", "Un trattato di diritto penale", "Un codice medievale"], correct: 0, explain: "Il testo, in quattro libri, organizza la materia in persone, cose e azioni: uno schema che ha influenzato i codici moderni." },
+        { question: "Nel diritto romano la distinzione tra ius civile e ius gentium riguarda:", options: ["Diritto dei soli cittadini romani e diritto comune a tutti i popoli", "Diritto scritto e non scritto", "Diritto pubblico e privato", "Diritto sacro e profano"], correct: 0, explain: "Lo ius gentium, applicato anche agli stranieri, era più flessibile e informale: ha favorito lo sviluppo dei contratti consensuali." },
+        { question: "La mancipatio era:", options: ["Un modo solenne di trasferire la proprietà delle res mancipi", "Un'azione penale", "Una forma di matrimonio", "Un testamento orale"], correct: 0, explain: "Richiedeva cinque testimoni e il libripens con la bilancia: un formalismo tipico del diritto arcaico." },
+        { question: "Il Corpus Iuris Civilis fu promosso da:", options: ["Augusto", "Giustiniano", "Cesare", "Costantino"], correct: 1, explain: "Realizzato nel VI secolo, comprende Codice, Digesto, Istituzioni e Novelle: è la base della tradizione giuridica continentale." },
+        { question: "L'usucapione nel diritto romano permetteva di acquistare la proprietà:", options: ["Per contratto", "Per possesso protratto nel tempo alle condizioni di legge", "Per successione", "Per confisca"], correct: 1, explain: "Servivano possesso continuato, buona fede e giusto titolo: l'istituto sopravvive quasi immutato nel codice civile italiano." }
+    ],
+    storiaDiritto: [
+        { question: "La glossa, nella scuola bolognese dei secoli XII-XIII, era:", options: ["Una nota esplicativa ai testi giustinianei", "Una sentenza reale", "Un codice locale", "Un giuramento feudale"], correct: 0, explain: "Dai glossatori, con Irnerio e poi Accursio, nasce lo studio scientifico del diritto romano nelle università." },
+        { question: "Lo ius commune medievale era formato dall'incontro tra:", options: ["Diritto romano e diritto canonico", "Diritto penale e civile", "Statuti cittadini e consuetudini germaniche soltanto", "Diritto longobardo e feudale"], correct: 0, explain: "Il diritto comune conviveva con gli iura propria, cioè statuti cittadini e consuetudini locali, in un sistema a più livelli." },
+        { question: "Il Code Napoléon del 1804 è importante perché:", options: ["Fu il primo codice civile moderno, unitario e sistematico", "Abolì la proprietà privata", "Riguardava solo il diritto penale", "Era valido solo in Corsica"], correct: 0, explain: "Afferma uguaglianza formale davanti alla legge, proprietà individuale e libertà contrattuale: modello per gran parte dei codici europei." },
+        { question: "Lo Statuto Albertino del 1848 era:", options: ["Una costituzione rigida", "Una costituzione flessibile, concessa dal sovrano", "Un trattato internazionale", "Un codice di procedura"], correct: 1, explain: "Essendo flessibile, poté essere svuotato con leggi ordinarie durante il fascismo: per reazione la Costituzione del 1948 è rigida." },
+        { question: "La codificazione unitaria italiana del 1865 si ispirò principalmente:", options: ["Al modello francese", "Al modello inglese", "Al diritto canonico", "Al codice prussiano"], correct: 0, explain: "Il codice civile del Regno d'Italia ricalcava largamente il codice napoleonico, mediato dal codice albertino del 1837." }
+    ],
+    econPolitica: [
+        { question: "La curva di domanda di un bene normale è inclinata negativamente perché:", options: ["Al crescere del prezzo la quantità domandata diminuisce", "Al crescere del prezzo aumenta l'offerta", "Il reddito è costante", "I costi sono decrescenti"], correct: 0, explain: "Agiscono l'effetto sostituzione, che spinge verso beni alternativi, e l'effetto reddito, che riduce il potere d'acquisto." },
+        { question: "In concorrenza perfetta, nel lungo periodo le imprese:", options: ["Realizzano extraprofitti", "Ottengono un profitto economico nullo", "Fissano il prezzo liberamente", "Escono tutte dal mercato"], correct: 1, explain: "L'ingresso di nuove imprese erode gli extraprofitti finché il prezzo eguaglia il costo medio minimo." },
+        { question: "Il PIL misura:", options: ["Il valore dei beni e servizi finali prodotti in un paese in un periodo", "La ricchezza totale accumulata", "Il reddito medio delle famiglie", "Il valore di tutte le transazioni"], correct: 0, explain: "Si contano solo i beni finali per evitare doppi conteggi; il PIL non misura benessere, disuguaglianza né lavoro non retribuito." },
+        { question: "Una politica monetaria espansiva consiste tipicamente nel:", options: ["Alzare i tassi di interesse", "Ridurre i tassi e aumentare la liquidità", "Aumentare le imposte", "Ridurre la spesa pubblica"], correct: 1, explain: "Tassi più bassi stimolano consumi e investimenti; aumentare o ridurre imposte e spesa è invece politica fiscale." },
+        { question: "L'inflazione da domanda si verifica quando:", options: ["La domanda aggregata cresce oltre la capacità produttiva", "Aumentano i costi delle materie prime", "Cala la moneta in circolazione", "Aumenta la disoccupazione"], correct: 0, explain: "L'inflazione da costi ha invece origine dal lato dell'offerta, come nei rincari energetici." }
+    ],
+    procCivile: [
+        { question: "Il principio dispositivo nel processo civile significa che:", options: ["Il giudice decide quali cause trattare", "Sono le parti a determinare l'oggetto del giudizio e a fornire le prove", "Il processo è sempre pubblico", "Le prove sono raccolte d'ufficio"], correct: 1, explain: "Il giudice non può pronunciarsi oltre quanto chiesto (ultrapetizione) né su fatti non allegati dalle parti." },
+        { question: "L'atto con cui si introduce un ordinario processo di cognizione davanti al tribunale è:", options: ["Il ricorso", "La citazione", "Il precetto", "Il decreto ingiuntivo"], correct: 1, explain: "La citazione contiene la vocatio in ius e l'editio actionis, cioè la chiamata in giudizio e l'indicazione di domanda e ragioni." },
+        { question: "Il giudicato formale si ha quando una sentenza:", options: ["È stata depositata", "Non è più impugnabile con i mezzi ordinari", "È stata eseguita", "È stata notificata"], correct: 1, explain: "Il giudicato sostanziale è invece l'effetto vincolante dell'accertamento tra le parti, i loro eredi e aventi causa." },
+        { question: "I tre gradi ordinari di giudizio civile sono:", options: ["Tribunale, corte d'appello, Corte di cassazione", "Giudice di pace, tribunale, corte d'assise", "Tribunale, TAR, Consiglio di Stato", "Pretura, tribunale, corte costituzionale"], correct: 0, explain: "La Cassazione è giudice di legittimità: verifica la corretta applicazione della legge, non rivaluta i fatti." },
+        { question: "Il decreto ingiuntivo è un provvedimento:", options: ["Emesso dopo il contraddittorio", "Emesso inaudita altera parte su prova scritta del credito", "Di natura penale", "Non impugnabile"], correct: 1, explain: "Il debitore può proporre opposizione entro 40 giorni, e a quel punto si apre un giudizio ordinario a cognizione piena." }
+    ],
+    dirInternazionale: [
+        { question: "Le fonti principali del diritto internazionale secondo l'art. 38 dello Statuto della Corte internazionale di giustizia sono:", options: ["Trattati, consuetudine e principi generali di diritto", "Solo i trattati", "Le leggi nazionali", "Le decisioni dell'ONU"], correct: 0, explain: "Dottrina e giurisprudenza sono indicate come mezzi sussidiari per determinare le norme, non come fonti autonome." },
+        { question: "La consuetudine internazionale si forma con:", options: ["Una prassi generale accompagnata dalla convinzione della sua obbligatorietà", "Un voto a maggioranza dell'Assemblea generale", "La firma di dieci Stati", "Una sentenza della Corte"], correct: 0, explain: "Servono elemento oggettivo (diuturnitas) e soggettivo (opinio iuris): senza il secondo si tratta di mera cortesia internazionale." },
+        { question: "Il principio pacta sunt servanda stabilisce che:", options: ["I trattati vanno eseguiti in buona fede", "I trattati sono sempre revocabili", "Gli Stati non rispondono delle violazioni", "I trattati valgono anche per i terzi"], correct: 0, explain: "È codificato nella Convenzione di Vienna del 1969, che regola conclusione, interpretazione ed estinzione dei trattati." },
+        { question: "Il Consiglio di Sicurezza dell'ONU si distingue dall'Assemblea generale perché:", options: ["Può adottare decisioni vincolanti, con il potere di veto dei cinque membri permanenti", "È composto da tutti gli Stati membri", "Si occupa solo di questioni economiche", "Non può usare la forza"], correct: 0, explain: "Le risoluzioni del Capitolo VII sono vincolanti; quelle dell'Assemblea generale hanno di regola valore di raccomandazione." },
+        { question: "Nel diritto internazionale l'uso della forza è lecito:", options: ["Sempre, per tutelare interessi nazionali", "In legittima difesa o su autorizzazione del Consiglio di Sicurezza", "Solo per rappresaglia economica", "Mai, in nessun caso"], correct: 1, explain: "L'art. 2 par. 4 della Carta ONU vieta la minaccia e l'uso della forza, con le due eccezioni previste dalla Carta stessa." }
+    ],
+    psicSociale: [
+        { question: "L'errore fondamentale di attribuzione consiste nel:", options: ["Sovrastimare le cause interne del comportamento altrui e sottostimare quelle situazionali", "Ricordare meglio gli eventi recenti", "Attribuire a sé i successi", "Ignorare i dati statistici"], correct: 0, explain: "Per noi stessi tendiamo a fare il contrario, spiegando i nostri comportamenti con le circostanze: è l'asimmetria attore-osservatore." },
+        { question: "L'esperimento di Asch sul conformismo ha mostrato che:", options: ["Le persone resistono sempre al gruppo", "Molte persone danno una risposta palesemente errata per allinearsi alla maggioranza", "Il gruppo migliora sempre le prestazioni", "L'autorità non influenza il giudizio"], correct: 1, explain: "Bastava una maggioranza unanime di complici; la presenza di un solo alleato dissenziente riduceva molto il conformismo." },
+        { question: "La dissonanza cognitiva di Festinger si verifica quando:", options: ["Due cognizioni sono in contrasto e generano disagio", "Si dimentica un'informazione", "Si apprende per imitazione", "Si prova empatia"], correct: 0, explain: "Per ridurre il disagio si cambia atteggiamento, comportamento o si aggiungono giustificazioni: spesso si sceglie la via più facile." },
+        { question: "L'effetto spettatore (bystander effect) indica che:", options: ["Più persone sono presenti, minore è la probabilità che qualcuno intervenga", "Il pubblico migliora la prestazione", "Le persone aiutano sempre gli sconosciuti", "La folla rende più aggressivi"], correct: 0, explain: "Pesano la diffusione di responsabilità e l'ignoranza pluralistica: se nessuno reagisce, si conclude che non serva intervenire." },
+        { question: "Secondo l'ipotesi del contatto di Allport, il pregiudizio si riduce quando i gruppi:", options: ["Si incontrano in condizioni di pari status e con obiettivi comuni", "Vengono separati", "Competono tra loro", "Sono informati per iscritto"], correct: 0, explain: "Servono anche cooperazione e sostegno delle istituzioni: il semplice contatto, in condizioni di conflitto, può perfino peggiorare le cose." }
+    ],
+    psicSviluppo: [
+        { question: "Secondo Piaget, lo stadio sensomotorio copre indicativamente:", options: ["0-2 anni", "2-7 anni", "7-11 anni", "Dopo gli 11 anni"], correct: 0, explain: "Seguono preoperatorio (2-7), operatorio concreto (7-11) e operatorio formale, con il pensiero astratto e ipotetico-deduttivo." },
+        { question: "La conquista della permanenza dell'oggetto significa che il bambino:", options: ["Capisce che un oggetto continua a esistere anche se non lo vede", "Riconosce i colori", "Impara a parlare", "Sa contare"], correct: 0, explain: "Compare intorno agli 8-12 mesi e segna un passaggio chiave dello stadio sensomotorio." },
+        { question: "Per Vygotskij la zona di sviluppo prossimale è:", options: ["Ciò che il bambino sa già fare da solo", "La distanza tra ciò che sa fare da solo e ciò che riesce a fare con l'aiuto di un adulto o di un pari più esperto", "Il livello massimo raggiungibile da adulto", "L'area del cervello del linguaggio"], correct: 1, explain: "È il fondamento teorico dello scaffolding: l'aiuto va calibrato lì e progressivamente ritirato." },
+        { question: "Nella Strange Situation di Ainsworth si valuta:", options: ["Il quoziente intellettivo", "Lo stile di attaccamento del bambino", "Il linguaggio", "La memoria di lavoro"], correct: 1, explain: "Dalle reazioni a separazione e ricongiungimento emergono attaccamento sicuro, evitante, ambivalente e disorganizzato." },
+        { question: "Secondo Erikson, il compito evolutivo dell'adolescenza è:", options: ["Fiducia contro sfiducia", "Identità contro confusione di ruolo", "Generatività contro stagnazione", "Integrità contro disperazione"], correct: 1, explain: "Ogni età presenta una crisi tipica: la risoluzione positiva aggiunge una forza dell'Io, qui la fedeltà a valori e scelte." }
+    ],
+    psicometria: [
+        { question: "L'attendibilità di un test indica:", options: ["La coerenza e stabilità delle misure", "Se il test misura davvero il costrutto", "La sua lunghezza", "Il costo di somministrazione"], correct: 0, explain: "La validità riguarda invece il contenuto della misura: un test può essere attendibile (misura sempre allo stesso modo) ma non valido." },
+        { question: "L'alfa di Cronbach misura:", options: ["La coerenza interna di una scala", "La correlazione con un criterio esterno", "La normalità della distribuzione", "La differenza tra due medie"], correct: 0, explain: "Valori indicativamente sopra 0,70 sono considerati accettabili; valori altissimi possono però segnalare item ridondanti." },
+        { question: "La standardizzazione di un test serve a:", options: ["Rendere confrontabili i punteggi rispetto a un campione normativo", "Ridurre il numero di item", "Aumentare la difficoltà", "Eliminare la varianza"], correct: 0, explain: "I punteggi grezzi diventano punti z, T o QI: solo così si può dire se un risultato è alto o basso rispetto alla popolazione." },
+        { question: "In una distribuzione normale, circa il 95% dei casi cade entro:", options: ["Una deviazione standard dalla media", "Due deviazioni standard dalla media", "Tre deviazioni standard dalla media", "La sola media"], correct: 1, explain: "Regola empirica 68-95-99,7: entro una, due e tre deviazioni standard dalla media." },
+        { question: "La validità di costrutto di un test si valuta soprattutto:", options: ["Con analisi fattoriale e correlazioni con misure teoricamente affini o distanti", "Contando gli item", "Con il solo giudizio degli esperti", "Con il tempo di somministrazione"], correct: 0, explain: "Servono prove convergenti (correla con ciò che dovrebbe) e discriminanti (non correla con ciò che non dovrebbe)." }
+    ],
+    neuroscienze: [
+        { question: "Il potenziale d'azione di un neurone è generato principalmente da:", options: ["Ingresso di ioni sodio seguito da uscita di potassio", "Uscita di calcio", "Ingresso di cloro", "Rilascio di glucosio"], correct: 0, explain: "Superata la soglia scatta la depolarizzazione tutto-o-nulla; la ripolarizzazione avviene con l'uscita di K⁺ e la pompa sodio-potassio ripristina i gradienti." },
+        { question: "La sinapsi chimica trasmette il segnale attraverso:", options: ["Il passaggio diretto di corrente", "Il rilascio di neurotrasmettitori nello spazio sinaptico", "Onde elettromagnetiche", "La mielina"], correct: 1, explain: "Le sinapsi elettriche, con giunzioni comunicanti, esistono ma sono meno diffuse: le chimiche sono più lente ma molto più modulabili." },
+        { question: "La guaina mielinica serve a:", options: ["Aumentare la velocità di conduzione dell'impulso", "Produrre neurotrasmettitori", "Nutrire il neurone", "Eliminare le scorie"], correct: 0, explain: "La conduzione saltatoria tra i nodi di Ranvier accelera l'impulso; la sua perdita, come nella sclerosi multipla, lo rallenta o lo blocca." },
+        { question: "L'ippocampo è implicato soprattutto:", options: ["Nel controllo motorio fine", "Nella formazione di nuove memorie dichiarative", "Nella visione", "Nella respirazione"], correct: 1, explain: "Il caso del paziente H.M. mostrò che, senza ippocampo, si conservano i ricordi vecchi ma non se ne formano di nuovi." },
+        { question: "La plasticità sinaptica indica:", options: ["La capacità delle connessioni di modificarsi con l'esperienza", "La rigidità dei circuiti", "La velocità di conduzione", "Il numero di neuroni"], correct: 0, explain: "Il potenziamento a lungo termine (LTP) ne è l'esempio più studiato ed è considerato un meccanismo cellulare dell'apprendimento." }
+    ],
+    psicClinica: [
+        { question: "Il DSM-5 è:", options: ["Un manuale diagnostico e statistico dei disturbi mentali", "Un test di intelligenza", "Una scala di personalità", "Un protocollo di terapia"], correct: 0, explain: "Fornisce criteri condivisi per la diagnosi, utili a ricerca e comunicazione clinica, ma non prescrive il trattamento." },
+        { question: "La terapia cognitivo-comportamentale lavora principalmente su:", options: ["Conflitti inconsci infantili", "Pensieri disfunzionali e comportamenti che mantengono il problema", "Solo sul corpo", "Sull'albero genealogico"], correct: 1, explain: "Si usano ristrutturazione cognitiva, esposizione graduale e compiti tra le sedute: l'obiettivo è misurabile e circoscritto." },
+        { question: "L'alleanza terapeutica è:", options: ["Il legame collaborativo tra paziente e terapeuta su obiettivi e compiti condivisi", "Il contratto economico", "La diagnosi condivisa", "Il gruppo di supporto"], correct: 0, explain: "È tra i migliori predittori dell'esito, indipendentemente dall'orientamento teorico del terapeuta." },
+        { question: "Nel disturbo d'ansia generalizzata l'elemento centrale è:", options: ["Una preoccupazione eccessiva e persistente su più ambiti di vita", "Un attacco di panico isolato", "Un'ossessione specifica", "Un'allucinazione"], correct: 0, explain: "Per la diagnosi la preoccupazione deve essere difficile da controllare e presente per la maggior parte dei giorni per almeno sei mesi." },
+        { question: "Il segreto professionale dello psicologo può essere derogato:", options: ["Mai", "Nei casi previsti dalla legge, per esempio di fronte a un pericolo grave e attuale per la vita", "Su richiesta di un familiare", "Per finalità di ricerca"], correct: 1, explain: "Il codice deontologico impone riservatezza, ma prevede eccezioni in presenza di un valido consenso o di un obbligo di legge." }
+    ],
+    // ---- AREA MEDICO-BIOLOGICA E SCIENTIFICA ----
+    istologia: [
+        { question: "I quattro tessuti fondamentali del corpo umano sono:", options: ["Epiteliale, connettivo, muscolare, nervoso", "Osseo, cartilagineo, adiposo, sanguigno", "Liscio, striato, cardiaco, elastico", "Cutaneo, ghiandolare, vascolare, linfatico"], correct: 0, explain: "Tutti gli altri tessuti sono varianti di questi quattro: per esempio osso, cartilagine, sangue e tessuto adiposo sono connettivi." },
+        { question: "Quale tessuto riveste le superfici e forma le ghiandole?", options: ["Connettivo", "Epiteliale", "Muscolare", "Nervoso"], correct: 1, explain: "Le cellule epiteliali sono strettamente unite, poggiano su una membrana basale e non sono vascolarizzate: si nutrono per diffusione dal connettivo sottostante." },
+        { question: "Il tessuto muscolare striato cardiaco si distingue da quello scheletrico perché:", options: ["Non ha striature", "È involontario e le cellule sono unite da dischi intercalari", "È formato da un solo tipo di filamento", "Non consuma ATP"], correct: 1, explain: "I dischi intercalari, con le giunzioni comunicanti, permettono la propagazione rapida dell'impulso e la contrazione sincrona del miocardio." },
+        { question: "I tre foglietti embrionali che si formano con la gastrulazione sono:", options: ["Ectoderma, mesoderma, endoderma", "Epiblasto, ipoblasto, trofoblasto", "Corion, amnios, allantoide", "Neuroderma, miotomo, sclerotomo"], correct: 0, explain: "Dall'ectoderma derivano epidermide e sistema nervoso, dal mesoderma muscoli, ossa e apparato circolatorio, dall'endoderma i rivestimenti di apparato digerente e respiratorio." },
+        { question: "La matrice extracellulare è una componente caratteristica soprattutto del tessuto:", options: ["Epiteliale", "Connettivo", "Nervoso", "Muscolare"], correct: 1, explain: "Fibre (collagene, elastiche, reticolari) e sostanza fondamentale amorfa danno al connettivo la sua funzione di sostegno e connessione." }
+    ],
+    geneticaMed: [
+        { question: "In una malattia autosomica recessiva, da due genitori portatori sani la probabilità di figlio affetto è:", options: ["0%", "25%", "50%", "100%"], correct: 1, explain: "Incrocio Aa × Aa: un quarto AA sani, metà Aa portatori sani, un quarto aa affetti." },
+        { question: "Una malattia legata al cromosoma X recessiva, come l'emofilia A, colpisce più spesso:", options: ["I maschi", "Le femmine", "Entrambi allo stesso modo", "Solo gli omozigoti femmine"], correct: 0, explain: "Il maschio ha una sola X: basta un allele mutato per manifestare la malattia, mentre la femmina è di solito portatrice sana." },
+        { question: "La trisomia 21 (sindrome di Down) è causata più spesso da:", options: ["Una delezione", "Una non disgiunzione meiotica", "Una mutazione puntiforme", "Un'inversione"], correct: 1, explain: "I cromosomi omologhi non si separano correttamente durante la meiosi e il gamete porta una copia in più del cromosoma 21." },
+        { question: "Il genotipo è:", options: ["L'insieme dei caratteri osservabili", "Il corredo genetico di un individuo", "La sola mutazione presente", "Il numero di cromosomi"], correct: 1, explain: "Il fenotipo è invece la manifestazione osservabile, risultato dell'interazione tra genotipo e ambiente." },
+        { question: "La penetranza incompleta di un allele significa che:", options: ["L'allele non viene trasmesso", "Non tutti i portatori del genotipo manifestano il fenotipo", "Il gene è sempre letale", "La mutazione è somatica"], correct: 1, explain: "Va distinta dall'espressività variabile, che riguarda invece quanto intensamente la malattia si manifesta in chi la esprime." }
+    ],
+    immunologia: [
+        { question: "La differenza principale tra immunità innata e adattativa è che quest'ultima:", options: ["È più rapida", "È specifica per l'antigene e genera memoria", "Non coinvolge cellule", "Agisce solo sui virus"], correct: 1, explain: "L'innata risponde in minuti-ore in modo aspecifico; l'adattativa impiega giorni ma riconosce l'antigene e lo ricorda." },
+        { question: "Gli anticorpi sono prodotti da:", options: ["Linfociti T citotossici", "Plasmacellule derivate dai linfociti B", "Macrofagi", "Neutrofili"], correct: 1, explain: "Il linfocito B attivato prolifera e si differenzia in plasmacellule, che secernono immunoglobuline, e in cellule della memoria." },
+        { question: "Le molecole MHC di classe I presentano antigeni:", options: ["Ai linfociti T CD8+ citotossici", "Ai linfociti B", "Ai neutrofili", "Solo alle cellule NK"], correct: 0, explain: "Le MHC di classe I, presenti su quasi tutte le cellule nucleate, mostrano peptidi endogeni; le MHC di classe II presentano antigeni esogeni ai linfociti T CD4+." },
+        { question: "La memoria immunologica è il principio su cui si basa:", options: ["L'anestesia", "La vaccinazione", "La trasfusione", "La dialisi"], correct: 1, explain: "Il vaccino espone il sistema immunitario a un antigene innocuo: alla vera infezione la risposta è più rapida e intensa." },
+        { question: "Una reazione di ipersensibilità di tipo I (allergia immediata) è mediata da:", options: ["IgG", "IgE e mastociti", "Linfociti T", "Complemento"], correct: 1, explain: "Le IgE legate ai mastociti, incontrando l'allergene, provocano la degranulazione con rilascio di istamina in pochi minuti." }
+    ],
+    microbiologia: [
+        { question: "La colorazione di Gram distingue i batteri in base:", options: ["Alla forma", "Alla struttura della parete cellulare", "Alla temperatura di crescita", "Alla mobilità"], correct: 1, explain: "I Gram-positivi hanno uno spesso strato di peptidoglicano che trattiene il cristalvioletto; i Gram-negativi lo hanno sottile, con una membrana esterna, e si colorano di rosa." },
+        { question: "La differenza fondamentale tra cellula procariotica ed eucariotica è:", options: ["La presenza di DNA", "L'assenza di nucleo delimitato da membrana nei procarioti", "La presenza di ribosomi", "La capacità di dividersi"], correct: 1, explain: "I procarioti non hanno nucleo né organelli membranosi; il loro DNA è un cromosoma circolare nel citoplasma, spesso con plasmidi." },
+        { question: "Perché gli antibiotici non sono efficaci contro i virus?", options: ["I virus sono troppo grandi", "I virus non hanno le strutture cellulari su cui agiscono gli antibiotici", "Gli antibiotici agiscono solo nel sangue", "I virus sono sempre resistenti"], correct: 1, explain: "Parete, ribosomi batterici e sintesi dei folati sono bersagli assenti nei virus, che si replicano usando la cellula ospite: servono antivirali." },
+        { question: "La resistenza agli antibiotici si diffonde tra i batteri soprattutto tramite:", options: ["Sola mutazione spontanea", "Trasferimento genico orizzontale, per esempio di plasmidi", "Contatto con l'aria", "Sporulazione"], correct: 1, explain: "Coniugazione, trasformazione e trasduzione permettono di scambiare geni di resistenza anche tra specie diverse." },
+        { question: "La sterilizzazione si distingue dalla disinfezione perché:", options: ["Elimina ogni forma vivente, spore comprese", "Riduce solo i batteri patogeni", "Si usa solo sulla cute", "Non usa il calore"], correct: 0, explain: "L'autoclave a 121 °C per circa 15-20 minuti è il metodo di riferimento, perché il vapore sotto pressione uccide anche le spore." }
+    ],
+    igiene: [
+        { question: "La prevenzione primaria ha l'obiettivo di:", options: ["Diagnosticare precocemente la malattia", "Impedire che la malattia insorga", "Ridurre le complicanze di una malattia già presente", "Riabilitare il paziente"], correct: 1, explain: "Vaccinazioni e stili di vita sono prevenzione primaria; gli screening sono secondaria; la riabilitazione è terziaria." },
+        { question: "L'incidenza di una malattia misura:", options: ["I casi totali presenti in un dato momento", "I nuovi casi in un periodo di tempo", "I decessi sul totale dei malati", "La durata media della malattia"], correct: 1, explain: "La prevalenza è la fotografia dei casi esistenti, l'incidenza il flusso di nuovi casi: le malattie croniche hanno prevalenza alta e incidenza bassa." },
+        { question: "L'immunità di gregge consiste nel fatto che:", options: ["Chi è vaccinato non si ammala mai", "Una quota sufficiente di immuni riduce la circolazione dell'agente e protegge anche i non immuni", "I virus scompaiono", "I non vaccinati sviluppano immunità naturale"], correct: 1, explain: "La soglia dipende dalla contagiosità: per il morbillo serve una copertura molto alta, attorno al 95%." },
+        { question: "Uno studio caso-controllo confronta:", options: ["Esposti e non esposti seguiti nel tempo", "Soggetti malati e sani rispetto a esposizioni passate", "Due trattamenti assegnati a caso", "Popolazioni intere in un istante"], correct: 1, explain: "Parte dalla malattia e guarda indietro all'esposizione: è rapido ed economico, utile per malattie rare, ma esposto al bias di memoria." },
+        { question: "La sensibilità di un test diagnostico indica la capacità di:", options: ["Identificare correttamente i malati", "Identificare correttamente i sani", "Ridurre i costi", "Confermare la diagnosi"], correct: 0, explain: "La specificità riguarda invece i sani: un test molto sensibile ha pochi falsi negativi ed è adatto agli screening." }
+    ],
+    medInterna: [
+        { question: "Secondo le linee guida più diffuse, si parla di ipertensione arteriosa nell'adulto da valori di:", options: ["120/80 mmHg", "140/90 mmHg", "160/100 mmHg", "180/110 mmHg"], correct: 1, explain: "La misurazione ambulatoriale va confermata in più occasioni; valori tra 130-139/85-89 sono considerati normali-alti." },
+        { question: "Il diabete mellito di tipo 1 si differenzia dal tipo 2 perché:", options: ["È causato da insulino-resistenza", "È dovuto a distruzione autoimmune delle beta cellule con carenza di insulina", "Compare solo dopo i 60 anni", "Non richiede mai insulina"], correct: 1, explain: "Nel tipo 2 l'insulina c'è ma i tessuti rispondono poco; il tipo 1 esordisce spesso in età giovanile e richiede insulina fin da subito." },
+        { question: "Il valore di emoglobina glicata (HbA1c) riflette il controllo glicemico:", options: ["Delle ultime ore", "Degli ultimi 2-3 mesi", "Dell'ultimo anno", "Del solo digiuno"], correct: 1, explain: "Dipende dalla vita media dei globuli rossi: per questo è un indicatore più stabile della glicemia puntuale." },
+        { question: "La triade classica dello scompenso cardiaco congestizio comprende:", options: ["Dispnea, edemi declivi, astenia", "Febbre, tosse, rash", "Poliuria, polidipsia, calo ponderale", "Ittero, prurito, feci chiare"], correct: 0, explain: "La congestione a monte del cuore sinistro dà dispnea, quella del destro edemi periferici e turgore giugulare." },
+        { question: "La BPCO si caratterizza per:", options: ["Ostruzione bronchiale persistente e poco reversibile", "Ostruzione completamente reversibile", "Restrizione polmonare pura", "Assenza di sintomi respiratori"], correct: 0, explain: "La spirometria mostra un rapporto VEMS/CVF ridotto che non si normalizza dopo broncodilatatore, a differenza dell'asma." }
+    ],
+    chirurgiaGen: [
+        { question: "Il segno di Blumberg positivo nella fossa iliaca destra orienta verso:", options: ["Appendicite acuta", "Colecistite", "Pancreatite", "Ulcera gastrica"], correct: 0, explain: "È il dolore alla brusca decompressione della parete: segnala irritazione peritoneale nella sede corrispondente." },
+        { question: "L'asepsi in sala operatoria consiste nel:", options: ["Ridurre i germi sulla cute del solo paziente", "Prevenire la contaminazione del campo operatorio mantenendo sterili strumenti e operatori", "Usare antibiotici dopo l'intervento", "Disinfettare solo le mani"], correct: 1, explain: "L'antisepsi elimina i microrganismi presenti, l'asepsi evita che ne arrivino di nuovi: insieme riducono le infezioni del sito chirurgico." },
+        { question: "La chirurgia laparoscopica rispetto a quella aperta comporta di norma:", options: ["Degenza più lunga", "Minore dolore postoperatorio e recupero più rapido", "Maggiore perdita ematica", "Cicatrici più estese"], correct: 1, explain: "Gli accessi piccoli riducono il trauma della parete; richiede però strumentazione dedicata e curva di apprendimento." },
+        { question: "L'ernia inguinale consiste nella:", options: ["Fuoriuscita di un viscere attraverso un punto debole della parete addominale", "Infiammazione del peritoneo", "Ostruzione del piccolo intestino da aderenze", "Dilatazione di un'arteria"], correct: 0, explain: "Se il contenuto non è riducibile e la vascolarizzazione è compromessa si parla di ernia strozzata, un'urgenza chirurgica." },
+        { question: "Nel paziente politraumatizzato la valutazione primaria segue lo schema:", options: ["ABCDE", "PQRST", "SBAR", "FAST"], correct: 0, explain: "Airway, Breathing, Circulation, Disability, Exposure: si affronta prima ciò che uccide prima." }
+    ],
+    calcoloNum: [
+        { question: "L'errore di troncamento in un metodo numerico deriva:", options: ["Dalla rappresentazione finita dei numeri nel calcolatore", "Dall'aver approssimato un procedimento infinito con un numero finito di passi", "Da un errore di programmazione", "Dai dati sperimentali"], correct: 1, explain: "L'errore dovuto alla rappresentazione finita dei numeri è invece l'errore di arrotondamento: i due si sommano nel risultato." },
+        { question: "Il metodo di bisezione per trovare uno zero richiede che nell'intervallo [a,b] la funzione:", options: ["Sia costante", "Sia continua e assuma segni opposti agli estremi", "Sia derivabile due volte", "Sia lineare"], correct: 1, explain: "È il teorema degli zeri: la convergenza è garantita ma lenta, perché a ogni passo l'intervallo si dimezza." },
+        { question: "Rispetto alla bisezione, il metodo di Newton:", options: ["Converge più lentamente", "Converge tipicamente più in fretta ma richiede la derivata e un buon punto iniziale", "Non richiede alcuna ipotesi", "Funziona solo su polinomi"], correct: 1, explain: "La convergenza è quadratica vicino alla radice, ma con derivata quasi nulla o punto iniziale lontano il metodo può divergere." },
+        { question: "Un problema si dice mal condizionato quando:", options: ["Piccole variazioni nei dati causano grandi variazioni nel risultato", "Non ha soluzione", "Richiede troppa memoria", "Ha infinite soluzioni"], correct: 0, explain: "È una proprietà del problema, non dell'algoritmo: nessun metodo, per quanto stabile, può rimediare del tutto a un cattivo condizionamento." },
+        { question: "Il metodo dei trapezi serve a:", options: ["Risolvere sistemi lineari", "Approssimare un integrale definito", "Interpolare dati", "Calcolare autovalori"], correct: 1, explain: "Approssima l'area sotto la curva con trapezi; la formula di Simpson, usando archi di parabola, è in genere più accurata a parità di suddivisioni." }
+    ],
     // ---- INGEGNERIA (lotto 2: meccanica, civile, gestionale) ----
     disegnoTecnico: [
         { question: "Nel metodo europeo di rappresentazione (primo diedro), la vista da sinistra si disegna:", options: ["A sinistra della vista frontale", "A destra della vista frontale", "Sopra la vista frontale", "Sotto la vista frontale"], correct: 1, explain: "Nel primo diedro l'oggetto sta tra osservatore e piano di proiezione, quindi ogni vista finisce dalla parte opposta rispetto alla direzione di osservazione." },
@@ -1999,6 +2170,183 @@ const QUIZZES = {
 };
 
 const FLASHCARDS = {
+    // ---- AREA GIURIDICA, PSICOLOGICA E UMANISTICA ----
+    storiaDiritto: [
+        { front: "Glossatori e commentatori", back: "A Bologna dal XII secolo si studiano i testi giustinianei con glosse (Irnerio, Accursio) e poi con commenti applicativi (Bartolo, Baldo)." },
+        { front: "Ius commune e iura propria", back: "Diritto romano-canonico comune all'Europa, affiancato da statuti cittadini e consuetudini locali." },
+        { front: "Code Napoléon (1804)", back: "Primo codice civile moderno: uguaglianza formale, proprietà individuale, libertà contrattuale. Modello per i codici europei." },
+        { front: "Statuto Albertino (1848)", back: "Costituzione flessibile e ottriata, cioè concessa dal sovrano: modificabile con legge ordinaria." },
+        { front: "Costituzione del 1948", back: "Rigida e votata da un'assemblea costituente: serve un procedimento aggravato per modificarla, con il controllo della Corte costituzionale." }
+    ],
+    filosofia: [
+        { front: "Giusnaturalismo e giuspositivismo", back: "Per il primo esiste un diritto naturale precedente allo Stato; per il secondo è diritto solo ciò che è posto secondo procedure riconosciute." },
+        { front: "Kelsen e la norma fondamentale", back: "L'ordinamento è una piramide: ogni norma è valida perché conforme a quella superiore, fino alla Grundnorm presupposta." },
+        { front: "Contrattualismo", back: "Hobbes (sicurezza), Locke (tutela dei diritti naturali), Rousseau (volontà generale): l'autorità nasce da un patto tra gli individui." },
+        { front: "Legge di Hume", back: "Dall'essere non si deduce il dover essere: confondere fatti e norme è la fallacia naturalistica." },
+        { front: "Rawls e il velo di ignoranza", back: "Scegliere le regole senza sapere quale posizione si occuperà porta a principi equi, a vantaggio anche di chi sta peggio." }
+    ],
+    econPolitica: [
+        { front: "Domanda e offerta", back: "La domanda cala al crescere del prezzo, l'offerta cresce: il punto d'incontro fissa prezzo e quantità di equilibrio." },
+        { front: "Elasticità della domanda", back: "Variazione percentuale della quantità rispetto a quella del prezzo: i beni di prima necessità sono poco elastici." },
+        { front: "Concorrenza perfetta e monopolio", back: "Nella prima molte imprese prendono il prezzo dal mercato; nel monopolio un solo produttore lo fissa riducendo la quantità." },
+        { front: "PIL", back: "Valore dei beni e servizi finali prodotti in un paese in un periodo. Non misura benessere né disuguaglianza." },
+        { front: "Politica monetaria e fiscale", back: "La prima agisce su tassi e liquidità (banca centrale), la seconda su imposte e spesa pubblica (governo)." }
+    ],
+    procCivile: [
+        { front: "Principio dispositivo", back: "Sono le parti a fissare l'oggetto del giudizio e a fornire le prove: il giudice non va oltre la domanda." },
+        { front: "Citazione e ricorso", back: "Due modi di introdurre la causa: con la citazione si chiama direttamente la controparte, con il ricorso ci si rivolge prima al giudice." },
+        { front: "Giudicato formale e sostanziale", back: "Formale: la sentenza non è più impugnabile con i mezzi ordinari. Sostanziale: l'accertamento vincola le parti e i loro aventi causa." },
+        { front: "Gradi di giudizio", back: "Tribunale, corte d'appello e Corte di cassazione, che giudica solo la corretta applicazione della legge." },
+        { front: "Procedimento monitorio", back: "Il decreto ingiuntivo si ottiene su prova scritta senza contraddittorio; il debitore può fare opposizione entro 40 giorni." }
+    ],
+    dirInternazionale: [
+        { front: "Fonti del diritto internazionale", back: "Trattati, consuetudine e principi generali di diritto; dottrina e giurisprudenza sono mezzi sussidiari (art. 38 Statuto CIG)." },
+        { front: "Consuetudine internazionale", back: "Prassi generale e costante (diuturnitas) unita alla convinzione della sua obbligatorietà (opinio iuris)." },
+        { front: "Pacta sunt servanda", back: "I trattati vanno eseguiti in buona fede: principio cardine codificato nella Convenzione di Vienna del 1969." },
+        { front: "Organi principali dell'ONU", back: "Assemblea generale, Consiglio di Sicurezza (decisioni vincolanti, 5 membri permanenti con veto), Segretariato, Corte internazionale di giustizia." },
+        { front: "Divieto dell'uso della forza", back: "Vietato dall'art. 2.4 della Carta ONU, salvo legittima difesa e autorizzazione del Consiglio di Sicurezza." }
+    ],
+    psicSociale: [
+        { front: "Errore fondamentale di attribuzione", back: "Spiegare il comportamento altrui con il carattere sottovalutando la situazione; per noi stessi facciamo il contrario." },
+        { front: "Conformismo (Asch)", back: "Molte persone allineano il proprio giudizio a una maggioranza unanime anche quando è palesemente errato." },
+        { front: "Dissonanza cognitiva (Festinger)", back: "Il contrasto tra due cognizioni genera disagio: si riduce cambiando atteggiamento, comportamento o aggiungendo giustificazioni." },
+        { front: "Effetto spettatore", back: "Più testimoni sono presenti, meno probabile è l'intervento: pesano diffusione di responsabilità e ignoranza pluralistica." },
+        { front: "Ipotesi del contatto (Allport)", back: "Il pregiudizio cala se i gruppi si incontrano a pari status, con obiettivi comuni, cooperazione e sostegno istituzionale." }
+    ],
+    psicSviluppo: [
+        { front: "Stadi di Piaget", back: "Sensomotorio (0-2), preoperatorio (2-7), operatorio concreto (7-11), operatorio formale (dagli 11 anni)." },
+        { front: "Permanenza dell'oggetto", back: "Tra gli 8 e i 12 mesi il bambino capisce che un oggetto continua a esistere anche quando non lo vede." },
+        { front: "Zona di sviluppo prossimale", back: "Distanza tra ciò che il bambino fa da solo e ciò che riesce a fare con l'aiuto di un adulto o di un pari più esperto (Vygotskij)." },
+        { front: "Stili di attaccamento", back: "Sicuro, evitante, ambivalente e disorganizzato: si osservano nella Strange Situation di Ainsworth." },
+        { front: "Stadi psicosociali di Erikson", back: "Otto crisi lungo la vita: in adolescenza identità contro confusione di ruolo." }
+    ],
+    psicometria: [
+        { front: "Attendibilità e validità", back: "L'attendibilità è la costanza della misura, la validità è misurare davvero ciò che si intende misurare." },
+        { front: "Alfa di Cronbach", back: "Indice di coerenza interna di una scala: valori indicativamente sopra 0,70 sono considerati accettabili." },
+        { front: "Standardizzazione", back: "Trasformare i punteggi grezzi in punteggi confrontabili (z, T, QI) rispetto a un campione normativo." },
+        { front: "Distribuzione normale", back: "Regola 68-95-99,7: entro una, due e tre deviazioni standard dalla media." },
+        { front: "Validità convergente e discriminante", back: "Il test correla con misure dello stesso costrutto e non correla con misure di costrutti diversi." }
+    ],
+    neuroscienze: [
+        { front: "Potenziale d'azione", back: "Depolarizzazione tutto-o-nulla da ingresso di Na⁺, poi ripolarizzazione per uscita di K⁺." },
+        { front: "Sinapsi chimica", back: "Il segnale passa tramite neurotrasmettitori rilasciati nello spazio sinaptico e legati ai recettori postsinaptici." },
+        { front: "Mielina", back: "Guaina che permette la conduzione saltatoria tra i nodi di Ranvier e accelera molto l'impulso nervoso." },
+        { front: "Ippocampo", back: "Struttura chiave per la formazione di nuove memorie dichiarative, come mostrò il caso del paziente H.M." },
+        { front: "Plasticità sinaptica", back: "Le connessioni si rafforzano o indeboliscono con l'esperienza: il potenziamento a lungo termine (LTP) ne è l'esempio più studiato." }
+    ],
+    psicClinica: [
+        { front: "DSM-5", back: "Manuale diagnostico e statistico dei disturbi mentali: fornisce criteri condivisi, non indica il trattamento." },
+        { front: "Terapia cognitivo-comportamentale", back: "Lavora su pensieri disfunzionali e comportamenti di mantenimento, con ristrutturazione cognitiva ed esposizione graduale." },
+        { front: "Alleanza terapeutica", back: "Legame collaborativo su obiettivi e compiti condivisi: è tra i migliori predittori dell'esito, in ogni orientamento." },
+        { front: "Disturbo d'ansia generalizzata", back: "Preoccupazione eccessiva, difficile da controllare, su più ambiti, per la maggior parte dei giorni da almeno sei mesi." },
+        { front: "Segreto professionale", back: "Obbligo di riservatezza dello psicologo, derogabile solo con valido consenso o nei casi previsti dalla legge." }
+    ],
+    antropologia: [
+        { front: "Relativismo culturale", back: "Metodo che comprende una pratica dentro il suo contesto, invece di giudicarla con i criteri della propria cultura." },
+        { front: "Etnocentrismo", back: "Tendenza a considerare la propria cultura come misura di tutte le altre." },
+        { front: "Osservazione partecipante", back: "Permanenza prolungata sul campo prendendo parte alla vita quotidiana: da qui nasce l'etnografia." },
+        { front: "Il dono (Mauss)", back: "Fatto sociale totale fondato su tre obblighi: dare, ricevere, ricambiare. Crea e mantiene legami." },
+        { front: "Riti di passaggio (Van Gennep)", back: "Tre fasi: separazione, margine o liminalità, aggregazione al nuovo status." }
+    ],
+    letteratura: [
+        { front: "Le tre corone", back: "Dante, Petrarca e Boccaccio: fondano la tradizione letteraria italiana nel Trecento." },
+        { front: "Struttura della Divina Commedia", back: "Tre cantiche (Inferno, Purgatorio, Paradiso), 100 canti in terzine incatenate di endecasillabi." },
+        { front: "Il Canzoniere di Petrarca", back: "Raccolta di 366 componimenti in volgare incentrati su Laura e sul conflitto interiore del poeta." },
+        { front: "Il Decameron", back: "Cento novelle raccontate in dieci giorni da dieci giovani fuggiti dalla peste del 1348, con una cornice narrativa." },
+        { front: "Verismo e Naturalismo", back: "Verga porta in Italia la poetica del vero con l'impersonalità e la regressione del narratore nel mondo dei personaggi." }
+    ],
+    letteraturaLat: [
+        { front: "Eneide", back: "Poema epico di Virgilio in dodici libri: viaggio (come l'Odissea) nei primi sei, guerra (come l'Iliade) negli ultimi sei." },
+        { front: "Metri principali", back: "Esametro dattilico per l'epica, distico elegiaco (esametro + pentametro) per l'elegia." },
+        { front: "De rerum natura", back: "Poema didascalico di Lucrezio: espone l'epicureismo per liberare gli uomini dalla paura degli dèi e della morte." },
+        { front: "Cicerone", back: "Massimo oratore latino, autore di orazioni (Catilinarie, Verrine) e di opere retoriche e filosofiche." },
+        { front: "Satira latina", back: "Orazio con tono ironico e misurato, Giovenale con l'indignatio: entrambi guardano ai vizi della società." }
+    ],
+    storiaMedievale: [
+        { front: "476 d.C.", back: "Deposizione di Romolo Augustolo: data convenzionale della fine dell'Impero romano d'Occidente." },
+        { front: "Feudalesimo", back: "Il signore concede un beneficio al vassallo in cambio di fedeltà e servizio armato; con Quierzy (877) i feudi diventano ereditari." },
+        { front: "Lotta per le investiture", back: "Scontro tra papato e impero sulla nomina dei vescovi: si chiude con il concordato di Worms (1122)." },
+        { front: "Comuni italiani", back: "Nascono tra XI e XII secolo: fase consolare, podestarile e popolare, poi il passaggio alle signorie." },
+        { front: "Peste nera (1347-1351)", back: "Crollo demografico che fa salire i salari e indebolisce i vincoli servili, accelerando la crisi del feudalesimo." }
+    ],
+    storiaModerna: [
+        { front: "Pace di Westfalia (1648)", back: "Chiude la guerra dei Trent'anni e afferma la sovranità territoriale degli Stati: nasce il sistema internazionale moderno." },
+        { front: "Rivoluzione scientifica", back: "Galileo e Newton: metodo sperimentale e matematizzazione della natura al posto del principio di autorità." },
+        { front: "Assolutismo", back: "Potere concentrato nel sovrano, corte accentrata (Versailles) e burocrazia fedele, con la nobiltà legata al favore regio." },
+        { front: "1789", back: "Rivoluzione francese e Dichiarazione dei diritti dell'uomo e del cittadino." },
+        { front: "Prima rivoluzione industriale", back: "Inghilterra, seconda metà del Settecento: macchina a vapore, tessile e siderurgia trasformano economia e società." }
+    ],
+    glottologia: [
+        { front: "Segno linguistico (Saussure)", back: "Unione arbitraria di significante (immagine acustica) e significato (concetto)." },
+        { front: "Langue e parole", back: "La langue è il sistema condiviso dalla comunità, la parole l'atto linguistico individuale e concreto." },
+        { front: "Metodo comparativo", back: "Confronto sistematico tra lingue imparentate per ricostruire la lingua madre: così è stato ricostruito l'indoeuropeo." },
+        { front: "Fonema", back: "Unità sonora minima capace di distinguere significati: lo si prova con le coppie minime come pane/cane." },
+        { front: "Sincronia e diacronia", back: "Studio della lingua in un dato momento oppure nella sua evoluzione nel tempo." }
+    ],
+    geografia: [
+        { front: "Latitudine e longitudine", back: "La latitudine misura la distanza angolare dall'equatore (0°-90°), la longitudine quella dal meridiano di Greenwich (0°-180°)." },
+        { front: "Clima mediterraneo", back: "Estati calde e secche, inverni miti e piovosi: vegetazione adattata all'aridità estiva, come la macchia." },
+        { front: "Densità di popolazione", back: "Abitanti per km²: un valore medio può nascondere distribuzioni molto disomogenee." },
+        { front: "Urbanizzazione", back: "Crescita della quota di popolazione che vive in città: dal 2007 circa riguarda più della metà della popolazione mondiale." },
+        { front: "Transizione demografica", back: "Passaggio da alta natalità e alta mortalità a valori bassi; nella fase intermedia la popolazione cresce rapidamente." }
+    ],
+    // ---- AREA MEDICO-BIOLOGICA E SCIENTIFICA ----
+    istologia: [
+        { front: "I quattro tessuti fondamentali", back: "Epiteliale, connettivo, muscolare e nervoso: tutti gli altri ne sono varianti." },
+        { front: "Caratteristiche dell'epitelio", back: "Cellule strettamente unite, poggiate su una membrana basale e non vascolarizzate: si nutrono per diffusione dal connettivo." },
+        { front: "Tipi di tessuto muscolare", back: "Scheletrico (striato, volontario), cardiaco (striato, involontario, con dischi intercalari), liscio (involontario, nei visceri)." },
+        { front: "Matrice extracellulare", back: "Fibre collagene, elastiche e reticolari immerse nella sostanza fondamentale: è ciò che caratterizza i tessuti connettivi." },
+        { front: "Foglietti embrionali", back: "Ectoderma (cute e sistema nervoso), mesoderma (muscoli, ossa, circolazione), endoderma (rivestimenti di digerente e respiratorio)." }
+    ],
+    geneticaMed: [
+        { front: "Genotipo e fenotipo", back: "Il genotipo è il corredo genetico, il fenotipo la manifestazione osservabile, frutto anche dell'ambiente." },
+        { front: "Eredità autosomica recessiva", back: "Da due portatori sani: 25% affetti, 50% portatori, 25% sani. Colpisce maschi e femmine allo stesso modo." },
+        { front: "Eredità legata all'X recessiva", back: "I maschi, avendo una sola X, si ammalano con un solo allele mutato; le femmine sono in genere portatrici sane." },
+        { front: "Non disgiunzione", back: "Mancata separazione dei cromosomi in meiosi: è la causa più frequente delle trisomie, come la trisomia 21." },
+        { front: "Penetranza ed espressività", back: "La penetranza dice quanti portatori manifestano il fenotipo, l'espressività quanto intensamente lo manifestano." }
+    ],
+    immunologia: [
+        { front: "Immunità innata e adattativa", back: "L'innata è rapida e aspecifica; l'adattativa è più lenta ma specifica per l'antigene e lascia memoria." },
+        { front: "Linfociti B e T", back: "I B producono anticorpi tramite le plasmacellule; i T CD4+ coordinano la risposta, i CD8+ uccidono le cellule infette." },
+        { front: "MHC di classe I e II", back: "Classe I su quasi tutte le cellule, presenta antigeni endogeni ai CD8+; classe II sulle cellule presentanti, antigeni esogeni ai CD4+." },
+        { front: "Memoria immunologica", back: "Cellule memoria permettono una risposta più rapida e intensa al secondo incontro: è il principio dei vaccini." },
+        { front: "Ipersensibilità di tipo I", back: "Allergia immediata mediata da IgE e mastociti, con rilascio di istamina in pochi minuti dall'esposizione." }
+    ],
+    microbiologia: [
+        { front: "Colorazione di Gram", back: "Distingue i batteri per la parete: Gram-positivi viola (peptidoglicano spesso), Gram-negativi rosa (parete sottile e membrana esterna)." },
+        { front: "Procarioti ed eucarioti", back: "I procarioti non hanno nucleo né organelli membranosi: DNA circolare libero nel citoplasma, spesso con plasmidi." },
+        { front: "Perché gli antibiotici non agiscono sui virus", back: "I loro bersagli (parete, ribosomi batterici) nei virus non esistono: servono farmaci antivirali." },
+        { front: "Antibiotico-resistenza", back: "Si diffonde per mutazione ma soprattutto per trasferimento genico orizzontale: coniugazione, trasformazione, trasduzione." },
+        { front: "Sterilizzazione e disinfezione", back: "La sterilizzazione elimina ogni forma vivente, spore comprese (autoclave a 121 °C); la disinfezione riduce solo la carica microbica." }
+    ],
+    igiene: [
+        { front: "Livelli di prevenzione", back: "Primaria: evitare la malattia. Secondaria: diagnosi precoce (screening). Terziaria: limitare complicanze e disabilità." },
+        { front: "Incidenza e prevalenza", back: "L'incidenza conta i nuovi casi in un periodo, la prevalenza tutti i casi presenti in un dato momento." },
+        { front: "Immunità di gregge", back: "Quando una quota sufficiente di popolazione è immune, l'agente circola poco e sono protetti anche i non immuni." },
+        { front: "Studi epidemiologici", back: "Trasversali (istantanea), caso-controllo (dalla malattia all'esposizione), coorte (dall'esposizione alla malattia), sperimentali randomizzati." },
+        { front: "Sensibilità e specificità", back: "La sensibilità individua correttamente i malati, la specificità i sani: negli screening si privilegia la sensibilità." }
+    ],
+    medInterna: [
+        { front: "Soglia di ipertensione", back: "Nell'adulto si parla di ipertensione da 140/90 mmHg in su, confermati in più misurazioni." },
+        { front: "Diabete tipo 1 e tipo 2", back: "Tipo 1: distruzione autoimmune delle beta cellule e carenza di insulina. Tipo 2: insulino-resistenza, spesso con sovrappeso." },
+        { front: "Emoglobina glicata", back: "Riflette il controllo glicemico degli ultimi 2-3 mesi: più stabile della singola glicemia." },
+        { front: "Scompenso cardiaco", back: "Dispnea ed edemi declivi da congestione: sinistro soprattutto polmonare, destro soprattutto periferico." },
+        { front: "BPCO e asma", back: "Entrambe ostruttive, ma nell'asma l'ostruzione è reversibile dopo broncodilatatore, nella BPCO no o solo in parte." }
+    ],
+    chirurgiaGen: [
+        { front: "Segno di Blumberg", back: "Dolore alla brusca decompressione della parete: indica irritazione peritoneale, tipico dell'appendicite in fossa iliaca destra." },
+        { front: "Asepsi e antisepsi", back: "L'antisepsi elimina i germi presenti, l'asepsi impedisce che ne arrivino di nuovi nel campo operatorio." },
+        { front: "Laparoscopia", back: "Accessi minimi con ottica e strumenti dedicati: meno dolore, degenza più breve, cicatrici ridotte." },
+        { front: "Ernia e strozzamento", back: "Fuoriuscita di un viscere da un punto debole della parete; se irriducibile e ischemica diventa urgenza chirurgica." },
+        { front: "Schema ABCDE", back: "Airway, Breathing, Circulation, Disability, Exposure: ordine di valutazione del politraumatizzato." }
+    ],
+    calcoloNum: [
+        { front: "Errore di troncamento e di arrotondamento", back: "Il primo nasce dall'approssimare un procedimento infinito, il secondo dalla rappresentazione finita dei numeri." },
+        { front: "Metodo di bisezione", back: "Serve una funzione continua con segni opposti agli estremi: converge sempre, ma lentamente (l'intervallo si dimezza a ogni passo)." },
+        { front: "Metodo di Newton", back: "Usa la tangente: convergenza quadratica vicino alla radice, ma richiede la derivata e un buon punto di partenza." },
+        { front: "Condizionamento e stabilità", back: "Il condizionamento è proprietà del problema, la stabilità dell'algoritmo: un problema mal condizionato resta difficile per qualsiasi metodo." },
+        { front: "Formule di quadratura", back: "Trapezi (segmenti) e Simpson (archi di parabola) approssimano un integrale definito; Simpson è in genere più accurato." }
+    ],
     // ---- INGEGNERIA (lotto 2: meccanica, civile, gestionale) ----
     disegnoTecnico: [
         { front: "Proiezioni ortogonali", back: "Rappresentazione dell'oggetto su piani perpendicolari tra loro: pianta, prospetto e vista laterale." },
