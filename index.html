@@ -640,33 +640,39 @@ footer{border-top:1px solid var(--line);padding:40px 0;color:var(--dim);font-siz
   <div class="wrap">
     <span class="tag">COSA C'È DENTRO</span>
     <h2>Gli strumenti che tenevi<br>in cinque schede diverse.</h2>
-    <div class="feats">
-      <div class="feat">
+    <div class="feats bento">
+      <div class="feat feat-lg" data-glow="lime">
+        <div class="feat-viz feat-viz-presence" aria-hidden="true">
+          <span class="pdot"><i></i></span><span class="pdot"><i></i></span><span class="pdot"><i></i></span>
+          <span class="pline"></span>
+        </div>
         <div class="fnum">PRESENZA</div>
         <h3>Vedi chi c'è davvero</h3>
         <p>La lista degli studenti in lobby è in tempo reale. Se il pallino è verde, quella persona sta studiando adesso.</p>
       </div>
-      <div class="feat">
+      <div class="feat feat-wide" data-glow="orange">
         <div class="fnum">VIDEO</div>
         <h3>Videochiamata integrata</h3>
         <p>Una stanza video per ogni materia, dentro l'app. Nessun link da girare, nessun account in più.</p>
       </div>
-      <div class="feat">
+      <div class="feat" data-glow="lime">
+        <svg class="feat-ring" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="18"/><circle class="ring-fill" cx="22" cy="22" r="18"/></svg>
         <div class="fnum">TIMER</div>
         <h3>Sessioni che contano</h3>
         <p>Pomodoro da 25 o 50 minuti. Ogni sessione completata costruisce la tua torre e vale XP.</p>
       </div>
-      <div class="feat">
+      <div class="feat" data-glow="orange">
+        <div class="feat-eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
         <div class="fnum">AUDIO</div>
         <h3>Sei ambienti sonori</h3>
         <p>Pioggia, camino, caffetteria, bosco, cascata, grilli. Registrazioni vere, non rumore sintetico.</p>
       </div>
-      <div class="feat">
+      <div class="feat feat-wide" data-glow="lime">
         <div class="fnum">RIPASSO</div>
         <h3>Quiz e flashcard</h3>
         <p>Ripetizione spaziata: le carte difficili tornano più spesso, quelle che sai spariscono dal mazzo.</p>
       </div>
-      <div class="feat">
+      <div class="feat feat-wide" data-glow="orange">
         <div class="fnum">PROGRESSI</div>
         <h3>Streak e livelli</h3>
         <p>Sei livelli, da Matricola a Leggenda. La streak conta i giorni consecutivi in cui hai studiato davvero.</p>
@@ -824,30 +830,6 @@ footer{border-top:1px solid var(--line);padding:40px 0;color:var(--dim);font-siz
   </div>
 </footer>
 
-<script>
-const nav = document.getElementById('nav');
-addEventListener('scroll', () => nav.classList.toggle('on', scrollY > 8), {passive:true});
-
-const sky = document.getElementById('sky');
-if (sky) {
-  let h = '';
-  for (let i = 0; i < 40; i++) {
-    h += `<span style="left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${(Math.random()*3.5).toFixed(2)}s"></span>`;
-  }
-  sky.innerHTML = h;
-}
-
-const io = new IntersectionObserver(es => {
-  es.forEach(e => {
-    if (e.isIntersecting) { e.target.style.opacity='1'; e.target.style.transform='none'; io.unobserve(e.target); }
-  });
-}, {threshold:.1});
-document.querySelectorAll('.feat, .aud, .step').forEach((el,i) => {
-  el.style.opacity='0'; el.style.transform='translateY(12px)';
-  el.style.transition=`opacity .45s ease ${(i%3)*60}ms, transform .45s cubic-bezier(.16,1,.3,1) ${(i%3)*60}ms`;
-  io.observe(el);
-});
-</script>
 <script defer src="js/landing-fx.js"></script>
 </body>
 </html>

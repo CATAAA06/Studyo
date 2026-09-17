@@ -212,3 +212,78 @@ html:not(.fx) .rot-item:not(:first-child) { visibility: hidden; }
   .fpw-room { margin-top: 0; }
 }
 .fpw.is-offscreen .sky span, .fpw.is-offscreen .fpw-rain, .fpw.is-offscreen .fpw-glow { animation-play-state: paused; }
+
+/* ============================================= 5. REVEAL ON SCROLL (sistema unico) =============================================
+   html.fx-js lo mette lo script: se non parte, niente resta nascosto. */
+.fx-js [data-reveal] {
+  opacity: 0; translate: 0 16px;
+  transition: opacity .7s var(--ease) var(--d, 0ms), translate .7s var(--ease) var(--d, 0ms);
+}
+.fx-js [data-reveal].is-in { opacity: 1; translate: 0 0; }
+
+/* ============================================= 3. COSA C'È DENTRO — BENTO ============================================= */
+.feats.bento { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-flow: dense; gap: 14px; }
+.bento .feat-lg   { grid-column: span 2; grid-row: span 2; }
+.bento .feat-wide { grid-column: span 2; }
+
+.bento .feat {
+  --glow: var(--lime); --glow-soft: var(--glow-lime);
+  position: relative; overflow: hidden; isolation: isolate;
+  display: flex; flex-direction: column; justify-content: flex-end; min-height: 188px;
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: opacity .7s var(--ease) var(--d, 0ms), translate .7s var(--ease) var(--d, 0ms),
+              transform .5s var(--ease), border-color var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease);
+}
+.bento .feat[data-glow="orange"] { --glow: var(--orange); --glow-soft: var(--glow-orange); }
+.bento .feat-lg .feat-viz { margin-bottom: auto; }
+.bento .feat-lg h3 { font-size: clamp(22px, 2.4vw, 30px); }
+.bento .feat-lg p { font-size: 16px; max-width: 420px; }
+
+/* Luce che segue il cursore dentro la card */
+.bento .feat::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(420px circle at var(--gx, 50%) var(--gy, 0%), var(--glow-soft), transparent 45%);
+  opacity: 0; transition: opacity var(--t-med) var(--ease);
+}
+.bento .feat:hover { border-color: var(--glow); box-shadow: 0 0 0 1px var(--glow), 0 18px 50px -24px var(--glow-soft); }
+.bento .feat:hover::before { opacity: .55; }
+.bento .feat:hover .fnum { color: var(--glow); }
+.bento .feat .fnum { transition: color var(--t-med) var(--ease); }
+.bento .feat[data-glow="orange"] .fnum { color: var(--lime); }
+/* Touch: il bordo si accende alla pressione, niente inclinazione */
+.bento .feat:active { border-color: var(--glow); }
+
+/* Presenza: tre pallini che "respirano" (nessun numero) */
+.feat-viz-presence { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; }
+.pdot { position: relative; width: 38px; height: 38px; border-radius: 50%; background: #1e1e23; border: 1px solid var(--line-2); }
+.pdot i { position: absolute; right: -1px; bottom: -1px; width: 11px; height: 11px; border-radius: 50%; background: #22C55E; border: 2px solid var(--surface); }
+.pdot i::after { content: ''; position: absolute; inset: -2px; border-radius: 50%; background: #22C55E; opacity: .5; animation: ping 2.4s var(--ease) infinite; }
+.pdot:nth-child(2) i::after { animation-delay: .8s; }
+.pdot:nth-child(3) i::after { animation-delay: 1.6s; }
+@keyframes ping { 0% { transform: scale(1); opacity: .5; } 70%, 100% { transform: scale(2.6); opacity: 0; } }
+.pline { flex: 1; height: 1px; background: linear-gradient(90deg, var(--line-2), transparent); }
+
+/* Timer: arco che gira (transform) */
+.feat-ring { width: 44px; height: 44px; margin-bottom: auto; fill: none; stroke-width: 3; }
+.feat-ring circle { stroke: #26262B; }
+.feat-ring .ring-fill { stroke: var(--lime); stroke-dasharray: 36 113; stroke-linecap: round; transform-origin: 22px 22px; animation: spin 6s linear infinite; }
+
+/* Audio: equalizzatore (scaleY) */
+.feat-eq { display: flex; align-items: flex-end; gap: 4px; height: 30px; margin-bottom: auto; }
+.feat-eq i { width: 5px; height: 100%; border-radius: 2px; background: var(--orange); transform-origin: bottom; animation: eq 1.3s var(--ease-in-out) infinite alternate; }
+.feat-eq i:nth-child(2) { animation-delay: -.3s; } .feat-eq i:nth-child(3) { animation-delay: -.7s; }
+.feat-eq i:nth-child(4) { animation-delay: -.2s; } .feat-eq i:nth-child(5) { animation-delay: -.9s; }
+@keyframes eq { from { transform: scaleY(.25); } to { transform: scaleY(1); } }
+
+/* Animazioni decorative in pausa quando la sezione non è visibile */
+.bento.is-offscreen *, .bento.is-offscreen *::after { animation-play-state: paused !important; }
+
+@media (max-width: 980px) {
+  .feats.bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bento .feat-lg { grid-row: span 1; }
+}
+@media (max-width: 640px) {
+  .feats.bento { grid-template-columns: 1fr; }
+  .bento .feat-lg, .bento .feat-wide { grid-column: auto; }
+  .bento .feat { min-height: 0; }
+}

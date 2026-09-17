@@ -22,6 +22,17 @@
   }
 
   /* =============================================
+     5b. NAVIGAZIONE — sfocatura più marcata dopo lo scroll
+     ============================================= */
+  (function navScrolled() {
+    var nav = document.getElementById('nav');
+    if (!nav) return;
+    var update = rafThrottle(function () { nav.classList.toggle('on', window.scrollY > 8); });
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  })();
+
+  /* =============================================
      1. HERO
      ============================================= */
 
@@ -236,5 +247,83 @@
     }
 
     render();
+  })();
+
+  /* =============================================
+     5a. REVEAL ON SCROLL — un solo sistema per tutto il sito
+     Scaglionato tra fratelli (70ms), al massimo 6 passi.
+     ============================================= */
+  (function reveal() {
+    if (!FX || !('IntersectionObserver' in window)) return;
+
+    var groups = [
+      'main > section .tag', 'main > section h2', 'main > section .slede', 'main > section .fp-def',
+      '.story p', '.story .quote', '.band', '.steps > .step', '.screens > .screen', '.shot-note',
+      '.bento > .feat', '.plans > .plan', '.auds > .aud', '.faq > details', '.final .btn', '.final .micro'
+    ];
+    var els = [];
+    groups.forEach(function (sel) {
+      [].forEach.call(document.querySelectorAll(sel), function (el) {
+        if (el.closest('header') || el.hasAttribute('data-reveal')) return;
+        if (el.closest('.band') && !el.classList.contains('band')) return;   // la card entra intera
+        el.setAttribute('data-reveal', '');
+        // posizione tra i fratelli già marcati → ritardo
+        var i = 0, p = el.previousElementSibling;
+        while (p) { if (p.hasAttribute('data-reveal')) i++; p = p.previousElementSibling; }
+        el.style.setProperty('--d', Math.min(i, 6) * 70 + 'ms');
+        els.push(el);
+      });
+    });
+
+    // Quello che è già sullo schermo si mostra subito: nessun lampeggio
+    var vh = window.innerHeight;
+    els.forEach(function (el) {
+      var r = el.getBoundingClientRect();
+      if (r.top < vh && r.bottom > 0) el.classList.add('is-in');
+    });
+    root.classList.add('fx-js');
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('is-in');
+        io.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: .08 });
+    els.forEach(function (el) { if (!el.classList.contains('is-in')) io.observe(el); });
+  })();
+
+  /* =============================================
+     3. BENTO — inclinazione 3D (max 4°) e luce che segue il cursore
+     ============================================= */
+  (function bento() {
+    var grid = document.querySelector('.bento');
+    if (!grid) return;
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) {
+        grid.classList.toggle('is-offscreen', !es[0].isIntersecting);
+      }).observe(grid);
+    }
+
+    if (!FX || !POINTER) return;
+    [].forEach.call(grid.querySelectorAll('.feat'), function (card) {
+      var apply = rafThrottle(function (px, py) {
+        card.style.setProperty('--ry', ((px - .5) * 8).toFixed(2) + 'deg');   // ±4°
+        card.style.setProperty('--rx', ((.5 - py) * 8).toFixed(2) + 'deg');
+        card.style.setProperty('--gx', (px * 100).toFixed(1) + '%');
+        card.style.setProperty('--gy', (py * 100).toFixed(1) + '%');
+      });
+      card.addEventListener('pointermove', function (e) {
+        var r = card.getBoundingClientRect();
+        apply((e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height);
+      });
+      card.addEventListener('pointerleave', function () {
+        requestAnimationFrame(function () {
+          card.style.setProperty('--rx', '0deg');
+          card.style.setProperty('--ry', '0deg');
+        });
+      });
+    });
   })();
 })();
