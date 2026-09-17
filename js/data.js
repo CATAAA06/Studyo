@@ -695,6 +695,77 @@ const FEEDBACK_QUESTIONS = [
 ];
 
 const QUIZZES = {
+    // ---- INGEGNERIA (lotto 2: meccanica, civile, gestionale) ----
+    disegnoTecnico: [
+        { question: "Nel metodo europeo di rappresentazione (primo diedro), la vista da sinistra si disegna:", options: ["A sinistra della vista frontale", "A destra della vista frontale", "Sopra la vista frontale", "Sotto la vista frontale"], correct: 1, explain: "Nel primo diedro l'oggetto sta tra osservatore e piano di proiezione, quindi ogni vista finisce dalla parte opposta rispetto alla direzione di osservazione." },
+        { question: "Una scala 1:2 in un disegno tecnico significa che l'oggetto è rappresentato:", options: ["Il doppio del vero", "La metà del vero", "In grandezza naturale", "Senza quote"], correct: 1, explain: "Il primo numero è il disegno, il secondo la realtà: 1:2 è una riduzione, 2:1 un ingrandimento, 1:1 la grandezza naturale." },
+        { question: "A cosa serve una sezione in un disegno tecnico?", options: ["A colorare il pezzo", "A mostrare la forma interna evitando troppe linee nascoste", "A indicare il materiale", "A ridurre la scala"], correct: 1, explain: "Si immagina di tagliare il pezzo: le parti effettivamente tagliate si campiscono con il tratteggio a 45°." },
+        { question: "La linea a tratto e punto fine nei disegni indica:", options: ["Uno spigolo visibile", "Un asse o una mezzeria", "Un contorno nascosto", "Una quota"], correct: 1, explain: "Gli spigoli visibili sono a linea continua grossa, quelli nascosti tratteggiati, gli assi a tratto e punto." },
+        { question: "Una tolleranza dimensionale indica:", options: ["Il campo entro cui la misura reale è accettabile", "Il peso del pezzo", "La rugosità superficiale", "Il tipo di lavorazione"], correct: 0, explain: "Nessun pezzo è esatto: la tolleranza fissa scostamento massimo e minimo ammessi, e permette l'intercambiabilità dei componenti." }
+    ],
+    meccanica: [
+        { question: "Un corpo rigido nello spazio ha quanti gradi di libertà?", options: ["3", "4", "6", "12"], correct: 2, explain: "Tre traslazioni lungo gli assi e tre rotazioni attorno agli stessi: nel piano si riducono a tre (due traslazioni e una rotazione)." },
+        { question: "Il momento di una forza rispetto a un punto è:", options: ["Il prodotto della forza per la massa", "Il prodotto vettoriale tra braccio e forza", "La forza divisa per la distanza", "Sempre nullo per forze parallele"], correct: 1, explain: "Il modulo vale forza per braccio, cioè per la distanza perpendicolare tra la retta d'azione e il punto scelto." },
+        { question: "Condizione di equilibrio statico di un corpo rigido:", options: ["Risultante delle forze nulla", "Momento risultante nullo", "Risultante delle forze e momento risultante entrambi nulli", "Velocità costante"], correct: 2, explain: "Servono entrambe: la sola risultante nulla lascia comunque possibile una rotazione, per esempio sotto una coppia." },
+        { question: "Il momento di inerzia di un corpo dipende:", options: ["Solo dalla massa", "Dalla massa e da come è distribuita rispetto all'asse", "Solo dalla velocità angolare", "Dalla forza applicata"], correct: 1, explain: "Più la massa è lontana dall'asse, maggiore è il momento di inerzia: per questo un tubo ruota più a fatica di un cilindro pieno di pari massa." },
+        { question: "Il teorema di Huygens-Steiner permette di calcolare:", options: ["Il baricentro", "Il momento di inerzia rispetto a un asse parallelo a quello baricentrico", "L'energia cinetica", "La quantità di moto"], correct: 1, explain: "Si somma al momento baricentrico il termine m·d², dove d è la distanza tra i due assi paralleli." }
+    ],
+    termodinamica: [
+        { question: "Il primo principio della termodinamica afferma che:", options: ["L'entropia cresce sempre", "La variazione di energia interna è pari al calore scambiato meno il lavoro compiuto", "Il calore passa dal freddo al caldo", "Il rendimento è sempre unitario"], correct: 1, explain: "È il bilancio di conservazione dell'energia applicato a un sistema termodinamico: ΔU = Q − L." },
+        { question: "Il secondo principio implica che il rendimento di una macchina termica:", options: ["Può raggiungere il 100%", "È sempre inferiore a quello del ciclo di Carnot tra le stesse temperature", "Non dipende dalle temperature", "Dipende solo dal fluido usato"], correct: 1, explain: "Il limite di Carnot vale 1 − T_fredda/T_calda con temperature assolute: nessuna macchina reale può superarlo." },
+        { question: "In una trasformazione adiabatica:", options: ["La temperatura resta costante", "Non c'è scambio di calore con l'esterno", "La pressione resta costante", "Il volume resta costante"], correct: 1, explain: "Tutta l'energia scambiata è lavoro: per questo comprimendo adiabaticamente un gas la sua temperatura sale." },
+        { question: "L'entropia di un sistema isolato, in una trasformazione reale:", options: ["Diminuisce", "Resta costante", "Aumenta", "Si annulla"], correct: 2, explain: "Resta costante solo nel caso ideale reversibile; ogni irreversibilità (attrito, scambio a temperature diverse) la fa crescere." },
+        { question: "L'equazione di stato dei gas perfetti è:", options: ["pV = nRT", "pV = mgh", "p = ρgh", "Q = mcΔT"], correct: 0, explain: "Lega pressione, volume e temperatura assoluta; vale bene per gas rarefatti lontani dalla condensazione." }
+    ],
+    scienzaCostruzioni: [
+        { question: "La tensione normale in una sezione soggetta a sforzo assiale N vale:", options: ["N × A", "N / A", "A / N", "N²/A"], correct: 1, explain: "La forza si distribuisce sull'area della sezione: σ = N/A. Per questo a parità di carico una sezione più grande è meno sollecitata." },
+        { question: "La legge di Hooke, in campo elastico lineare, afferma che:", options: ["La tensione è proporzionale alla deformazione", "La deformazione è costante", "La tensione è nulla", "Il materiale si rompe subito"], correct: 0, explain: "σ = E·ε, dove E è il modulo di Young: descrive il tratto iniziale rettilineo della curva tensione-deformazione." },
+        { question: "In una trave inflessa, le tensioni dovute al momento flettente sono massime:", options: ["Sull'asse neutro", "Sulle fibre più lontane dall'asse neutro", "Al centro della sezione", "Solo agli appoggi"], correct: 1, explain: "La distribuzione è lineare e si annulla sull'asse neutro: per questo le sezioni a doppio T concentrano il materiale nelle ali." },
+        { question: "Il carico critico euleriano riguarda:", options: ["La rottura per taglio", "L'instabilità per compressione di un'asta snella", "La fatica", "La dilatazione termica"], correct: 1, explain: "Un'asta snella compressa può sbandare lateralmente prima di raggiungere la tensione di rottura; il carico critico dipende da E, dall'inerzia e dalla lunghezza libera di inflessione." },
+        { question: "In una trave appoggiata con carico uniformemente distribuito q e luce l, il momento massimo in mezzeria vale:", options: ["ql²/2", "ql²/8", "ql²/12", "ql/4"], correct: 1, explain: "È un risultato di riferimento: nella mensola con lo stesso carico il momento massimo è invece ql²/2 all'incastro." }
+    ],
+    tecnologiaMat: [
+        { question: "Nella prova di trazione, il modulo di Young rappresenta:", options: ["La pendenza del tratto elastico", "Il carico di rottura", "L'allungamento a rottura", "La durezza"], correct: 0, explain: "Misura la rigidezza del materiale: più è alto, meno il materiale si deforma a parità di tensione." },
+        { question: "Un materiale duttile, rispetto a uno fragile:", options: ["Si rompe senza deformarsi", "Mostra una marcata deformazione plastica prima della rottura", "Ha sempre modulo elastico maggiore", "Non è saldabile"], correct: 1, explain: "La duttilità dà un preavviso alla rottura ed è per questo preferita in molte applicazioni strutturali." },
+        { question: "L'aumento del tenore di carbonio negli acciai in genere:", options: ["Aumenta durezza e resistenza e riduce la duttilità", "Riduce la durezza", "Non cambia nulla", "Aumenta la duttilità"], correct: 0, explain: "Sopra circa il 2% di carbonio non si parla più di acciaio ma di ghisa, ancora più dura e fragile." },
+        { question: "La tempra di un acciaio consiste in:", options: ["Un riscaldamento lento seguito da raffreddamento lento", "Un riscaldamento in campo austenitico seguito da raffreddamento rapido", "Una deformazione a freddo", "Un rivestimento superficiale"], correct: 1, explain: "Il raffreddamento rapido forma martensite, dura e fragile: di solito si fa seguire un rinvenimento per recuperare tenacità." },
+        { question: "La rottura per fatica di un componente avviene:", options: ["Sotto un carico statico elevatissimo", "Dopo molti cicli di carico anche sotto la tensione di snervamento", "Solo ad alta temperatura", "Solo in presenza di corrosione"], correct: 1, explain: "La cricca nasce da un difetto o da un intaglio e si propaga ciclo dopo ciclo: per questo si curano raccordi e finitura superficiale." }
+    ],
+    fisicaTecnica: [
+        { question: "I tre meccanismi di trasmissione del calore sono:", options: ["Conduzione, convezione, irraggiamento", "Conduzione, diffusione, evaporazione", "Convezione, compressione, irraggiamento", "Irraggiamento, fusione, condensazione"], correct: 0, explain: "La conduzione avviene nella materia in contatto, la convezione per movimento di un fluido, l'irraggiamento tramite onde elettromagnetiche anche nel vuoto." },
+        { question: "Nella legge di Fourier, il flusso termico per conduzione è proporzionale:", options: ["Al quadrato dello spessore", "Al gradiente di temperatura e alla conducibilità del materiale", "Alla sola temperatura media", "Alla velocità dell'aria"], correct: 1, explain: "Più il salto termico è ripido e più il materiale è conduttivo, maggiore è il calore che passa: isolare significa ridurre λ e aumentare lo spessore." },
+        { question: "La trasmittanza termica U di una parete indica:", options: ["Il calore che attraversa 1 m² per grado di differenza di temperatura", "La massa della parete", "Lo spessore utile", "L'umidità interna"], correct: 0, explain: "Si misura in W/m²K: più è bassa, migliore è l'isolamento. È l'inverso della resistenza termica totale." },
+        { question: "L'umidità relativa dell'aria esprime:", options: ["La massa d'acqua contenuta in un metro cubo", "Il rapporto tra vapore presente e vapore a saturazione alla stessa temperatura", "La temperatura di rugiada", "La pressione atmosferica"], correct: 1, explain: "Per questo raffreddando l'aria, a parità di vapore contenuto, l'umidità relativa sale fino alla condensa (punto di rugiada)." },
+        { question: "Il coefficiente di prestazione (COP) di una pompa di calore è:", options: ["Sempre minore di 1", "Il rapporto tra calore utile fornito ed energia elettrica assorbita", "Uguale al rendimento di Carnot", "Indipendente dalle temperature"], correct: 1, explain: "Può superare abbondantemente 1 perché la macchina non crea calore, lo sposta da una sorgente fredda a una calda." }
+    ],
+    idraulica: [
+        { question: "La legge di Stevin dice che la pressione in un fluido in quiete:", options: ["È costante ovunque", "Cresce linearmente con la profondità", "Dipende dalla forma del recipiente", "Cresce con il quadrato della profondità"], correct: 1, explain: "p = ρ·g·h: per questo la pressione sul fondo dipende dall'altezza della colonna e non dalla larghezza del recipiente." },
+        { question: "Il principio di Archimede afferma che la spinta su un corpo immerso è pari:", options: ["Al peso del corpo", "Al peso del fluido spostato", "Alla pressione atmosferica", "Al volume del corpo"], correct: 1, explain: "Il corpo galleggia se la spinta eguaglia il suo peso, cioè se la sua densità media è minore di quella del fluido." },
+        { question: "L'equazione di continuità per un fluido incomprimibile impone che:", options: ["La portata si conservi lungo il condotto", "La velocità sia costante", "La pressione sia costante", "La densità cambi con la sezione"], correct: 0, explain: "A·v costante: se la sezione si restringe la velocità aumenta, ed è il motivo per cui l'acqua esce più veloce dal tubo strozzato." },
+        { question: "Nel teorema di Bernoulli, dove la velocità del fluido aumenta:", options: ["La pressione aumenta", "La pressione diminuisce", "La quota aumenta", "La densità aumenta"], correct: 1, explain: "La somma di termine cinetico, piezometrico e geodetico resta costante: cresce uno, cala un altro." },
+        { question: "Il numero di Reynolds serve a distinguere:", options: ["Fluidi caldi e freddi", "Moto laminare e moto turbolento", "Liquidi e gas", "Condotti circolari e rettangolari"], correct: 1, explain: "Rapporta le forze d'inerzia a quelle viscose: nelle condotte in pressione, sotto circa 2000 il moto è laminare, sopra 4000 turbolento." }
+    ],
+    geotecnica: [
+        { question: "Il principio delle tensioni efficaci di Terzaghi afferma che:", options: ["La tensione totale è uguale alla pressione dell'acqua", "La tensione efficace è la tensione totale meno la pressione interstiziale", "Le tensioni efficaci sono sempre nulle", "L'acqua non influisce sul terreno"], correct: 1, explain: "È il concetto chiave della geotecnica: resistenza e deformazione del terreno dipendono dalla tensione efficace, non da quella totale." },
+        { question: "Nel criterio di Mohr-Coulomb la resistenza al taglio di un terreno dipende da:", options: ["Coesione e angolo di attrito interno", "Solo dalla densità", "Solo dalla permeabilità", "Solo dal contenuto d'acqua"], correct: 0, explain: "τ = c + σ'·tan φ: nelle sabbie pulite la coesione è praticamente nulla, nelle argille è l'attrito a pesare meno." },
+        { question: "La legge di Darcy descrive:", options: ["Il flusso dell'acqua nel terreno in funzione del gradiente idraulico", "La rottura per taglio", "Il cedimento immediato", "La compattazione"], correct: 0, explain: "v = k·i, dove k è la permeabilità: le ghiaie la hanno alta, le argille bassissima, e questo governa i tempi di consolidazione." },
+        { question: "La consolidazione di un'argilla satura è:", options: ["Un cedimento istantaneo", "Un cedimento differito dovuto all'espulsione lenta dell'acqua interstiziale", "Una rottura fragile", "Un fenomeno solo delle sabbie"], correct: 1, explain: "L'acqua deve uscire prima che il carico si trasferisca allo scheletro solido: nelle argille può richiedere anni." },
+        { question: "Una prova SPT in sito serve a stimare:", options: ["La permeabilità", "Lo stato di addensamento o la consistenza del terreno", "La temperatura", "La composizione chimica"], correct: 1, explain: "Si contano i colpi necessari a infiggere il campionatore: il valore N si correla a densità relativa e parametri di resistenza." }
+    ],
+    ricercaOperativa: [
+        { question: "In un problema di programmazione lineare la regione ammissibile è:", options: ["Sempre un cerchio", "Un poliedro convesso definito dai vincoli", "Un insieme qualunque", "Sempre illimitata"], correct: 1, explain: "Vincoli lineari generano semispazi: la loro intersezione è convessa, e l'ottimo si trova in un vertice." },
+        { question: "L'algoritmo del simplesso opera:", options: ["Muovendosi da vertice a vertice migliorando la funzione obiettivo", "Provando tutti i punti interni", "Solo su problemi non lineari", "Solo con due variabili"], correct: 0, explain: "Poiché l'ottimo di un problema lineare sta in un vertice, basta esplorare i vertici seguendo la direzione che migliora l'obiettivo." },
+        { question: "In un problema di programmazione lineare intera le variabili:", options: ["Possono assumere qualsiasi valore reale", "Devono assumere valori interi", "Sono sempre binarie", "Non hanno vincoli"], correct: 1, explain: "Il vincolo di interezza rende il problema molto più difficile: si usano tecniche come branch and bound e piani di taglio." },
+        { question: "Nel metodo del cammino critico (CPM), il cammino critico è:", options: ["Il percorso più costoso", "La sequenza di attività che determina la durata minima del progetto", "L'attività più rischiosa", "Il percorso con più risorse"], correct: 1, explain: "Le attività critiche hanno scorrimento nullo: un loro ritardo si traduce direttamente in ritardo dell'intero progetto." },
+        { question: "Il modello del lotto economico di acquisto (EOQ) bilancia:", options: ["Costi di ordinazione e costi di mantenimento a scorta", "Prezzo di vendita e margine", "Domanda e offerta", "Costi fissi e variabili di produzione"], correct: 0, explain: "Ordinare spesso costa in emissione ordini, ordinare tanto costa in magazzino: l'EOQ è la quantità che minimizza la somma dei due." }
+    ],
+    inglese: [
+        { question: "Which sentence is correct in an academic abstract?", options: ["The results was significant", "The results were significant", "The results is significant", "The result were significant"], correct: 1, explain: "\"Results\" è plurale e richiede \"were\". In inglese accademico l'accordo soggetto-verbo è uno degli errori più frequenti." },
+        { question: "In a research paper, the Methods section usually describes:", options: ["What the study found", "How the study was carried out", "Why the topic matters", "What other authors think"], correct: 1, explain: "La struttura IMRaD: Introduction (perché), Methods (come), Results (che cosa si è trovato), Discussion (che cosa significa)." },
+        { question: "Choose the best academic alternative to \"a lot of studies\":", options: ["Lots of studies", "Plenty of studies", "Numerous studies", "Tons of studies"], correct: 2, explain: "\"Numerous\" o \"several\" appartengono al registro formale; le altre forme sono colloquiali e vanno evitate nella scrittura scientifica." },
+        { question: "Which verb form fits: \"The experiment ____ in 2023 by a team in Modena\"?", options: ["conducted", "was conducted", "has conducting", "is conduct"], correct: 1, explain: "Il passivo al passato semplice è tipico dei Methods, perché sposta l'attenzione sull'esperimento invece che su chi lo ha svolto." },
+        { question: "\"However\" is normally used to:", options: ["Add a similar idea", "Introduce a contrast", "Give an example", "Show a consequence"], correct: 1, explain: "Per aggiungere si usa \"moreover\", per esemplificare \"for instance\", per la conseguenza \"therefore\"." }
+    ],
     // ---- INGEGNERIA (lotto 1: informatica ed elettronica) ----
     elettrotecnica: [
         { question: "In un circuito resistivo, la legge di Ohm lega tensione, corrente e resistenza come:", options: ["V = I / R", "V = R / I", "V = R × I", "V = I × R²"], correct: 2, explain: "La tensione ai capi di un resistore è il prodotto della resistenza per la corrente che lo attraversa." },
@@ -1928,6 +1999,77 @@ const QUIZZES = {
 };
 
 const FLASHCARDS = {
+    // ---- INGEGNERIA (lotto 2: meccanica, civile, gestionale) ----
+    disegnoTecnico: [
+        { front: "Proiezioni ortogonali", back: "Rappresentazione dell'oggetto su piani perpendicolari tra loro: pianta, prospetto e vista laterale." },
+        { front: "Metodo europeo e metodo americano", back: "Nel primo diedro (europeo) le viste vanno dalla parte opposta alla direzione di osservazione; nel terzo diedro (americano) dalla stessa parte." },
+        { front: "Scale di rappresentazione", back: "1:1 grandezza naturale, 1:2 o 1:5 riduzione, 2:1 ingrandimento. Il primo numero è il disegno, il secondo la realtà." },
+        { front: "Tipi di linea", back: "Continua grossa per gli spigoli visibili, tratteggiata per i nascosti, tratto e punto per assi e mezzerie." },
+        { front: "Tolleranze e rugosità", back: "La tolleranza fissa il campo di misura accettabile, la rugosità la finitura della superficie: insieme rendono i pezzi intercambiabili." }
+    ],
+    meccanica: [
+        { front: "Gradi di libertà di un corpo rigido", back: "Sei nello spazio (tre traslazioni e tre rotazioni), tre nel piano." },
+        { front: "Momento di una forza", back: "Prodotto vettoriale tra braccio e forza: in modulo è forza per distanza perpendicolare dal polo." },
+        { front: "Equilibrio statico", back: "Servono risultante delle forze nulla e momento risultante nullo rispetto a un qualunque polo." },
+        { front: "Momento di inerzia", back: "Misura la resistenza alla rotazione: dipende dalla massa e da quanto è lontana dall'asse." },
+        { front: "Teorema di Huygens-Steiner", back: "I = I_G + m·d²: il momento rispetto a un asse parallelo a quello baricentrico, distante d." }
+    ],
+    termodinamica: [
+        { front: "Primo principio", back: "ΔU = Q − L: l'energia interna varia per il calore ricevuto meno il lavoro compiuto dal sistema." },
+        { front: "Secondo principio", back: "Il calore non passa spontaneamente dal corpo freddo al caldo e nessuna macchina termica converte tutto il calore in lavoro." },
+        { front: "Rendimento di Carnot", back: "1 − T_fredda/T_calda con temperature assolute: è il limite superiore per ogni macchina tra quelle due sorgenti." },
+        { front: "Trasformazioni notevoli", back: "Isoterma (T costante), isobara (p costante), isocora (V costante), adiabatica (nessuno scambio di calore)." },
+        { front: "Entropia", back: "Misura del disordine e dell'irreversibilità: in un sistema isolato non può diminuire." }
+    ],
+    scienzaCostruzioni: [
+        { front: "Tensione normale e di taglio", back: "σ = N/A per lo sforzo assiale; τ nasce da forze che agiscono nel piano della sezione." },
+        { front: "Legge di Hooke", back: "σ = E·ε nel campo elastico lineare: E è il modulo di Young, misura della rigidezza del materiale." },
+        { front: "Flessione e asse neutro", back: "Le tensioni variano linearmente nella sezione e si annullano sull'asse neutro, passante per il baricentro." },
+        { front: "Instabilità euleriana", back: "Un'asta snella compressa può sbandare lateralmente prima di rompersi: il carico critico cresce con E·J e cala col quadrato della lunghezza libera." },
+        { front: "Momento massimo, casi tipici", back: "Trave appoggiata con carico distribuito q: ql²/8 in mezzeria. Mensola con lo stesso carico: ql²/2 all'incastro." }
+    ],
+    tecnologiaMat: [
+        { front: "Prova di trazione", back: "Dà modulo elastico, tensione di snervamento, carico di rottura e allungamento percentuale a rottura." },
+        { front: "Duttilità e fragilità", back: "Il materiale duttile si deforma molto prima di rompersi e dà preavviso; quello fragile cede all'improvviso." },
+        { front: "Acciaio e ghisa", back: "Leghe ferro-carbonio: fino a circa il 2% di carbonio si parla di acciaio, oltre di ghisa, più dura e fragile." },
+        { front: "Trattamenti termici", back: "Tempra (raffreddamento rapido, indurisce), rinvenimento (recupera tenacità), ricottura (ammorbidisce e distende le tensioni)." },
+        { front: "Fatica", back: "Rottura dopo molti cicli di carico anche sotto lo snervamento: nasce da intagli e difetti superficiali." }
+    ],
+    fisicaTecnica: [
+        { front: "Modi di trasmissione del calore", back: "Conduzione nella materia, convezione per movimento del fluido, irraggiamento tramite onde elettromagnetiche." },
+        { front: "Legge di Fourier", back: "Il flusso conduttivo è proporzionale alla conducibilità λ e al gradiente di temperatura." },
+        { front: "Trasmittanza U", back: "Calore che attraversa 1 m² di parete per ogni grado di differenza (W/m²K): più è bassa, migliore è l'isolamento." },
+        { front: "Umidità relativa", back: "Rapporto tra vapore presente e vapore a saturazione: raffreddando l'aria sale fino al punto di rugiada." },
+        { front: "COP di una pompa di calore", back: "Calore utile diviso energia elettrica assorbita: supera 1 perché il calore viene spostato, non prodotto." }
+    ],
+    idraulica: [
+        { front: "Legge di Stevin", back: "p = ρ·g·h: la pressione cresce linearmente con la profondità e non dipende dalla forma del recipiente." },
+        { front: "Principio di Archimede", back: "La spinta verso l'alto è pari al peso del fluido spostato." },
+        { front: "Equazione di continuità", back: "Per un fluido incomprimibile A·v è costante: restringendo la sezione la velocità aumenta." },
+        { front: "Teorema di Bernoulli", back: "Somma costante di altezza geodetica, piezometrica e cinetica: dove la velocità cresce, la pressione cala." },
+        { front: "Numero di Reynolds", back: "Rapporto tra forze d'inerzia e viscose: nelle condotte, sotto ~2000 moto laminare, sopra ~4000 turbolento." }
+    ],
+    geotecnica: [
+        { front: "Tensioni efficaci (Terzaghi)", back: "σ' = σ − u: il comportamento del terreno dipende dalla tensione efficace, non da quella totale." },
+        { front: "Criterio di Mohr-Coulomb", back: "τ = c + σ'·tan φ: la resistenza al taglio nasce da coesione e attrito interno." },
+        { front: "Legge di Darcy", back: "v = k·i: la velocità di filtrazione dipende dalla permeabilità e dal gradiente idraulico." },
+        { front: "Consolidazione", back: "Cedimento differito delle argille sature, legato alla lenta espulsione dell'acqua interstiziale." },
+        { front: "Prove in sito SPT e CPT", back: "SPT conta i colpi di infissione, CPT misura la resistenza alla punta: servono a stimare densità e resistenza." }
+    ],
+    ricercaOperativa: [
+        { front: "Programmazione lineare", back: "Ottimizzare una funzione obiettivo lineare con vincoli lineari: l'ottimo si trova in un vertice della regione ammissibile." },
+        { front: "Algoritmo del simplesso", back: "Si sposta da un vertice all'altro del poliedro finché nessuna mossa migliora la funzione obiettivo." },
+        { front: "Dualità", back: "A ogni problema primale corrisponde un duale: i valori ottimi coincidono e le variabili duali sono i prezzi ombra dei vincoli." },
+        { front: "Cammino critico (CPM)", back: "Sequenza di attività a scorrimento nullo: ne determina la durata minima del progetto." },
+        { front: "Lotto economico (EOQ)", back: "Quantità d'ordine che minimizza la somma tra costi di emissione ordine e costi di mantenimento a scorta." }
+    ],
+    inglese: [
+        { front: "Struttura IMRaD", back: "Introduction, Methods, Results and Discussion: l'impianto standard di un articolo scientifico." },
+        { front: "Passivo nei Methods", back: "\"The samples were analysed\": sposta l'attenzione sulla procedura invece che su chi l'ha eseguita." },
+        { front: "Registro accademico", back: "Meglio \"numerous\", \"several\", \"significant\" che \"a lot of\", \"tons of\", \"really big\"." },
+        { front: "Connettivi utili", back: "However (contrasto), moreover (aggiunta), therefore (conseguenza), for instance (esempio)." },
+        { front: "Abstract", back: "Riassunto autonomo di 150-250 parole: contesto, obiettivo, metodo, risultati principali e conclusione." }
+    ],
     // ---- INGEGNERIA (lotto 1: informatica ed elettronica) ----
     fisica1: [
         { front: "Secondo principio della dinamica", back: "La forza risultante su un corpo è uguale al prodotto della massa per l'accelerazione: F = m·a." },
