@@ -1624,7 +1624,264 @@ const QUIZZES = {
         { question: "Il fonema è:", options: ["La più piccola unità di significato", "La più piccola unità sonora distintiva", "Una sillaba", "Una parola"], correct: 1 },
         { question: "Il morfema è:", options: ["Un suono", "La più piccola unità dotata di significato", "Una frase", "Un accento"], correct: 1 },
         { question: "Lo studio della lingua in un dato momento si dice:", options: ["Diacronico", "Sincronico", "Diatopico", "Diafasico"], correct: 1 }
-    ]
+    ],
+    // ---- ECONOMIA (lotto 1) ----
+    econometria: [
+        {
+            question: "Il metodo dei minimi quadrati ordinari (OLS) stima i coefficienti minimizzando:",
+            options: ["La somma dei residui", "La somma dei quadrati dei residui", "Il residuo più grande", "La varianza della variabile esplicativa"],
+            correct: 1,
+            explain: "Si minimizza Σ(yᵢ − ŷᵢ)²: elevando al quadrato, scarti positivi e negativi non si annullano tra loro."
+        },
+        {
+            question: "Che cosa misura l'R² in una regressione?",
+            options: ["La quota di variabilità di Y spiegata dal modello", "La significatività dei singoli coefficienti", "L'autocorrelazione dei residui", "L'errore standard della stima"],
+            correct: 0,
+            explain: "Va da 0 a 1. Un R² alto non dice però che il modello sia corretto: aumenta sempre aggiungendo regressori."
+        },
+        {
+            question: "Si ha eteroschedasticità quando:",
+            options: ["I residui hanno varianza non costante", "I regressori sono fortemente correlati tra loro", "I residui sono correlati nel tempo", "Il campione è troppo piccolo"],
+            correct: 0,
+            explain: "Gli stimatori OLS restano corretti ma non sono più efficienti, e gli errori standard classici diventano inaffidabili."
+        },
+        {
+            question: "Il test t su un singolo coefficiente serve a verificare:",
+            options: ["Se il coefficiente è statisticamente diverso da zero", "Se il modello nel suo insieme è significativo", "La presenza di autocorrelazione", "La normalità dei regressori"],
+            correct: 0,
+            explain: "Per la significatività congiunta di più coefficienti si usa invece il test F."
+        },
+        {
+            question: "Quale conseguenza ha la multicollinearità elevata?",
+            options: ["Gli stimatori restano corretti ma molto imprecisi", "Gli stimatori diventano distorti", "Elimina l'eteroschedasticità", "Riduce sempre l'R²"],
+            correct: 0,
+            explain: "Le stime hanno varianza alta: i coefficienti risultano poco significativi anche quando il modello spiega bene i dati."
+        }
+    ],
+    dirPubblico: [
+        {
+            question: "A chi spetta la funzione legislativa statale secondo la Costituzione?",
+            options: ["Al Governo", "Alle due Camere del Parlamento", "Alla Corte costituzionale", "Al Presidente della Repubblica"],
+            correct: 1,
+            explain: "Art. 70: la funzione legislativa è esercitata collettivamente dalle due Camere."
+        },
+        {
+            question: "Il decreto legge:",
+            options: ["È adottato dal Governo in casi straordinari di necessità e urgenza e va convertito entro 60 giorni", "È approvato dal Parlamento come una legge ordinaria", "Non ha forza di legge", "Resta in vigore per un anno senza conversione"],
+            correct: 0,
+            explain: "Art. 77: senza conversione in legge entro 60 giorni perde efficacia fin dall'inizio."
+        },
+        {
+            question: "Da quanti giudici è composta la Corte costituzionale?",
+            options: ["9", "12", "15", "21"],
+            correct: 2,
+            explain: "Art. 135: un terzo nominati dal Presidente della Repubblica, un terzo dal Parlamento in seduta comune, un terzo dalle supreme magistrature."
+        },
+        {
+            question: "Che cosa significa 'riserva di legge'?",
+            options: ["Una materia può essere disciplinata solo con legge o atto avente forza di legge", "La legge può essere modificata solo dal Governo", "Le leggi vanno pubblicate in Gazzetta Ufficiale", "Il Parlamento deve riservare tempo alla discussione"],
+            correct: 0,
+            explain: "Serve a sottrarre certe materie, come le limitazioni della libertà personale, alla sola fonte regolamentare."
+        },
+        {
+            question: "Il referendum abrogativo previsto dall'art. 75 della Costituzione:",
+            options: ["Non è ammesso per le leggi tributarie e di bilancio", "Può abrogare qualsiasi legge senza limiti", "Serve ad approvare nuove leggi", "È indetto dal Governo"],
+            correct: 0,
+            explain: "Sono escluse anche le leggi di amnistia e indulto e quelle di autorizzazione a ratificare trattati internazionali."
+        }
+    ],
+    scienzaFinanze: [
+        {
+            question: "Un'imposta è progressiva quando:",
+            options: ["L'aliquota media cresce al crescere della base imponibile", "L'aliquota è uguale per tutti", "Il gettito cresce con il PIL", "L'aliquota media diminuisce al crescere del reddito"],
+            correct: 0,
+            explain: "Se l'aliquota media resta costante l'imposta è proporzionale; se diminuisce è regressiva."
+        },
+        {
+            question: "Un bene pubblico puro è caratterizzato da:",
+            options: ["Non rivalità e non escludibilità nel consumo", "Prezzo fissato dallo Stato", "Produzione in monopolio", "Domanda sempre rigida"],
+            correct: 0,
+            explain: "Esempio classico: la difesa nazionale. Il consumo di uno non riduce quello degli altri e nessuno può esserne escluso."
+        },
+        {
+            question: "Che cos'è un'esternalità negativa?",
+            options: ["Un costo che ricade su soggetti terzi senza compensazione", "Una perdita di bilancio dello Stato", "Un'imposta pagata all'estero", "Un sussidio alle imprese"],
+            correct: 0,
+            explain: "L'inquinamento è l'esempio tipico: il prezzo di mercato non incorpora il danno subito da chi non partecipa allo scambio."
+        },
+        {
+            question: "Qual è la differenza tra deficit e debito pubblico?",
+            options: ["Il deficit è un flusso annuale, il debito è lo stock accumulato", "Sono sinonimi", "Il debito riguarda solo i Comuni", "Il deficit riguarda solo la spesa per interessi"],
+            correct: 0,
+            explain: "Il debito cresce ogni anno in cui c'è deficit, cioè quando le uscite superano le entrate."
+        },
+        {
+            question: "L'IRPEF italiana è un'imposta:",
+            options: ["Progressiva per scaglioni di reddito", "Proporzionale", "Indiretta sui consumi", "Regressiva"],
+            correct: 0,
+            explain: "A scaglioni: l'aliquota più alta si applica solo alla parte di reddito che supera la soglia dello scaglione."
+        }
+    ],
+    economiaIndustriale: [
+        {
+            question: "L'indice di Herfindahl-Hirschman (HHI) si calcola come:",
+            options: ["Somma dei quadrati delle quote di mercato delle imprese", "Media delle quote di mercato", "Quota della prima impresa", "Numero di imprese nel settore"],
+            correct: 0,
+            explain: "Più è alto, più il mercato è concentrato: dà peso maggiore alle imprese con quote grandi."
+        },
+        {
+            question: "Nel modello di Cournot le imprese competono scegliendo:",
+            options: ["Le quantità prodotte", "I prezzi di vendita", "La qualità del prodotto", "La spesa pubblicitaria"],
+            correct: 0,
+            explain: "In Bertrand si compete invece sui prezzi."
+        },
+        {
+            question: "Nel modello di Bertrand con beni omogenei e imprese con gli stessi costi, il prezzo di equilibrio è pari:",
+            options: ["Al costo marginale", "Al prezzo di monopolio", "A zero", "Alla media dei costi fissi"],
+            correct: 0,
+            explain: "È il cosiddetto paradosso di Bertrand: bastano due imprese per ottenere il risultato di concorrenza perfetta."
+        },
+        {
+            question: "Quale di questi è una barriera all'entrata?",
+            options: ["Forti economie di scala", "Domanda elastica", "Presenza di beni sostituti", "Basso costo del capitale"],
+            correct: 0,
+            explain: "Con economie di scala un nuovo entrante deve partire grande per essere competitivo sui costi."
+        },
+        {
+            question: "La discriminazione di prezzo di terzo grado consiste nel:",
+            options: ["Applicare prezzi diversi a gruppi di consumatori identificabili", "Far pagare a ciascuno la sua disponibilità a pagare", "Vendere a blocchi di quantità", "Vendere sottocosto per escludere i rivali"],
+            correct: 0,
+            explain: "Esempi: sconti per studenti o tariffe diverse per fascia oraria. Il primo grado è la discriminazione perfetta."
+        }
+    ],
+    egi: [
+        {
+            question: "Nella catena del valore di Porter le attività si dividono in:",
+            options: ["Primarie e di supporto", "Fisse e variabili", "Interne ed esterne", "Operative e straordinarie"],
+            correct: 0,
+            explain: "Le primarie riguardano il flusso del prodotto, come logistica e marketing; le altre lo sostengono, come le risorse umane."
+        },
+        {
+            question: "Quale elemento NON fa parte delle cinque forze competitive di Porter?",
+            options: ["Il tasso di inflazione", "Il potere contrattuale dei fornitori", "La minaccia di prodotti sostitutivi", "La rivalità tra i concorrenti"],
+            correct: 0,
+            explain: "Le cinque forze sono interne al settore: concorrenti, entranti potenziali, sostituti, fornitori e clienti."
+        },
+        {
+            question: "Secondo Porter le strategie competitive di base sono:",
+            options: ["Leadership di costo e differenziazione, entrambe eventualmente focalizzate", "Crescita e diversificazione", "Integrazione verticale e orizzontale", "Innovazione e imitazione"],
+            correct: 0,
+            explain: "Restare a metà strada tra le due, senza un vantaggio chiaro, è la posizione che Porter considera più debole."
+        },
+        {
+            question: "Il punto di pareggio (break-even point) è la quantità in cui:",
+            options: ["I ricavi totali eguagliano i costi totali", "Il profitto è massimo", "I costi fissi sono nulli", "Il costo medio è minimo"],
+            correct: 0,
+            explain: "Si calcola dividendo i costi fissi per il margine di contribuzione unitario."
+        },
+        {
+            question: "L'analisi SWOT mette in relazione:",
+            options: ["Punti di forza e debolezza interni con opportunità e minacce esterne", "Ricavi e costi", "Attivo e passivo", "Prezzo e quantità"],
+            correct: 0,
+            explain: "Le prime due dimensioni dipendono dall'impresa, le altre due dall'ambiente in cui opera."
+        }
+    ],
+    intermediariFin: [
+        {
+            question: "Qual è la funzione principale di un intermediario finanziario?",
+            options: ["Trasferire risorse dai soggetti in surplus a quelli in deficit", "Stampare moneta", "Fissare i tassi di interesse ufficiali", "Garantire i prezzi di borsa"],
+            correct: 0,
+            explain: "Nel farlo trasforma scadenze, importi e rischi tra chi presta e chi prende a prestito."
+        },
+        {
+            question: "Il rischio di liquidità per una banca è il rischio di:",
+            options: ["Non riuscire a far fronte ai deflussi di cassa senza perdite rilevanti", "Perdere per l'insolvenza di un debitore", "Subire perdite per variazioni dei tassi", "Errori nei sistemi informatici"],
+            correct: 0,
+            explain: "L'insolvenza del debitore è rischio di credito, le variazioni dei tassi rischio di mercato."
+        },
+        {
+            question: "Se i tassi di mercato salgono, il prezzo di un'obbligazione a tasso fisso già emessa:",
+            options: ["Scende", "Sale", "Resta invariato", "Va a zero"],
+            correct: 0,
+            explain: "La cedola fissa diventa meno attraente dei nuovi titoli: il prezzo scende finché il rendimento non si allinea."
+        },
+        {
+            question: "Che cos'è lo spread bancario (forbice dei tassi)?",
+            options: ["La differenza tra tassi attivi sui prestiti e tassi passivi sulla raccolta", "La differenza tra BTP e Bund", "Il margine di solvibilità", "La quota di crediti deteriorati"],
+            correct: 0,
+            explain: "È la principale fonte del margine di interesse della banca."
+        },
+        {
+            question: "Il coefficiente CET1 previsto dagli accordi di Basilea mette a rapporto:",
+            options: ["Il capitale primario di qualità e le attività ponderate per il rischio", "Depositi e prestiti", "Utile e patrimonio netto", "Crediti deteriorati e crediti totali"],
+            correct: 0,
+            explain: "Più attività rischiose la banca detiene, più capitale di qualità deve avere a copertura."
+        }
+    ],
+    analisiBilancio: [
+        {
+            question: "Il ROE si calcola come:",
+            options: ["Utile netto / patrimonio netto", "Reddito operativo / capitale investito", "Utile netto / ricavi", "Ricavi / capitale investito"],
+            correct: 0,
+            explain: "Misura il rendimento del capitale dei soci. Reddito operativo su capitale investito è invece il ROI."
+        },
+        {
+            question: "Il ROI mette a rapporto:",
+            options: ["Reddito operativo e capitale investito", "Utile netto e patrimonio netto", "Margine operativo lordo e ricavi", "Attivo corrente e passivo corrente"],
+            correct: 0,
+            explain: "Esprime la redditività della gestione caratteristica, al netto di come l'impresa si è finanziata."
+        },
+        {
+            question: "L'indice di liquidità corrente (current ratio) è dato da:",
+            options: ["Attivo corrente / passivo corrente", "Liquidità immediate / debiti totali", "Patrimonio netto / attivo immobilizzato", "Utile / ricavi"],
+            correct: 0,
+            explain: "Se è sotto 1 l'impresa ha più debiti a breve che risorse a breve per farvi fronte."
+        },
+        {
+            question: "Il margine di struttura si ottiene da:",
+            options: ["Patrimonio netto meno attivo immobilizzato", "Ricavi meno costi variabili", "Attivo corrente meno passivo corrente", "Utile netto meno dividendi"],
+            correct: 0,
+            explain: "Se è positivo gli investimenti durevoli sono finanziati con mezzi propri: struttura più solida."
+        },
+        {
+            question: "L'analisi per indici di bilancio serve a:",
+            options: ["Confrontare redditività, solidità e liquidità nel tempo e con altre imprese", "Sostituire la nota integrativa", "Calcolare le imposte dovute", "Determinare il prezzo di vendita dei prodotti"],
+            correct: 0,
+            explain: "Un indice da solo dice poco: conta il confronto con gli anni precedenti e con il settore."
+        }
+    ],
+    ragioneriaApp: [
+        {
+            question: "Il principio di competenza economica stabilisce che costi e ricavi:",
+            options: ["Si imputano all'esercizio in cui maturano, a prescindere dagli incassi e dai pagamenti", "Si registrano solo quando il denaro entra o esce", "Si imputano sempre all'ultimo esercizio", "Si ripartiscono in parti uguali tra gli esercizi"],
+            correct: 0,
+            explain: "È il motivo per cui esistono ratei e risconti: allineano i valori alla competenza, non alla cassa."
+        },
+        {
+            question: "Un risconto passivo rappresenta:",
+            options: ["Un ricavo già incassato ma di competenza dell'esercizio successivo", "Un costo maturato e non ancora pagato", "Un ricavo maturato e non ancora incassato", "Una perdita presunta"],
+            correct: 0,
+            explain: "Esempio: un canone annuo incassato a ottobre, di cui i mesi da gennaio in poi competono all'anno dopo."
+        },
+        {
+            question: "L'ammortamento serve a:",
+            options: ["Ripartire il costo di un'immobilizzazione lungo la sua vita utile", "Rivalutare i beni in bilancio", "Accantonare liquidità per acquisti futuri", "Ridurre le imposte in un solo esercizio"],
+            correct: 0,
+            explain: "Il costo partecipa al risultato di tutti gli esercizi in cui il bene viene usato."
+        },
+        {
+            question: "Secondo l'art. 2423 del Codice civile il bilancio d'esercizio è composto da:",
+            options: ["Stato patrimoniale, conto economico, rendiconto finanziario e nota integrativa", "Solo stato patrimoniale e conto economico", "Bilancio di verifica e libro giornale", "Conto economico e dichiarazione dei redditi"],
+            correct: 0,
+            explain: "Le imprese che redigono il bilancio in forma abbreviata possono essere esonerate dal rendiconto finanziario."
+        },
+        {
+            question: "Le scritture di assestamento si effettuano:",
+            options: ["A fine esercizio, per rispettare la competenza economica", "All'apertura dei conti", "A ogni operazione di acquisto", "Solo in caso di perdita"],
+            correct: 0,
+            explain: "Comprendono completamenti, integrazioni, rettifiche e ammortamenti."
+        }
+    ],
 };
 
 const FLASHCARDS = {
@@ -1882,7 +2139,92 @@ const FLASHCARDS = {
         { front: "Cos'è il fonema?", back: "La più piccola unità sonora capace di distinguere significati (pane/cane)." },
         { front: "Cos'è il morfema?", back: "La più piccola unità dotata di significato (in-util-mente ne contiene tre)." },
         { front: "Differenza tra sincronia e diacronia", back: "Sincronia: la lingua in un dato momento. Diacronia: la sua evoluzione nel tempo." },
-    ]
+    ],
+    // ---- ECONOMIA (lotto 1) ----
+    econometria: [
+        { front: "Che cos'è il metodo OLS?", back: "Minimi quadrati ordinari: stima i coefficienti minimizzando la somma dei quadrati dei residui." },
+        { front: "Cosa dice il teorema di Gauss-Markov?", back: "Se valgono le ipotesi classiche, OLS è lo stimatore lineare corretto con varianza minima (BLUE)." },
+        { front: "R² e R² corretto", back: "L'R² cresce sempre aggiungendo regressori; quello corretto penalizza le variabili inutili." },
+        { front: "Eteroschedasticità", back: "Varianza dei residui non costante: le stime restano corrette ma gli errori standard classici non sono affidabili." },
+        { front: "Variabile dummy", back: "Variabile che vale 0 o 1 e serve a rappresentare una caratteristica qualitativa, come il genere o l'area geografica." }
+    ],
+    dirPubblico: [
+        { front: "Gerarchia delle fonti del diritto", back: "Costituzione e leggi costituzionali, fonti dell'Unione europea, leggi ordinarie e atti aventi forza di legge, regolamenti, consuetudini." },
+        { front: "Differenza tra decreto legge e decreto legislativo", back: "Il decreto legge nasce da necessità e urgenza e va convertito in 60 giorni; il decreto legislativo richiede una legge delega del Parlamento." },
+        { front: "Composizione del Parlamento italiano", back: "Camera dei deputati e Senato della Repubblica, con funzioni identiche: è il bicameralismo paritario." },
+        { front: "Compiti della Corte costituzionale", back: "Giudica la legittimità costituzionale delle leggi, i conflitti di attribuzione, le accuse al Presidente della Repubblica e l'ammissibilità dei referendum." },
+        { front: "Autonomia e decentramento (art. 5 Cost.)", back: "La Repubblica è una e indivisibile, ma riconosce le autonomie locali e decentra l'amministrazione." }
+    ],
+    scienzaFinanze: [
+        { front: "Imposta progressiva, proporzionale, regressiva", back: "Progressiva: l'aliquota media sale col reddito. Proporzionale: resta costante. Regressiva: scende." },
+        { front: "Bene pubblico puro", back: "Non rivale e non escludibile: il consumo di uno non toglie nulla agli altri e nessuno può essere escluso." },
+        { front: "Esternalità", back: "Effetto di un'attività economica su terzi, positivo o negativo, che il prezzo di mercato non incorpora." },
+        { front: "Deficit e debito pubblico", back: "Il deficit è la differenza annuale tra uscite ed entrate; il debito è lo stock accumulato nel tempo." },
+        { front: "Curva di Laffer", back: "Rappresenta l'idea che oltre una certa aliquota il gettito fiscale smetta di crescere e cominci a diminuire." }
+    ],
+    economiaIndustriale: [
+        { front: "Indice HHI", back: "Somma dei quadrati delle quote di mercato: misura quanto è concentrato un settore." },
+        { front: "Cournot e Bertrand", back: "In Cournot le imprese scelgono le quantità, in Bertrand i prezzi. Con beni omogenei Bertrand porta il prezzo al costo marginale." },
+        { front: "Barriere all'entrata", back: "Economie di scala, costi irrecuperabili, brevetti, controllo di risorse o canali distributivi, reputazione del marchio." },
+        { front: "Discriminazione di prezzo", back: "Primo grado: prezzo pari alla disponibilità a pagare di ciascuno. Secondo: per quantità o versioni. Terzo: per gruppi di clienti." },
+        { front: "Integrazione verticale", back: "L'impresa acquisisce fasi a monte o a valle della filiera, per ridurre costi di transazione o controllare l'accesso al mercato." }
+    ],
+    egi: [
+        { front: "Catena del valore", back: "Modello di Porter che scompone l'impresa in attività primarie e di supporto, per capire dove nasce il valore." },
+        { front: "Cinque forze di Porter", back: "Concorrenti attuali, entranti potenziali, prodotti sostitutivi, potere dei fornitori, potere dei clienti." },
+        { front: "Strategie competitive di base", back: "Leadership di costo o differenziazione, applicate a tutto il mercato o a una nicchia (focalizzazione)." },
+        { front: "Break-even point", back: "Quantità in cui ricavi e costi totali si equivalgono: costi fissi divisi per il margine di contribuzione unitario." },
+        { front: "Margine di contribuzione", back: "Prezzo di vendita meno costo variabile unitario: è quanto ogni unità venduta contribuisce a coprire i costi fissi." }
+    ],
+    intermediariFin: [
+        { front: "A cosa serve un intermediario finanziario", back: "Sposta risorse da chi ha un surplus a chi ha un deficit, trasformando scadenze, importi e rischi." },
+        { front: "Rischio di credito e rischio di mercato", back: "Il primo è l'insolvenza del debitore, il secondo la perdita per variazioni di tassi, cambi o prezzi." },
+        { front: "Prezzo di un'obbligazione e tassi", back: "Si muovono in direzione opposta: se i tassi di mercato salgono, il prezzo dei titoli a tasso fisso scende." },
+        { front: "Margine di interesse", back: "Differenza tra interessi attivi sui prestiti e interessi passivi sulla raccolta: la voce principale del conto economico di una banca." },
+        { front: "Basilea e requisiti patrimoniali", back: "Accordi internazionali che impongono alle banche capitale proporzionato alle attività ponderate per il rischio (indice CET1)." }
+    ],
+    analisiBilancio: [
+        { front: "ROE", back: "Utile netto diviso patrimonio netto: quanto rende il capitale dei soci." },
+        { front: "ROI", back: "Reddito operativo diviso capitale investito: redditività della gestione caratteristica, a prescindere dai finanziamenti." },
+        { front: "Current ratio", back: "Attivo corrente diviso passivo corrente: se è sotto 1 i debiti a breve superano le risorse a breve." },
+        { front: "Margine di struttura", back: "Patrimonio netto meno attivo immobilizzato: se positivo, gli investimenti durevoli sono coperti da mezzi propri." },
+        { front: "Leva finanziaria", back: "Rapporto tra capitale investito e mezzi propri: amplifica il ROE quando il ROI supera il costo del debito, e le perdite nel caso opposto." }
+    ],
+    ragioneriaApp: [
+        { front: "Principio di competenza economica", back: "Costi e ricavi si imputano all'esercizio in cui maturano, non a quello in cui si incassa o si paga." },
+        { front: "Ratei e risconti", back: "I ratei riguardano valori maturati non ancora incassati o pagati; i risconti valori già incassati o pagati ma di competenza futura." },
+        { front: "Ammortamento", back: "Ripartizione del costo di un'immobilizzazione lungo la vita utile del bene." },
+        { front: "Scritture di assestamento", back: "Rettifiche di fine esercizio: completamenti, integrazioni, storni e ammortamenti, per rispettare la competenza." },
+        { front: "Contenuto del bilancio d'esercizio", back: "Stato patrimoniale, conto economico, rendiconto finanziario e nota integrativa (art. 2423 c.c.)." }
+    ],
+    marketing: [
+        { front: "Le 4 P del marketing mix", back: "Product, Price, Place, Promotion: prodotto, prezzo, distribuzione e comunicazione." },
+        { front: "Segmentazione, targeting, posizionamento", back: "Si divide il mercato in gruppi omogenei, si scelgono quelli da servire e si definisce come farsi percepire rispetto ai concorrenti." },
+        { front: "Ciclo di vita del prodotto", back: "Introduzione, crescita, maturità, declino: a ogni fase corrispondono obiettivi e leve di marketing diversi." },
+        { front: "Customer lifetime value", back: "Valore che un cliente genera lungo tutta la relazione con l'impresa, non in un singolo acquisto." },
+        { front: "Brand positioning", back: "Lo spazio che la marca occupa nella mente del cliente rispetto alle alternative, sintetizzato dalla promessa che mantiene." }
+    ],
+    pianificazione: [
+        { front: "Business plan", back: "Documento che descrive l'idea, il mercato, il modello operativo e le proiezioni economico-finanziarie di un'iniziativa." },
+        { front: "Budget", back: "Programma economico e finanziario di breve periodo, di solito annuale, articolato per centri di responsabilità." },
+        { front: "Analisi degli scostamenti", back: "Confronto tra valori di budget e valori consuntivi, per capire da dove nasce la differenza e intervenire." },
+        { front: "Pianificazione strategica e controllo di gestione", back: "La prima definisce obiettivi di lungo periodo, il secondo verifica nel breve che l'azienda stia andando in quella direzione." },
+        { front: "Cash flow previsionale", back: "Stima di entrate e uscite monetarie future: serve a capire se l'impresa avrà liquidità sufficiente, anche se è in utile." }
+    ],
+    statistica: [
+        { front: "Media, mediana e moda", back: "La media risente dei valori estremi, la mediana divide i dati ordinati in due metà, la moda è il valore più frequente." },
+        { front: "Varianza e deviazione standard", back: "La varianza è la media dei quadrati degli scarti dalla media; la deviazione standard è la sua radice, nella stessa unità dei dati." },
+        { front: "Teorema del limite centrale", back: "Al crescere del campione la distribuzione della media campionaria tende alla normale, qualunque sia la distribuzione di partenza." },
+        { front: "Intervallo di confidenza", back: "Intervallo che, con un livello di fiducia fissato (per esempio 95%), contiene il parametro della popolazione." },
+        { front: "p-value", back: "Probabilità di osservare un risultato estremo quanto quello ottenuto se l'ipotesi nulla fosse vera: più è piccolo, più l'evidenza è contraria all'ipotesi nulla." }
+    ],
+    informatica: [
+        { front: "Algoritmo", back: "Sequenza finita e non ambigua di passi che, dati certi input, produce un risultato." },
+        { front: "Notazione O grande", back: "Descrive come cresce il costo di un algoritmo al crescere dei dati: O(n) lineare, O(n²) quadratico, O(log n) logaritmico." },
+        { front: "Array e lista concatenata", back: "L'array dà accesso diretto per indice ma dimensione rigida; la lista concatenata si estende facilmente ma va scorsa elemento per elemento." },
+        { front: "Ricorsione", back: "Una funzione che richiama sé stessa su un problema più piccolo, fino a un caso base che ferma la catena." },
+        { front: "Sistema binario", back: "Numerazione in base 2 con le sole cifre 0 e 1: è il modo in cui il calcolatore rappresenta ogni dato." }
+    ],
 };
 
 const DAILY_CHALLENGES = [
