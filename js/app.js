@@ -314,24 +314,39 @@ function toggleSchoolField() {
     document.getElementById('setup-scuola-group').style.display = val === 'superiori' ? 'block' : 'none';
 }
 
+// La registrazione chiede solo ciò che serve a mostrare le materie giuste:
+// nome e corso (o tipo di scuola). Ateneo, scuola e classe si aggiungono dal Profilo.
+function setupFieldError(fieldId, message) {
+    const err = document.getElementById('setup-error');
+    const field = document.getElementById(fieldId);
+    if (err) { err.textContent = message; err.hidden = false; }
+    if (field) { field.setAttribute('aria-invalid', 'true'); field.focus(); }
+}
+
 function completeSetup() {
-    const name = document.getElementById('setup-name').value.trim();
-    if (!name) {
-        document.getElementById('setup-name').style.borderColor = '#E17055';
-        document.getElementById('setup-name').placeholder = 'Inserisci il tuo nome!';
-        return;
-    }
+    ['setup-name', 'setup-corso', 'setup-tipo-scuola'].forEach(id => {
+        const f = document.getElementById(id);
+        if (f) f.removeAttribute('aria-invalid');
+    });
+    const err = document.getElementById('setup-error');
+    if (err) err.hidden = true;
+
+    const name = document.getElementById('setup-name').value.trim().slice(0, 40);
+    if (!name) { setupFieldError('setup-name', 'Scrivi come ti chiami: è il nome che vedono gli altri nelle stanze.'); return; }
+
+    const school = document.getElementById('setup-school').value;
+    const corso = document.getElementById('setup-corso').value;
+    const tipo = document.getElementById('setup-tipo-scuola').value;
+    if (school === 'universita' && !corso) { setupFieldError('setup-corso', 'Scegli il tuo corso: serve a mostrarti gli esami giusti.'); return; }
+    if (school === 'superiori' && !tipo) { setupFieldError('setup-tipo-scuola', 'Scegli la tua scuola: serve a mostrarti le materie giuste.'); return; }
 
     state.playerName = name;
-    state.playerSchool = document.getElementById('setup-school').value;
+    state.playerSchool = school;
 
     if (state.playerSchool === 'universita') {
-        state.playerUni = document.getElementById('setup-uni').value.trim();
-        state.playerCorso = document.getElementById('setup-corso').value;
+        state.playerCorso = corso;
     } else {
-        state.playerScuola = document.getElementById('setup-scuola').value.trim();
-        state.playerTipoScuola = document.getElementById('setup-tipo-scuola').value;
-        state.playerClasse = document.getElementById('setup-classe').value;
+        state.playerTipoScuola = tipo;
     }
 
     state.setupDone = true;
@@ -1608,6 +1623,11 @@ function openReviewForm() {
         showNotification("Le recensioni d'esame possono scriverle solo gli studenti universitari.");
         return;
     }
+    if (!state.playerUni) {
+        showNotification("Prima aggiungi il tuo ateneo: la recensione vale per il corso di quell'ateneo.");
+        openProfileEditor('pe-uni');
+        return;
+    }
     const lobby = resolveLobby(reviewState.lobbyId || state.currentLobby);
     if (!lobby) return;
 
@@ -2471,6 +2491,9 @@ function renderProfile() {
     document.getElementById('stat-quizzes').textContent = state.quizzesCompleted;
     document.getElementById('stat-pomodoros').textContent = state.pomodorosCompleted;
 
+    const peSummary = document.getElementById('pe-summary');
+    if (peSummary) peSummary.textContent = profileSummary();
+
     renderBadges();
     renderActivity();
 }
@@ -3092,10 +3115,23 @@ async function renderCommunity() {
     if (!section) return;
 
     const uniName = state.playerUni || state.playerScuola;
-    if (!uniName || !state.setupDone) {
+    if (!state.setupDone || state.guest) {
         section.style.display = 'none';
         return;
     }
+    // Senza ateneo la community non ha senso: lo diciamo e portiamo al profilo
+    const statsRow = section.querySelector('.community-stats-row');
+    if (!uniName) {
+        section.style.display = 'block';
+        if (statsRow) statsRow.hidden = true;
+        document.getElementById('community-name').textContent = '';
+        document.getElementById('community-members').innerHTML = `<div class="empty-inline">
+            <p>Aggiungi il tuo ateneo o la tua scuola per vedere chi studia con te e la classifica.</p>
+            <button class="btn btn-secondary btn-sm" onclick="openProfileEditor(state.playerSchool === 'superiori' ? 'pe-scuola' : 'pe-uni')">Aggiungi</button>
+        </div>`;
+        return;
+    }
+    if (statsRow) statsRow.hidden = false;
 
     section.style.display = 'block';
     document.getElementById('community-name').textContent = uniName;
@@ -3619,6 +3655,119 @@ function renderEmptyStates() {
     if (profileEmpty) profileEmpty.hidden = studied;
 }
 
+/* --- Completa il profilo ---
+   Dopo la prima sessione, un invito leggero ad aggiungere ateneo o classe. */
+
+function missingProfileField() {
+    if (!state.setupDone || state.guest) return null;
+    if (state.playerSchool === 'superiori') return state.playerClasse ? null : 'classe';
+    return state.playerUni ? null : 'ateneo';
+}
+
+function renderProfileNudge() {
+    const box = document.getElementById('profile-nudge');
+    if (!box) return;
+    const missing = missingProfileField();
+    if (!missing || !hasStudied() || state.profileNudgeHidden) { box.hidden = true; return; }
+    const text = missing === 'ateneo'
+        ? 'Aggiungi il tuo ateneo: vedi la community del tuo ateneo e le recensioni d\'esame del tuo corso.'
+        : 'Aggiungi la tua classe: in quinta si sbloccano le stanze per i TOLC.';
+    box.hidden = false;
+    box.innerHTML = `
+        <div class="pn-text"><strong>Completa il profilo</strong><span>${text}</span></div>
+        <div class="pn-actions">
+            <button class="btn btn-secondary btn-sm" onclick="openProfileEditor('${missing === 'ateneo' ? 'pe-uni' : 'pe-classe'}')">Completa</button>
+            <button class="link-btn" onclick="hideProfileNudge()">Più tardi</button>
+        </div>`;
+}
+
+function hideProfileNudge() {
+    state.profileNudgeHidden = true;
+    saveState();
+    renderProfileNudge();
+}
+
+function profileSummary() {
+    if (state.playerSchool === 'superiori') {
+        const parts = [state.playerTipoScuola, state.playerScuola, state.playerClasse ? state.playerClasse + '° anno' : ''].filter(Boolean);
+        return parts.join(' · ') || 'Scuola superiore';
+    }
+    const parts = [state.playerCorso, state.playerUni].filter(Boolean);
+    return parts.join(' · ') || 'Università';
+}
+
+// Le opzioni dei corsi e delle scuole esistono già nel modulo di registrazione: le riuso
+function fillProfileSelect(targetId, sourceId, value) {
+    const target = document.getElementById(targetId);
+    const source = document.getElementById(sourceId);
+    if (!target || !source) return;
+    if (!target.options.length) target.innerHTML = source.innerHTML;
+    target.value = value || '';
+}
+
+function togglePeSchool() {
+    const sup = document.getElementById('pe-school').value === 'superiori';
+    document.getElementById('pe-uni-group').hidden = sup;
+    document.getElementById('pe-sup-group').hidden = !sup;
+}
+
+function toggleProfileEditor(force) {
+    const form = document.getElementById('pe-form');
+    const btn = document.getElementById('pe-toggle');
+    if (!form || !btn) return;
+    const open = typeof force === 'boolean' ? force : form.hidden;
+    if (open) {
+        document.getElementById('pe-name').value = state.playerName || '';
+        document.getElementById('pe-school').value = state.playerSchool === 'superiori' ? 'superiori' : 'universita';
+        document.getElementById('pe-uni').value = state.playerUni || '';
+        document.getElementById('pe-scuola').value = state.playerScuola || '';
+        document.getElementById('pe-classe').value = state.playerClasse || '';
+        fillProfileSelect('pe-corso', 'setup-corso', state.playerCorso);
+        fillProfileSelect('pe-tipo', 'setup-tipo-scuola', state.playerTipoScuola);
+        togglePeSchool();
+    }
+    form.hidden = !open;
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.hidden = open;
+}
+
+function openProfileEditor(focusId) {
+    navigate('profile');
+    toggleProfileEditor(true);
+    const el = document.getElementById(focusId || 'pe-name');
+    if (el) {
+        el.scrollIntoView({ block: 'center' });
+        el.focus();
+    }
+}
+
+function saveProfileEdits() {
+    const name = document.getElementById('pe-name').value.trim().slice(0, 40);
+    if (!name) { showNotification('Il nome non può restare vuoto.'); document.getElementById('pe-name').focus(); return; }
+
+    const school = document.getElementById('pe-school').value;
+    state.playerName = name;
+    state.playerSchool = school;
+    if (school === 'universita') {
+        state.playerUni = document.getElementById('pe-uni').value.trim().slice(0, 120);
+        state.playerCorso = document.getElementById('pe-corso').value;
+    } else {
+        state.playerTipoScuola = document.getElementById('pe-tipo').value;
+        state.playerScuola = document.getElementById('pe-scuola').value.trim().slice(0, 120);
+        state.playerClasse = document.getElementById('pe-classe').value;
+    }
+    saveState();
+    if (typeof saveUserToFirestore === 'function') saveUserToFirestore();
+
+    communityCache = null;
+    toggleProfileEditor(false);
+    renderProfile();
+    renderLobbies(currentLobbyFilter);
+    renderNavSubjects();
+    updateNav();
+    showNotification('Profilo aggiornato.');
+}
+
 /* --- Primi passi ---
    Sostituisce il vecchio tour a slide (che andava "saltato"): tre azioni vere,
    ognuna si spunta quando la fai davvero e lascia un risultato visibile. */
@@ -3748,6 +3897,7 @@ function startFirstSession(minutes) {
 function renderHome() {
     updateNav();
     renderFirstSteps();
+    renderProfileNudge();
     renderHomeResume();
     renderHomeSubjects();
     renderHomeSessions();

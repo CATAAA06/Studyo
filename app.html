@@ -190,6 +190,8 @@
                     <!-- Primi passi: tre azioni vere al posto di un tour da leggere -->
                     <section class="first-steps" id="first-steps" aria-labelledby="first-steps-title" hidden></section>
 
+                    <section class="profile-nudge" id="profile-nudge" hidden></section>
+
                     <!-- Azione principale: riprendi o scegli cosa studiare -->
                     <section class="hero-card" id="home-resume" aria-live="polite"></section>
 
@@ -544,6 +546,95 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Percorso di studio: qui si completa quello che la registrazione non chiede più -->
+                    <section class="card profile-edit" id="profile-edit" aria-labelledby="pe-title">
+                        <div class="card-header">
+                            <h2 id="pe-title">Il tuo percorso di studio</h2>
+                            <button type="button" class="btn btn-secondary btn-sm" id="pe-toggle" aria-expanded="false" aria-controls="pe-form" onclick="toggleProfileEditor()">Modifica</button>
+                        </div>
+                        <p class="pe-summary" id="pe-summary"></p>
+                        <form class="pe-form" id="pe-form" hidden onsubmit="event.preventDefault();saveProfileEdits()">
+                            <div class="form-group">
+                                <label for="pe-name">Nome</label>
+                                <input type="text" id="pe-name" maxlength="40" autocomplete="given-name">
+                            </div>
+                            <div class="form-group">
+                                <label for="pe-school">Dove studi?</label>
+                                <select id="pe-school" onchange="togglePeSchool()">
+                                    <option value="universita">Università</option>
+                                    <option value="superiori">Scuola Superiore</option>
+                                </select>
+                            </div>
+                            <div id="pe-uni-group">
+                                <div class="form-group">
+                                    <label for="pe-uni">Ateneo</label>
+                                    <input type="text" id="pe-uni" list="uni-list" maxlength="120" placeholder="Cerca il tuo ateneo…">
+                                <datalist id="uni-list">
+                                    <option value="Politecnico di Milano">
+                                    <option value="Politecnico di Torino">
+                                    <option value="Università Bocconi">
+                                    <option value="Università di Bologna - Alma Mater">
+                                    <option value="Sapienza - Università di Roma">
+                                    <option value="Università di Padova">
+                                    <option value="Università di Firenze">
+                                    <option value="Università di Napoli Federico II">
+                                    <option value="Università di Pisa">
+                                    <option value="Università di Torino">
+                                    <option value="Università di Milano - Statale">
+                                    <option value="Università di Milano-Bicocca">
+                                    <option value="Università di Genova">
+                                    <option value="Università di Catania">
+                                    <option value="Università di Palermo">
+                                    <option value="Università di Bari">
+                                    <option value="Università di Trento">
+                                    <option value="Università Ca' Foscari Venezia">
+                                    <option value="Università di Verona">
+                                    <option value="Università di Parma">
+                                    <option value="LUISS Guido Carli">
+                                    <option value="Università Cattolica del Sacro Cuore">
+                                    <option value="Università di Salerno">
+                                    <option value="Università di Perugia">
+                                    <option value="Università di Cagliari">
+                                    <option value="Università di Messina">
+                                    <option value="Università di Brescia">
+                                    <option value="Università di Bergamo">
+                                    <option value="Università di Siena">
+                                    <option value="Università di Modena e Reggio Emilia">
+                                </datalist>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pe-corso">Corso di laurea</label>
+                                    <select id="pe-corso"></select>
+                                </div>
+                            </div>
+                            <div id="pe-sup-group" hidden>
+                                <div class="form-group">
+                                    <label for="pe-tipo">Tipo di scuola</label>
+                                    <select id="pe-tipo"></select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pe-scuola">Nome della scuola <span class="optional">(facoltativo)</span></label>
+                                    <input type="text" id="pe-scuola" maxlength="120" placeholder="Es: Liceo Tassoni, Modena">
+                                </div>
+                                <div class="form-group">
+                                    <label for="pe-classe">Classe</label>
+                                    <select id="pe-classe">
+                                        <option value="">Scegli la classe…</option>
+                                        <option value="1">1° anno</option>
+                                        <option value="2">2° anno</option>
+                                        <option value="3">3° anno</option>
+                                        <option value="4">4° anno</option>
+                                        <option value="5">5° anno</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <p class="pe-hint">L'ateneo serve per la community e le recensioni d'esame del tuo corso. In quinta superiore, la classe sblocca le lobby TOLC.</p>
+                            <div class="pe-actions">
+                                <button type="submit" class="btn btn-primary btn-sm">Salva</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleProfileEditor(false)">Annulla</button>
+                            </div>
+                        </form>
+                    </section>
                     <div class="profile-empty" id="profile-empty" hidden>
                         <div>
                             <strong>Qui si vede quanto studi</strong>
@@ -970,7 +1061,7 @@
             <div class="setup-header">
                 <span class="setup-logo"><svg width="54" height="54" viewBox="0 0 32 32" fill="none" aria-label="Studyo"><rect width="32" height="32" rx="7" fill="#C8F031"/><path d="M20.6 11c-.95-.9-2.5-1.45-4.25-1.45-2.8 0-4.65 1.35-4.65 3.4 0 1.95 1.45 2.9 4.05 3.5 2.3.55 3 .95 3 1.9 0 .95-.95 1.55-2.5 1.55-1.65 0-3.1-.6-4.15-1.65" stroke="#0A0A0B" stroke-width="2.6" stroke-linecap="round" fill="none"/></svg></span>
                 <h1>Benvenuto su <span class="highlight">Studyo</span></h1>
-                <p>Lo studio diventa multiplayer. Configuriamo il tuo profilo!</p>
+                <p>Due scelte e sei dentro. Il resto lo aggiungi quando vuoi.</p>
             </div>
             <div class="setup-form" id="setup-step-1">
                 <div class="form-group">
@@ -988,43 +1079,7 @@
                 <!-- UNIVERSITY FIELDS -->
                 <div id="setup-uni-group">
                     <div class="form-group">
-                        <label for="setup-uni">La tua università</label>
-                        <input type="text" id="setup-uni" list="uni-list" placeholder="Cerca la tua università...">
-                        <datalist id="uni-list">
-                            <option value="Politecnico di Milano">
-                            <option value="Politecnico di Torino">
-                            <option value="Università Bocconi">
-                            <option value="Università di Bologna - Alma Mater">
-                            <option value="Sapienza - Università di Roma">
-                            <option value="Università di Padova">
-                            <option value="Università di Firenze">
-                            <option value="Università di Napoli Federico II">
-                            <option value="Università di Pisa">
-                            <option value="Università di Torino">
-                            <option value="Università di Milano - Statale">
-                            <option value="Università di Milano-Bicocca">
-                            <option value="Università di Genova">
-                            <option value="Università di Catania">
-                            <option value="Università di Palermo">
-                            <option value="Università di Bari">
-                            <option value="Università di Trento">
-                            <option value="Università Ca' Foscari Venezia">
-                            <option value="Università di Verona">
-                            <option value="Università di Parma">
-                            <option value="LUISS Guido Carli">
-                            <option value="Università Cattolica del Sacro Cuore">
-                            <option value="Università di Salerno">
-                            <option value="Università di Perugia">
-                            <option value="Università di Cagliari">
-                            <option value="Università di Messina">
-                            <option value="Università di Brescia">
-                            <option value="Università di Bergamo">
-                            <option value="Università di Siena">
-                            <option value="Università di Modena e Reggio Emilia">
-                        </datalist>
-                    </div>
-                    <div class="form-group">
-                        <label for="setup-corso">Corso di laurea</label>
+                        <label for="setup-corso">Cosa studi?</label>
                         <select id="setup-corso">
                             <option value="">Seleziona il corso...</option>
                             <optgroup label="Economia e Management">
@@ -1085,7 +1140,7 @@
                 <!-- HIGH SCHOOL FIELDS -->
                 <div id="setup-scuola-group" style="display:none">
                     <div class="form-group">
-                        <label for="setup-tipo-scuola">Tipo di scuola</label>
+                        <label for="setup-tipo-scuola">Che scuola fai?</label>
                         <select id="setup-tipo-scuola">
                             <option value="">Seleziona il tipo...</option>
                             <optgroup label="Licei">
@@ -1110,23 +1165,10 @@
                             </optgroup>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="setup-scuola">Nome della tua scuola <span class="optional">(facoltativo)</span></label>
-                        <input type="text" id="setup-scuola" placeholder="Es: Liceo Tassoni, Modena">
-                    </div>
-                    <div class="form-group">
-                        <label for="setup-classe">Classe</label>
-                        <select id="setup-classe">
-                            <option value="1">1° anno</option>
-                            <option value="2">2° anno</option>
-                            <option value="3">3° anno</option>
-                            <option value="4">4° anno</option>
-                            <option value="5">5° anno</option>
-                        </select>
-                    </div>
                 </div>
 
-                <button class="btn btn-primary btn-large" onclick="completeSetup()">🚀 Inizia a studiare!</button>
+                <p class="setup-error" id="setup-error" role="alert" hidden></p>
+                <button class="btn btn-primary btn-large" onclick="completeSetup()">Entra su Studyo</button>
             </div>
         </div>
     </div>
