@@ -86,4 +86,155 @@
       el.addEventListener('pointerleave', function () { set(0, 0); });
     });
   })();
+
+  /* =============================================
+     2. FOCUS POCUS — timer Pomodoro funzionante
+     Il conto si basa sull'orario di fine, non sul numero di tick:
+     resta preciso anche se il browser rallenta la scheda in background.
+     ============================================= */
+  (function focusWidget() {
+    var box = document.getElementById('fpw');
+    if (!box) return;
+
+    var ROOMS = {
+      rain:   { name: 'Biblioteca Piovosa', sound: 'audio/rain.mp3' },
+      fire:   { name: 'Baita sul Fuoco',    sound: 'audio/fire.mp3' },
+      cafe:   { name: 'Caffè Letterario',   sound: 'audio/cafe.mp3' },
+      forest: { name: 'Foresta Silenziosa', sound: 'audio/nature2.mp3' },
+      cosmos: { name: 'Notte Stellata',     sound: 'audio/crickets.mp3' },
+      void:   { name: 'Cascata Zen',        sound: 'audio/waterfall.mp3' }
+    };
+
+    var elTime = document.getElementById('fpw-time');
+    var elBar = document.getElementById('fpw-bar');
+    var elRoom = document.getElementById('fpw-room');
+    var elStart = document.getElementById('fpw-start');
+    var elReset = document.getElementById('fpw-reset');
+    var elSound = document.getElementById('fpw-sound');
+    var elStatus = document.getElementById('fpw-status');
+    var durBtns = [].slice.call(box.querySelectorAll('.fpw-dur'));
+    var roomBtns = [].slice.call(document.querySelectorAll('.room[data-room]'));
+
+    var total = 25 * 60, remaining = total, endAt = 0, ticker = null;
+    var room = 'cosmos', audio = null, soundOn = false;
+
+    // Stelle / lucciole / scintille (stesso livello, colore diverso per stanza)
+    var sky = document.getElementById('sky');
+    if (sky && !sky.children.length) {
+      var html = '';
+      for (var s = 0; s < 40; s++) {
+        html += '<span style="left:' + (Math.random() * 100).toFixed(1) + '%;top:' + (Math.random() * 100).toFixed(1) +
+                '%;animation-delay:' + (Math.random() * 3.5).toFixed(2) + 's"></span>';
+      }
+      sky.innerHTML = html;
+    }
+
+    function fmt(sec) {
+      var m = Math.floor(sec / 60), r = sec % 60;
+      return (m < 10 ? '0' : '') + m + ':' + (r < 10 ? '0' : '') + r;
+    }
+
+    function render() {
+      elTime.textContent = fmt(remaining);
+      elBar.style.transform = 'scaleX(' + ((total - remaining) / total).toFixed(4) + ')';
+    }
+
+    function setRunning(on) {
+      box.classList.toggle('is-running', on);
+      elStart.textContent = on ? 'Pausa' : (remaining < total ? 'Riprendi' : 'Avvia');
+      durBtns.forEach(function (b) { b.disabled = on; });
+    }
+
+    function tick() {
+      var left = Math.max(0, Math.round((endAt - Date.now()) / 1000));
+      if (left !== remaining) { remaining = left; render(); }
+      if (left <= 0) complete();
+    }
+
+    function start() {
+      if (remaining <= 0) remaining = total;
+      endAt = Date.now() + remaining * 1000;
+      clearInterval(ticker);
+      ticker = setInterval(tick, 250);
+      elStatus.textContent = '';
+      setRunning(true);
+    }
+
+    function pause() {
+      clearInterval(ticker); ticker = null;
+      tick();
+      setRunning(false);
+    }
+
+    function reset() {
+      clearInterval(ticker); ticker = null;
+      remaining = total;
+      render();
+      setRunning(false);
+      elStatus.textContent = '';
+    }
+
+    function complete() {
+      clearInterval(ticker); ticker = null;
+      remaining = total;
+      elBar.style.transition = 'none';
+      render();
+      void elBar.offsetWidth;
+      elBar.style.transition = '';
+      setRunning(false);
+      elStatus.innerHTML = 'Sessione completata. Nell\'app ogni sessione vale XP e tiene viva la streak: <a href="app.html">entra su Studyo</a>.';
+    }
+
+    elStart.addEventListener('click', function () { ticker ? pause() : start(); });
+    elReset.addEventListener('click', reset);
+
+    durBtns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (ticker) return;
+        durBtns.forEach(function (x) { x.classList.toggle('is-on', x === b); x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+        total = parseInt(b.dataset.min, 10) * 60;
+        reset();
+      });
+    });
+
+    // Suono: il file si scarica solo quando l'utente lo accende
+    function playRoomSound() {
+      if (!soundOn) return;
+      var src = ROOMS[room].sound;
+      if (!audio) { audio = new Audio(); audio.loop = true; audio.preload = 'none'; audio.volume = .6; }
+      if (audio.getAttribute('src') !== src) audio.setAttribute('src', src);
+      var p = audio.play();
+      if (p && p.catch) p.catch(function () {
+        soundOn = false;
+        elSound.setAttribute('aria-pressed', 'false');
+        elSound.textContent = 'Suono: off';
+      });
+    }
+    elSound.addEventListener('click', function () {
+      soundOn = !soundOn;
+      elSound.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
+      elSound.textContent = soundOn ? 'Suono: on' : 'Suono: off';
+      if (soundOn) playRoomSound(); else if (audio) audio.pause();
+    });
+
+    roomBtns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        room = b.dataset.room;
+        if (!ROOMS[room]) return;
+        box.dataset.room = room;
+        elRoom.textContent = ROOMS[room].name;
+        roomBtns.forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+        playRoomSound();
+      });
+    });
+
+    // Le animazioni dell'atmosfera si fermano quando il widget non è sullo schermo
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) {
+        box.classList.toggle('is-offscreen', !es[0].isIntersecting);
+      }).observe(box);
+    }
+
+    render();
+  })();
 })();

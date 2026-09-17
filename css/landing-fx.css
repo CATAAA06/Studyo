@@ -122,3 +122,93 @@ html:not(.fx) .rot-item:not(:first-child) { visibility: hidden; }
 @media (max-width: 480px) {
   .rotator { margin: -18px 0 26px; font-size: 14px; }
 }
+
+/* ============================================= 2. FOCUS POCUS — timer vero ============================================= */
+.room {
+  font-family: 'Manrope', sans-serif; background: transparent; cursor: pointer;
+  transition: color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), background-color var(--t-fast) var(--ease), transform var(--t-med) var(--ease);
+}
+.room:hover { color: var(--text); border-color: var(--lime); }
+.room[aria-pressed="true"] { color: var(--ink); background: var(--lime); border-color: var(--lime); }
+.room:active { transform: scale(.96); }
+
+.fpw { position: relative; padding: 2px; overflow: hidden; background: #0E0E10; min-height: 380px; }
+.fpw-inner { position: relative; z-index: 1; height: 100%; border-radius: 0 12px 12px 0; overflow: hidden; background: #0A0A10; }
+
+/* Bordo luminoso: un quadrato conico che ruota dietro l'area interna */
+.fpw-glow {
+  position: absolute; left: 50%; top: 50%; width: 150%; aspect-ratio: 1; z-index: 0;
+  translate: -50% -50%;
+  will-change: transform;
+  backface-visibility: hidden;
+  background: conic-gradient(from 0deg, transparent 0 55%, var(--lime) 70%, var(--orange) 82%, transparent 95%);
+  opacity: 0; transition: opacity var(--t-slow) var(--ease);
+}
+.fpw.is-running .fpw-glow { opacity: 1; animation: spin 4.5s linear infinite; }
+.fpw.is-running { box-shadow: inset 0 0 40px -18px var(--glow-lime); }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Atmosfera per stanza (solo colori già in palette o scuri neutri) */
+.fpw-scene { position: absolute; inset: 0; transition: opacity var(--t-slow) var(--ease); }
+.fpw[data-room="cosmos"] .fpw-scene { background: linear-gradient(165deg, #12131c, #0a0a0f); }
+.fpw[data-room="rain"]   .fpw-scene { background: linear-gradient(170deg, #111822, #0a0c10); }
+.fpw[data-room="fire"]   .fpw-scene { background: radial-gradient(ellipse 80% 55% at 50% 110%, rgba(255, 90, 31, .28), transparent 70%), #0d0a09; }
+.fpw[data-room="cafe"]   .fpw-scene { background: radial-gradient(ellipse 70% 60% at 30% 100%, rgba(255, 90, 31, .14), transparent 70%), linear-gradient(170deg, #15110d, #0b0a09); }
+.fpw[data-room="forest"] .fpw-scene { background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(200, 240, 49, .12), transparent 70%), linear-gradient(170deg, #0c130e, #090b0a); }
+.fpw[data-room="void"]   .fpw-scene { background: linear-gradient(180deg, #0c1216, #090b0c); }
+
+.fpw .sky span { background: #fff; }
+.fpw[data-room="forest"] .sky span { background: var(--lime); box-shadow: 0 0 6px var(--lime); }
+.fpw[data-room="fire"] .sky span, .fpw[data-room="cafe"] .sky span { background: var(--orange); }
+.fpw[data-room="rain"] .sky, .fpw[data-room="void"] .sky { opacity: .35; }
+
+/* Pioggia: un unico livello che scorre (transform), visibile solo in alcune stanze */
+.fpw-rain {
+  position: absolute; left: 0; right: 0; top: -100%; height: 200%; opacity: 0;
+  background-image: repeating-linear-gradient(100deg, transparent 0 22px, rgba(255, 255, 255, .09) 22px 23px, transparent 23px 47px);
+  transition: opacity var(--t-slow) var(--ease);
+}
+.fpw[data-room="rain"] .fpw-rain, .fpw[data-room="void"] .fpw-rain { opacity: 1; animation: rain 1.4s linear infinite; }
+.fpw[data-room="void"] .fpw-rain { animation-duration: 3.5s; opacity: .6; }
+@keyframes rain { to { transform: translate3d(-10px, 50%, 0); } }
+
+.fpw-ui { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 28px 24px; text-align: center; }
+.fpw-top { position: absolute; top: 14px; left: 16px; right: 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.fpw-try { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 700; color: var(--muted); }
+.fpw-sound {
+  font: 600 12px 'Manrope', sans-serif; color: var(--muted); background: rgba(255, 255, 255, .04);
+  border: 1px solid var(--line-2); border-radius: 999px; padding: 5px 11px; cursor: pointer;
+  transition: color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), background-color var(--t-fast) var(--ease);
+}
+.fpw-sound:hover { color: var(--text); border-color: var(--lime); }
+.fpw-sound[aria-pressed="true"] { color: var(--ink); background: var(--lime); border-color: var(--lime); }
+
+.fpw-room { margin-top: 26px; font-size: 12.5px; color: var(--muted); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.fpw-time { font-family: var(--display); font-size: clamp(54px, 7vw, 76px); font-weight: 800; letter-spacing: -.05em; line-height: 1; font-variant-numeric: tabular-nums; }
+.fpw.is-running .fpw-time { text-shadow: 0 0 28px rgba(200, 240, 49, .25); }
+.fpw-bar { width: min(260px, 80%); height: 4px; border-radius: 2px; background: rgba(255, 255, 255, .08); overflow: hidden; }
+.fpw-bar span { display: block; height: 100%; background: var(--lime); transform-origin: left; transform: scaleX(0); transition: transform .9s linear; }
+.fpw-durations { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+.fpw-dur {
+  font: 600 13px 'Manrope', sans-serif; color: var(--muted); background: rgba(255, 255, 255, .04);
+  border: 1px solid var(--line-2); border-radius: 7px; padding: 6px 12px; cursor: pointer;
+  transition: color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), background-color var(--t-fast) var(--ease);
+}
+.fpw-dur:hover { color: var(--text); border-color: var(--line-2); background: rgba(255, 255, 255, .08); }
+.fpw-dur.is-on { color: var(--text); border-color: var(--lime); }
+.fpw-dur:disabled { opacity: .45; cursor: not-allowed; }
+.fpw-controls { display: flex; gap: 8px; margin-top: 4px; }
+.fpw-controls .btn { padding: 11px 22px; font-size: 15px; border-radius: 8px; min-width: 104px; }
+.fpw-status { min-height: 1.5em; font-size: 13.5px; color: var(--muted); max-width: 300px; }
+.fpw-status a { color: var(--lime); text-decoration: underline; }
+
+@media (max-width: 980px) {
+  .fpw-inner { border-radius: 0 0 12px 12px; }
+  .fpw { min-height: 360px; }
+}
+@media (max-width: 480px) {
+  .fpw-ui { padding: 54px 16px 22px; }
+  .fpw-top { left: 12px; right: 10px; }
+  .fpw-room { margin-top: 0; }
+}
+.fpw.is-offscreen .sky span, .fpw.is-offscreen .fpw-rain, .fpw.is-offscreen .fpw-glow { animation-play-state: paused; }

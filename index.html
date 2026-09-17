@@ -475,19 +475,44 @@ footer{border-top:1px solid var(--line);padding:40px 0;color:var(--dim);font-siz
         <h2 style="font-size:clamp(30px,3.6vw,42px)">Il posto dove ti immagini per concentrarti.</h2>
         <p class="fp-def"><strong>Cos'è:</strong> una modalità a schermo intero dentro Studyo. Scegli una delle sei stanze immersive, ognuna con il suo suono ambientale, un'atmosfera animata e un timer. Niente chat e niente menu: solo tu e quello che studi. È inclusa gratis.</p>
         <p class="slede" style="margin-top:16px">Schermo intero, tutto il resto sparisce. Scegli il luogo, parte l'atmosfera e il timer: restate solo tu e quello che devi studiare.</p>
-        <div class="rooms">
-          <span class="room">Biblioteca Piovosa</span>
-          <span class="room">Baita sul Fuoco</span>
-          <span class="room">Caffè Letterario</span>
-          <span class="room">Foresta Silenziosa</span>
-          <span class="room">Notte Stellata</span>
-          <span class="room">Cascata Zen</span>
+        <div class="rooms" role="group" aria-label="Scegli la stanza del timer">
+          <button type="button" class="room" data-room="rain" aria-pressed="false">Biblioteca Piovosa</button>
+          <button type="button" class="room" data-room="fire" aria-pressed="false">Baita sul Fuoco</button>
+          <button type="button" class="room" data-room="cafe" aria-pressed="false">Caffè Letterario</button>
+          <button type="button" class="room" data-room="forest" aria-pressed="false">Foresta Silenziosa</button>
+          <button type="button" class="room" data-room="cosmos" aria-pressed="true">Notte Stellata</button>
+          <button type="button" class="room" data-room="void" aria-pressed="false">Cascata Zen</button>
         </div>
         <div style="margin-top:30px"><a href="app.html" class="btn btn-lime">Provalo ora</a></div>
       </div>
-      <div class="band-r" aria-hidden="true">
-        <div class="sky" id="sky"></div>
-        <div class="band-timer"><b>24:31</b><span>NOTTE STELLATA</span></div>
+      <!-- Timer Pomodoro funzionante: si prova senza account -->
+      <div class="band-r fpw" id="fpw" data-room="cosmos">
+        <div class="fpw-glow" aria-hidden="true"></div>
+        <div class="fpw-inner">
+          <div class="fpw-scene" aria-hidden="true">
+            <div class="sky" id="sky"></div>
+            <div class="fpw-rain"></div>
+          </div>
+          <div class="fpw-ui">
+            <div class="fpw-top">
+              <span class="fpw-try"><span class="live"></span> Provalo qui, senza account</span>
+              <button type="button" class="fpw-sound" id="fpw-sound" aria-pressed="false">Suono: off</button>
+            </div>
+            <div class="fpw-room" id="fpw-room">Notte Stellata</div>
+            <div class="fpw-time" id="fpw-time" role="timer" aria-label="Tempo rimanente">25:00</div>
+            <div class="fpw-bar" aria-hidden="true"><span id="fpw-bar"></span></div>
+            <div class="fpw-durations" role="group" aria-label="Durata della sessione">
+              <button type="button" class="fpw-dur is-on" data-min="25" aria-pressed="true">25 min</button>
+              <button type="button" class="fpw-dur" data-min="50" aria-pressed="false">50 min</button>
+              <button type="button" class="fpw-dur" data-min="5" aria-pressed="false">Pausa 5</button>
+            </div>
+            <div class="fpw-controls">
+              <button type="button" class="btn btn-lime fpw-start" id="fpw-start">Avvia</button>
+              <button type="button" class="btn btn-out fpw-reset" id="fpw-reset">Reset</button>
+            </div>
+            <p class="fpw-status" id="fpw-status" role="status" aria-live="polite"></p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
