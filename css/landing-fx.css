@@ -1,0 +1,124 @@
+/* =============================================
+   STUDYO — LANDING FX
+   Motion design e micro-interazioni della landing.
+   Regole:
+   - si anima solo transform/translate e opacity (niente reflow)
+   - gli stati nascosti esistono solo con html.fx, che viene messo
+     SOLO se l'utente non chiede movimento ridotto: senza JS o con
+     prefers-reduced-motion la pagina è identica a prima, tutta visibile
+   - effetti "da mouse" solo con html.fx-pointer (pointer fine + hover)
+   ============================================= */
+
+:root {
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+  --t-fast: .15s;
+  --t-med: .3s;
+  --t-slow: .6s;
+  --glow-lime: rgba(200, 240, 49, .35);
+  --glow-orange: rgba(255, 90, 31, .35);
+}
+
+/* ---------- 0. Transizioni coerenti ---------- */
+.btn { transition: transform var(--t-med) var(--ease), background-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), box-shadow var(--t-med) var(--ease); }
+.nav-links a, .foot a, .fp-teaser, summary:after { transition-timing-function: var(--ease); }
+:focus-visible { transition: outline-offset var(--t-fast) var(--ease); }
+.btn:active { transform: scale(.97); }
+
+/* Solo per screen reader */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* ---------- 0. Grana sul nero (SVG generato, nessuna immagine) ---------- */
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  opacity: .05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  will-change: transform;
+}
+
+/* ============================================= 1. HERO ============================================= */
+header { isolation: isolate; overflow: hidden; }
+
+/* Griglia di puntini: si sposta di pochi pixel col mouse (variabili da JS) */
+header::before {
+  content: ''; position: absolute; inset: -24px; z-index: -1; pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, .13) 1px, transparent 1.4px);
+  background-size: 26px 26px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 55% at 30% 28%, #000 20%, transparent 75%);
+          mask-image: radial-gradient(ellipse 70% 55% at 30% 28%, #000 20%, transparent 75%);
+  transform: translate3d(var(--px, 0px), var(--py, 0px), 0);
+  transition: transform .9s var(--ease);
+}
+/* Alone lime lontano, fermo */
+header::after {
+  content: ''; position: absolute; z-index: -1; pointer-events: none;
+  width: 720px; height: 720px; left: -260px; top: -340px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(200, 240, 49, .07), transparent 62%);
+}
+
+/* Titolo: parole in ingresso (le span sono nel markup, niente flash) */
+h1 .w { display: inline-block; }
+.fx h1 .w {
+  opacity: 0; translate: 0 .35em;
+  animation: wordIn .55s var(--ease) forwards;
+  animation-delay: calc(var(--i) * 65ms);
+}
+@keyframes wordIn { to { opacity: 1; translate: 0 0; } }
+
+/* Un solo glitch breve su "più difficile.", a fine ingresso */
+.fx .h1-lime { animation: glitch .42s steps(1, end) .62s 1; }
+@keyframes glitch {
+  0%   { text-shadow: 2px 0 var(--orange), -2px 0 rgba(255,255,255,.5); transform: translate3d(1px,0,0); }
+  25%  { text-shadow: -3px 0 var(--orange), 2px 0 rgba(255,255,255,.4); transform: translate3d(-2px,0,0); }
+  50%  { text-shadow: 1px 0 var(--orange), -1px 0 rgba(255,255,255,.35); transform: translate3d(1px,0,0); }
+  75%  { text-shadow: -1px 0 var(--orange); transform: none; }
+  100% { text-shadow: none; transform: none; }
+}
+.h1-lime { display: inline-block; }
+
+/* Il resto dell'hero entra subito dopo il titolo */
+.fx header .kicker, .fx header .lede, .fx header .rotator, .fx header .cta-row,
+.fx header .micro, .fx header .fp-teaser, .fx header .metrics, .fx header .shot {
+  opacity: 0; translate: 0 14px;
+  animation: fadeUp .7s var(--ease) forwards;
+}
+.fx header .kicker   { animation-delay: 0s; }
+.fx header .lede     { animation-delay: .38s; }
+.fx header .rotator  { animation-delay: .46s; }
+.fx header .cta-row  { animation-delay: .54s; }
+.fx header .micro    { animation-delay: .6s; }
+.fx header .fp-teaser{ animation-delay: .66s; }
+.fx header .metrics  { animation-delay: .72s; }
+.fx header .shot     { animation-delay: .8s; }
+@keyframes fadeUp { to { opacity: 1; translate: 0 0; } }
+
+/* Materie a rotazione: tutte nella stessa cella, la larghezza non cambia mai */
+.rotator {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px;
+  margin: -14px 0 30px; font-size: 15px; color: var(--dim); font-weight: 600;
+}
+.rot {
+  display: inline-grid; position: relative;
+  padding: 3px 12px; border: 1px solid var(--line-2); border-radius: 999px;
+  background: rgba(200, 240, 49, .06);
+  color: var(--lime); font-family: var(--display); font-weight: 700; letter-spacing: -.01em;
+  overflow: hidden;
+}
+.rot-item { grid-area: 1 / 1; white-space: nowrap; }
+.fx .rot-item { opacity: 0; translate: 0 70%; transition: opacity .45s var(--ease), translate .45s var(--ease); }
+.fx .rot-item.is-on { opacity: 1; translate: 0 0; }
+.fx .rot-item.is-out { opacity: 0; translate: 0 -70%; }
+/* Senza animazioni: si vede solo la prima */
+html:not(.fx) .rot-item:not(:first-child) { visibility: hidden; }
+
+/* CTA: alone lime e spostamento "magnetico" (variabili da JS) */
+.btn-lime { box-shadow: 0 0 0 0 var(--glow-lime); }
+.btn-lime:hover { box-shadow: 0 0 0 1px var(--lime), 0 10px 34px -6px var(--glow-lime); }
+.fx-pointer .magnetic { transform: translate3d(var(--mx, 0px), var(--my, 0px), 0); }
+.fx-pointer .magnetic:hover { transform: translate3d(var(--mx, 0px), calc(var(--my, 0px) - 1px), 0); }
+.fx-pointer .magnetic:active { transform: translate3d(var(--mx, 0px), var(--my, 0px), 0) scale(.97); }
+
+@media (max-width: 480px) {
+  .rotator { margin: -18px 0 26px; font-size: 14px; }
+}

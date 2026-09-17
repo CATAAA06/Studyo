@@ -50,6 +50,16 @@
 <link rel="preload" href="fonts/Manrope-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="fonts/fonts.css">
 
+<script>
+/* Effetti solo se l'utente non chiede movimento ridotto; "fx-pointer" solo con un mouse vero */
+(function (d) {
+  var m = window.matchMedia;
+  if (!m || m('(prefers-reduced-motion: reduce)').matches) return;
+  d.classList.add('fx');
+  if (m('(hover: hover) and (pointer: fine)').matches) d.classList.add('fx-pointer');
+})(document.documentElement);
+</script>
+
 <style>
 :root{
   --ink:#0A0A0B;
@@ -352,6 +362,8 @@ footer{border-top:1px solid var(--line);padding:40px 0;color:var(--dim);font-siz
   .tnum{font-size:44px}
 }
 </style>
+<!-- Motion design: dopo gli stili di base, così li può rifinire -->
+<link rel="stylesheet" href="css/landing-fx.css">
 </head>
 <body>
 
@@ -373,7 +385,7 @@ footer{border-top:1px solid var(--line);padding:40px 0;color:var(--dim);font-siz
       <a href="#gratis">Gratis e in arrivo</a>
       <a href="#faq">FAQ</a>
     </div>
-    <a href="app.html" class="btn btn-lime">Entra gratis</a>
+    <a href="app.html" class="btn btn-lime magnetic">Entra gratis</a>
   </div>
 </nav>
 
@@ -381,11 +393,22 @@ footer{border-top:1px solid var(--line);padding:40px 0;color:var(--dim);font-siz
 <header>
   <div class="wrap">
     <span class="kicker"><span class="live"></span> BETA APERTA · NATO A UNIMORE</span>
-    <h1>Studiare da soli<br>è la parte<br><span class="h1-lime">più difficile.</span></h1>
+    <h1><span class="w" style="--i:0">Studiare</span> <span class="w" style="--i:1">da</span> <span class="w" style="--i:2">soli</span><br><span class="w" style="--i:3">è</span> <span class="w" style="--i:4">la</span> <span class="w" style="--i:5">parte</span><br><span class="h1-lime"><span class="w" style="--i:6">più</span> <span class="w" style="--i:7">difficile.</span></span></h1>
     <p class="lede">Entra nella lobby della tua materia e trova altri studenti che stanno studiando <em>in questo momento</em>. Timer condivisi, video, quiz e progressi che si vedono.</p>
+    <p class="rotator">Una stanza per ogni materia:
+      <span class="rot" aria-hidden="true">
+        <span class="rot-item is-on">Analisi Matematica 1</span>
+        <span class="rot-item">Diritto Privato</span>
+        <span class="rot-item">Chimica Organica</span>
+        <span class="rot-item">Microeconomia</span>
+        <span class="rot-item">TOLC-MED (Medicina)</span>
+        <span class="rot-item">Latino</span>
+      </span>
+      <span class="sr-only">Analisi Matematica 1, Diritto Privato, Chimica Organica, Microeconomia, TOLC-MED (Medicina), Latino e molte altre.</span>
+    </p>
     <div class="cta-row">
-      <a href="app.html" class="btn btn-lime btn-xl">Inizia a studiare</a>
-      <a href="#come" class="btn btn-out btn-xl">Come funziona</a>
+      <a href="app.html" class="btn btn-lime btn-xl magnetic">Inizia a studiare</a>
+      <a href="#come" class="btn btn-out btn-xl magnetic">Come funziona</a>
     </div>
     <p class="micro">Gratis in beta: tutto quello che c'è oggi resta gratuito. Trenta secondi, con Google o con la tua email. <a href="#gratis" style="color:var(--muted);text-decoration:underline">Cosa è incluso</a></p>
 
@@ -742,7 +765,7 @@ footer{border-top:1px solid var(--line);padding:40px 0;color:var(--dim);font-siz
   <div class="wrap">
     <h2>La prossima sessione<br>non farla da solo.</h2>
     <p class="slede" style="text-align:center">Entra, scegli la materia, guarda chi c'è. Trenta secondi.</p>
-    <a href="app.html" class="btn btn-lime btn-xl">Entra su Studyo</a>
+    <a href="app.html" class="btn btn-lime btn-xl magnetic">Entra su Studyo</a>
     <p class="micro">Gratis · Nessuna carta richiesta · Beta aperta</p>
   </div>
 </section>
@@ -800,5 +823,6 @@ document.querySelectorAll('.feat, .aud, .step').forEach((el,i) => {
   io.observe(el);
 });
 </script>
+<script defer src="js/landing-fx.js"></script>
 </body>
 </html>
