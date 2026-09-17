@@ -1030,3 +1030,16 @@ button.topbar-streak:hover { border-color: var(--border-strong); color: var(--te
 .ed-option { display: flex; align-items: center; gap: 10px; }
 .ed-option input[type="radio"] { accent-color: var(--primary); width: 18px; height: 18px; flex-shrink: 0; }
 .ed-actions { display: flex; gap: 8px; margin-top: 22px; }
+
+/* Flashcard e quiz su telefono: testi lunghi leggibili, pulsanti comodi */
+@media (max-width: 768px) {
+    .flashcard { min-height: 180px; padding: 20px 16px; align-items: flex-start; }
+    .flashcard-front, .flashcard-back { font-size: 17px; width: 100%; }
+    .flashcard-actions { gap: 8px; }
+    .flashcard-actions .btn { flex: 1; min-width: 0; padding: 12px 8px; font-size: 14px; }
+    .flashcard-progress { font-size: 13px; }
+    .quiz-option { text-align: left; }
+    .quiz-feedback { padding: 12px 14px; }
+    .quiz-feedback .btn { width: 100%; justify-content: center; }
+    .ed-item input[type="text"] { font-size: 16px; }   /* evita lo zoom automatico su iOS */
+}
