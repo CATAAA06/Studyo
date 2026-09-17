@@ -33,14 +33,28 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "Studyo",
-  "url": "https://cataaa06.github.io/Studyo/",
-  "applicationCategory": "EducationalApplication",
-  "operatingSystem": "Web",
-  "inLanguage": "it",
-  "description": "Lobby di studio per materia con presenza in tempo reale, chat, videochiamata, timer, quiz, flashcard e stanze immersive Focus Pocus.",
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://cataaa06.github.io/Studyo/#organization",
+      "name": "Studyo",
+      "url": "https://cataaa06.github.io/Studyo/",
+      "logo": "https://cataaa06.github.io/Studyo/icons/icon-512.png",
+      "email": "fra.cata2006@gmail.com",
+      "description": "Progetto studentesco indipendente nato a UNIMORE (Modena)."
+    },
+    {
+      "@type": "WebApplication",
+      "name": "Studyo",
+      "url": "https://cataaa06.github.io/Studyo/",
+      "publisher": { "@id": "https://cataaa06.github.io/Studyo/#organization" },
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Web",
+      "inLanguage": "it",
+      "description": "Lobby di studio per materia con presenza in tempo reale, chat, videochiamata, timer, quiz, flashcard e stanze immersive Focus Pocus.",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }
+    }
+  ]
 }
 </script>
 
@@ -219,6 +233,7 @@ details p{color:var(--muted);padding-bottom:24px;font-size:16px;max-width:660px}
 .final{text-align:center;padding:110px 0;border-top:1px solid var(--line)}
 .final h2{margin-bottom:22px}
 .final .slede{margin:0 auto 34px}
+.beta-honest{max-width:520px;margin:-18px auto 30px;font-size:14px;color:var(--dim)}
 
 footer{border-top:1px solid var(--line);padding:40px 0;color:var(--dim);font-size:14px}
 .foot{display:flex;justify-content:space-between;gap:26px;flex-wrap:wrap;align-items:flex-start;font-weight:600}
@@ -381,7 +396,7 @@ footer{border-top:1px solid var(--line);padding:40px 0;color:var(--dim);font-siz
       Studyo
     </a>
     <div class="nav-links">
-      <a href="#focus">Focus Pocus</a>
+      <a href="#focus" title="Stanze immersive a schermo intero per studiare senza distrazioni">Focus Pocus</a>
       <a href="#come">Come funziona</a>
       <a href="#dentro">Cosa c'è dentro</a>
       <a href="#gratis">Gratis e in arrivo</a>
@@ -420,6 +435,9 @@ footer{border-top:1px solid var(--line);padding:40px 0;color:var(--dim);font-siz
       <span class="fp-teaser-more">Scopri</span>
     </a>
 
+    <!-- Numeri verificati sul codice (js/data.js), da aggiornare se cambiano i dati:
+         100+ = voci in LOBBIES (155 al 17/09/2026) · 6 = stanze Focus Pocus (FOCUS_ROOMS in js/app.js)
+         8 = lobby dei singoli TOLC (category 'tolc', escluse le 4 sezioni comuni) · 0€ = nessun piano a pagamento -->
     <div class="metrics">
       <div class="metric"><b>100+</b><span>Materie e lobby</span></div>
       <div class="metric"><b>6</b><span>Stanze Focus Pocus</span></div>
@@ -817,6 +835,7 @@ footer{border-top:1px solid var(--line);padding:40px 0;color:var(--dim);font-siz
   <div class="wrap">
     <h2>La prossima sessione<br>non farla da solo.</h2>
     <p class="slede" style="text-align:center">Entra, scegli la materia, guarda chi c'è. Trenta secondi.</p>
+    <p class="beta-honest">Beta aperta: lo costruiamo mentre lo usiamo, e ogni feedback dall'app arriva direttamente a noi due. <!-- [DATO DA INSERIRE: quando ci saranno numeri reali e verificabili (es. studenti registrati o sessioni completate, da Firestore), valutare un contatore qui] --></p>
     <a href="app.html" class="btn btn-lime btn-xl magnetic">Entra su Studyo</a>
     <p class="micro">Gratis · Nessuna carta richiesta · Beta aperta</p>
   </div>
