@@ -169,7 +169,9 @@ async function handleUserLogin(user, isNew = false) {
         state.playerTipoScuola = data.tipoScuola || '';
         state.playerClasse = data.classe || '';
         state.xp = data.xp || 0;
-        state.streak = data.streak || 0;
+        // Streak: confronta dati locali e account e ricontrolla se nel frattempo si è rotta
+        if (typeof mergeStreak === 'function') mergeStreak(data.streak || 0, data.lastStudyDay || null);
+        else state.streak = data.streak || 0;
         state.level = data.level || 1;
         state.studyHours = data.studyHours || 0;
         state.quizzesCompleted = data.quizzesCompleted || 0;
@@ -232,6 +234,7 @@ async function saveUserToFirestore() {
             classe: state.playerClasse,
             xp: state.xp,
             streak: state.streak,
+            lastStudyDay: state.lastStudyDay || null,   // serve a tenere la streak tra dispositivi
             level: state.level,
             studyHours: state.studyHours,
             quizzesCompleted: state.quizzesCompleted,

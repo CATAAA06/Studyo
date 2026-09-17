@@ -75,8 +75,11 @@ function saveState() {
    DATE & STREAK HELPERS
    ============================================= */
 
+// Data LOCALE (YYYY-MM-DD). Prima era in UTC: in Italia chi studiava tra
+// mezzanotte e le 2 finiva nel giorno precedente e la streak si rompeva.
 function todayStr() {
-    return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
 }
 
 function dayDiff(a, b) {
@@ -103,6 +106,29 @@ function registerStudyDay() {
     state.lastStudyDay = today;
     saveState();
     updateNav();
+    // La data dell'ultimo studio va anche online, altrimenti su un altro dispositivo
+    // (o dopo un logout) la streak ripartirebbe da 1
+    if (typeof saveUserToFirestore === 'function') saveUserToFirestore();
+}
+
+// Al login: tra i dati locali e quelli dell'account vale l'ultimo giorno di studio più recente
+function mergeStreak(remoteStreak, remoteLastDay) {
+    const localDay = state.lastStudyDay;
+    const localStreak = state.streak || 0;
+    const rStreak = remoteStreak || 0;
+
+    if (remoteLastDay && (!localDay || remoteLastDay > localDay)) {
+        state.lastStudyDay = remoteLastDay;
+        state.streak = rStreak;
+    } else if (remoteLastDay && localDay === remoteLastDay) {
+        state.streak = Math.max(localStreak, rStreak);
+    } else if (!remoteLastDay && !localDay) {
+        state.streak = rStreak;           // account vecchio senza data: teniamo il valore salvato
+    }
+    // se il dato locale è più recente (es. sessione fatta prima di accedere) resta quello
+
+    reconcileStreak();
+    saveState();
 }
 
 // On load: if the user skipped one or more full days, the streak is broken.
