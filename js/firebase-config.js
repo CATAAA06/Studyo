@@ -177,6 +177,7 @@ async function handleUserLogin(user, isNew = false) {
         state.quizzesCompleted = data.quizzesCompleted || 0;
         state.pomodorosCompleted = data.pomodorosCompleted || 0;
         state.setupDone = data.setupDone || false;
+        state.isAdmin = data.isAdmin === true;      // si imposta a mano dalla Console Firebase
         state.firebaseUid = user.uid;
         state.firebaseEmail = user.email;
 
@@ -576,6 +577,38 @@ async function loadSharedNotes(lobbyId) {
     } catch (e) {
         console.warn('loadSharedNotes failed:', e.code || e.message);
         return [];
+    }
+}
+
+/* =============================================
+   CONTENUTI DI STUDIO (quiz e flashcard per materia)
+   Lettura: chiunque abbia un account. Scrittura: solo isAdmin.
+   ============================================= */
+
+async function loadContentDoc(lobbyId) {
+    if (!state.firebaseUid) return null;
+    try {
+        const doc = await db.collection('content').doc(lobbyId).get();
+        return doc.exists ? doc.data() : null;
+    } catch (e) {
+        console.warn('loadContentDoc failed:', e.code || e.message);
+        return null;
+    }
+}
+
+async function saveContentDoc(lobbyId, data) {
+    if (!state.firebaseUid) return false;
+    try {
+        await db.collection('content').doc(lobbyId).set({
+            quiz: data.quiz,
+            cards: data.cards,
+            updatedBy: state.firebaseUid,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        return true;
+    } catch (e) {
+        console.warn('saveContentDoc failed:', e.code || e.message);
+        return false;
     }
 }
 

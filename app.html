@@ -490,6 +490,11 @@
                                         <span class="tool-row-text"><strong>Mappa concettuale</strong><span>Organizza gli argomenti in una mappa</span></span>
                                         <svg class="ic ic-sm tool-row-arrow" aria-hidden="true"><use href="#i-arrow-right"/></svg>
                                     </button>
+                                    <button class="tool-row" id="editor-open-btn" onclick="openContentEditor()" hidden>
+                                        <span class="tool-row-icon"><svg class="ic" aria-hidden="true"><use href="#i-layers"/></svg></span>
+                                        <span class="tool-row-text"><strong>Modifica quiz e flashcard</strong><span>Solo per gli amministratori: i contenuti si aggiornano per tutti</span></span>
+                                        <svg class="ic ic-sm tool-row-arrow" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+                                    </button>
                                     <button class="tool-row" onclick="openAI()">
                                         <span class="tool-row-icon"><svg class="ic" aria-hidden="true"><use href="#i-bot"/></svg></span>
                                         <span class="tool-row-text"><strong>AI Tutor</strong><span>Fai una domanda sulla materia</span></span>
@@ -912,7 +917,7 @@
     <div class="modal" id="modal-flashcard">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>🃏 Flashcard</h2>
+                <h2>Flashcard</h2>
                 <button class="modal-close" aria-label="Chiudi finestra" onclick="closeModal('flashcard')">✕</button>
             </div>
             <div class="flashcard-container">
@@ -920,10 +925,11 @@
                     <div class="flashcard-front" id="flashcard-front"><p>Clicca per girare</p></div>
                     <div class="flashcard-back" id="flashcard-back"><p>Risposta</p></div>
                 </div>
-                <div class="flashcard-actions">
-                    <button class="btn btn-danger" onclick="rateFlashcard('hard')">😰 Difficile</button>
-                    <button class="btn btn-warning" onclick="rateFlashcard('medium')">🤔 Medio</button>
-                    <button class="btn btn-success" onclick="rateFlashcard('easy')">😎 Facile</button>
+                <p class="fc-hint" id="fc-hint">Tocca la carta per vedere la risposta, poi dì quanto ti è costata.</p>
+                <div class="flashcard-actions" hidden>
+                    <button class="btn btn-danger" onclick="rateFlashcard('hard')">Difficile</button>
+                    <button class="btn btn-warning" onclick="rateFlashcard('medium')">Medio</button>
+                    <button class="btn btn-success" onclick="rateFlashcard('easy')">Facile</button>
                 </div>
                 <div class="flashcard-progress">Carta <span id="fc-current">1</span> di <span id="fc-total">0</span></div>
             </div>
@@ -934,7 +940,7 @@
     <div class="modal" id="modal-notes">
         <div class="modal-content modal-large">
             <div class="modal-header">
-                <h2>📝 Appunti</h2>
+                <h2>Appunti</h2>
                 <button class="modal-close" aria-label="Chiudi finestra" onclick="closeModal('notes')">✕</button>
             </div>
 
@@ -997,6 +1003,43 @@
                     <button class="ai-key-remove" id="ai-key-remove" onclick="removeAIKey()" style="display:none">Rimuovi chiave</button>
                 </div>
             </details>
+        </div>
+    </div>
+
+    <!-- EDITOR CONTENUTI (amministratori): pannello dentro la scheda Materiali -->
+    <div class="modal" id="modal-editor">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Quiz e flashcard · <span id="editor-subject"></span></h2>
+                <button class="modal-close" aria-label="Chiudi" onclick="closeModal('editor')">✕</button>
+            </div>
+            <p class="ed-intro">Quello che salvi qui lo vedono tutti gli studenti della materia. Le voci incomplete non vengono salvate.</p>
+            <p class="ed-count" id="editor-count"></p>
+
+            <section class="ed-section" aria-labelledby="ed-cards-title">
+                <div class="block-head">
+                    <h3 id="ed-cards-title">Flashcard</h3>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="editorAddCard()">
+                        <svg class="ic ic-sm" aria-hidden="true"><use href="#i-plus"/></svg> Aggiungi
+                    </button>
+                </div>
+                <div class="ed-list" id="editor-cards"></div>
+            </section>
+
+            <section class="ed-section" aria-labelledby="ed-quiz-title">
+                <div class="block-head">
+                    <h3 id="ed-quiz-title">Domande del quiz</h3>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="editorAddQuiz()">
+                        <svg class="ic ic-sm" aria-hidden="true"><use href="#i-plus"/></svg> Aggiungi
+                    </button>
+                </div>
+                <div class="ed-list" id="editor-quiz"></div>
+            </section>
+
+            <div class="ed-actions">
+                <button type="button" class="btn btn-primary" onclick="saveContentEditor()">Salva per tutti</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('editor')">Annulla</button>
+            </div>
         </div>
     </div>
 
@@ -1261,6 +1304,7 @@
 
     <script defer src="js/data.js"></script>
     <script defer src="js/app.js"></script>
+    <script defer src="js/content.js"></script>
     <script defer src="js/firebase-config.js"></script>
 
     <!-- PWA: register service worker (offline support + installability) -->

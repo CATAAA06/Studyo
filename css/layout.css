@@ -977,3 +977,56 @@ button.topbar-streak:hover { border-color: var(--border-strong); color: var(--te
 @media (max-width: 768px) {
     :is(#insieme-inline, #materiali-inline) .modal.modal-inline .modal-content { padding: 16px; }
 }
+
+/* =============================================
+   QUIZ — riscontro e spiegazione dopo la risposta
+   ============================================= */
+.quiz-counter { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+.quiz-feedback {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+    margin-top: 14px; padding: 14px 16px;
+    border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-input);
+    font-size: 14px; line-height: 1.5;
+}
+.quiz-feedback[hidden] { display: none; }
+.quiz-feedback.is-right { border-color: rgba(34, 197, 94, .45); }
+.quiz-feedback.is-wrong { border-color: rgba(255, 90, 31, .45); }
+.quiz-feedback strong { font-size: 15px; }
+.quiz-feedback.is-right strong { color: var(--success); }
+.quiz-feedback.is-wrong strong { color: var(--accent-light); }
+.quiz-feedback span { color: var(--text-secondary); }
+.quiz-feedback .btn { margin-top: 4px; }
+
+/* =============================================
+   FLASHCARD — si valuta solo dopo aver girato la carta
+   ============================================= */
+.fc-hint { font-size: 13.5px; color: var(--text-muted); text-align: center; margin-bottom: 12px; }
+.fc-hint[hidden], .flashcard-actions[hidden] { display: none; }
+.fc-tag { font-size: 11px; color: var(--accent-light); font-weight: 700; margin-left: 6px; }
+.fc-done { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+.fc-done p { font-size: 15px; color: var(--text-secondary); }
+.fc-done strong { color: var(--text); }
+
+/* =============================================
+   EDITOR CONTENUTI (amministratori)
+   ============================================= */
+.ed-intro { font-size: 14px; color: var(--text-secondary); }
+.ed-count { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+.ed-section { margin-top: 22px; }
+.ed-section .block-head h3 { font: 700 16px var(--font-display); letter-spacing: -0.02em; }
+.ed-list { display: flex; flex-direction: column; gap: 10px; }
+.ed-item {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 14px; background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius-sm);
+}
+.ed-item-head { display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 700; color: var(--text-muted); }
+.ed-item input[type="text"] {
+    width: 100%; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-xs);
+    color: var(--text); font: 500 14px var(--font-body); padding: 10px 12px; outline: none;
+}
+.ed-item input[type="text"]:focus { border-color: var(--primary); box-shadow: var(--ring); }
+.ed-options { border: 0; padding: 0; margin: 2px 0 0; display: flex; flex-direction: column; gap: 6px; }
+.ed-options legend { font-size: 12.5px; color: var(--text-muted); padding: 0 0 4px; }
+.ed-option { display: flex; align-items: center; gap: 10px; }
+.ed-option input[type="radio"] { accent-color: var(--primary); width: 18px; height: 18px; flex-shrink: 0; }
+.ed-actions { display: flex; gap: 8px; margin-top: 22px; }

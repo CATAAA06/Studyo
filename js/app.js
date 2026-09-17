@@ -759,6 +759,10 @@ function openLobby(lobbyId) {
     state.lastLobbyAt = Date.now();
     saveState();
 
+    // Contenuti (quiz/flashcard) dal cloud, con riserva locale
+    if (typeof ensureContent === "function") ensureContent(lobbyId);
+    if (typeof refreshAdminUI === "function") refreshAdminUI();
+
     // Tab: l'ultimo usato in questa materia; "Com'è l'esame" solo dove ha senso
     const examTab = document.getElementById('tab-esame');
     if (examTab) examTab.hidden = !reviewsEnabledFor(lobby);
@@ -1076,24 +1080,80 @@ function resetBuildingAnimation() {
 }
 
 /* =============================================
+   XP DELLO STUDIO — tetti giornalieri
+   Prima un quiz ripetuto sulle stesse 5 domande valeva 250 XP contro i 75 di
+   25 minuti di studio: la classifica premiava chi ripeteva, non chi studiava.
+   ============================================= */
+
+const XP_CAPS = { quiz: 150, flash: 100 };   // XP massimi al giorno per tipo
+
+function xpUsedToday(kind) {
+    return getDailyStats()['xp_' + kind] || 0;
+}
+
+// Assegna XP fino al tetto giornaliero. Torna gli XP effettivamente dati.
+function awardStudyXP(kind, amount, reason) {
+    const left = Math.max(0, (XP_CAPS[kind] || Infinity) - xpUsedToday(kind));
+    const give = Math.min(amount, left);
+    if (give > 0) {
+        bumpDailyStat('xp_' + kind, give);
+        addXP(give, reason);
+    }
+    return give;
+}
+
+/* =============================================
    QUIZ
    ============================================= */
 
-function startQuiz() {
+let quizPool = [];          // domande preparate per il giro in corso
+let quizAwarded = 0;        // XP dati in questo quiz
+let quizDone = false;       // evita che un doppio avanzamento chiuda due volte lo stesso quiz
+const lastQuizAsked = {};   // ultime domande viste per materia: si evita di ripeterle
+
+function shuffleQuizOptions(q) {
+    // Le risposte vanno mescolate: con l'ordine fisso si impara la posizione, non la materia
+    const pairs = q.options.map((text, i) => ({ text, correct: i === q.correct }));
+    shuffleArray(pairs);
+    return {
+        question: q.question,
+        explain: q.explain || '',
+        options: pairs.map(p => p.text),
+        correct: pairs.findIndex(p => p.correct)
+    };
+}
+
+async function startQuiz() {
     const lobbyId = state.currentLobby;
-    const questions = QUIZZES[lobbyId];
-    if (!questions) {
-        document.getElementById('quiz-area').innerHTML = `
+    const area = document.getElementById('quiz-area');
+    if (!lobbyId || !area) return;
+
+    area.innerHTML = `<div class="quiz-placeholder"><p>Preparo le domande…</p></div>`;
+    await ensureContent(lobbyId);
+    const all = getQuiz(lobbyId);
+
+    if (!all.length) {
+        area.innerHTML = `
             <div class="quiz-placeholder">
-                <p>Quiz non ancora disponibili per questa materia. Presto in arrivo!</p>
-            </div>
-        `;
+                <p>Per questa materia non ci sono ancora domande.</p>
+                <p class="quiz-sub">Segnalacelo dal badge Beta: le aggiungiamo alla materia più richiesta.</p>
+            </div>`;
         return;
     }
 
-    state.currentQuiz = shuffleArray([...questions]).slice(0, 5);
+    // Se il serbatoio è abbastanza grande, si evitano le domande dell'ultimo giro
+    const seen = lastQuizAsked[lobbyId] || [];
+    let pool = all.filter(q => !seen.includes(q.question));
+    if (pool.length < Math.min(5, all.length)) pool = all.slice();
+
+    const picked = shuffleArray(pool.slice()).slice(0, 5);
+    lastQuizAsked[lobbyId] = picked.map(q => q.question);
+
+    state.currentQuiz = picked.map(shuffleQuizOptions);
     state.currentQuizIndex = 0;
     state.quizScore = 0;
+    quizAwarded = 0;
+    quizDone = false;
 
     renderQuizQuestion();
 }
@@ -1108,54 +1168,72 @@ function renderQuizQuestion() {
     const area = document.getElementById('quiz-area');
 
     area.innerHTML = `
-        <div class="quiz-counter" style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">
-            Domanda ${state.currentQuizIndex + 1} di ${state.currentQuiz.length}
-        </div>
-        <div class="quiz-question">${q.question}</div>
-        <div class="quiz-options">
+        <div class="quiz-counter">Domanda ${state.currentQuizIndex + 1} di ${state.currentQuiz.length}</div>
+        <div class="quiz-question">${escapeHTML(q.question)}</div>
+        <div class="quiz-options" role="group" aria-label="Risposte">
             ${q.options.map((opt, i) => `
-                <button class="quiz-option" onclick="answerQuiz(${i})">${opt}</button>
+                <button class="quiz-option" onclick="answerQuiz(${i})">${escapeHTML(opt)}</button>
             `).join('')}
         </div>
+        <div class="quiz-feedback" id="quiz-feedback" role="status" hidden></div>
     `;
 }
 
 function answerQuiz(selected) {
     const q = state.currentQuiz[state.currentQuizIndex];
     const options = document.querySelectorAll('.quiz-option');
+    const right = selected === q.correct;
 
     options.forEach((opt, i) => {
         opt.classList.add('disabled');
         if (i === q.correct) opt.classList.add('correct');
-        if (i === selected && i !== q.correct) opt.classList.add('wrong');
+        if (i === selected && !right) opt.classList.add('wrong');
     });
 
-    if (selected === q.correct) {
-        state.quizScore++;
-    }
+    if (right) state.quizScore++;
 
-    setTimeout(() => {
-        state.currentQuizIndex++;
-        renderQuizQuestion();
-    }, 1200);
+    // Si dice sempre perché: sbagliare senza spiegazione non insegna niente
+    const fb = document.getElementById('quiz-feedback');
+    const last = state.currentQuizIndex === state.currentQuiz.length - 1;
+    if (fb) {
+        fb.hidden = false;
+        fb.className = 'quiz-feedback ' + (right ? 'is-right' : 'is-wrong');
+        fb.innerHTML = `
+            <strong>${right ? 'Giusto.' : 'Non ci siamo.'}</strong>
+            ${right ? '' : `<span>La risposta è: ${escapeHTML(q.options[q.correct])}</span>`}
+            ${q.explain ? `<span>${escapeHTML(q.explain)}</span>` : ''}
+            <button class="btn btn-primary btn-sm" onclick="nextQuizQuestion()">${last ? 'Vedi il risultato' : 'Avanti'}</button>`;
+        const btn = fb.querySelector('button');
+        if (btn) btn.focus({ preventScroll: true });
+    } else {
+        nextQuizQuestion();
+    }
+}
+
+function nextQuizQuestion() {
+    state.currentQuizIndex++;
+    renderQuizQuestion();
 }
 
 function finishQuiz() {
+    if (quizDone) return;
+    quizDone = true;
     state.quizzesCompleted++;
 
     // Quiz senza errori → badge "Quiz Perfetto"
-    if (state.currentQuiz && state.quizScore === state.currentQuiz.length) {
-        state.perfectQuizzes = (state.perfectQuizzes || 0) + 1;
-    }
+    const perfect = state.currentQuiz && state.quizScore === state.currentQuiz.length;
+    if (perfect) state.perfectQuizzes = (state.perfectQuizzes || 0) + 1;
 
-    // Streak + daily challenge tracking
+    // Streak + sfide del giorno
     registerStudyDay();
     bumpDailyStat('quizzes');
     renderChallenges();
     checkNewBadges();
 
-    const xpEarned = state.quizScore * 50;
-    addXP(xpEarned, `Quiz completato: ${state.quizScore}/${state.currentQuiz.length}`);
+    // 10 XP a risposta giusta + 20 se è perfetto, con tetto giornaliero
+    const earned = state.quizScore * 10 + (perfect ? 20 : 0);
+    quizAwarded = awardStudyXP('quiz', earned, `Quiz completato: ${state.quizScore}/${state.currentQuiz.length}`);
+    const capped = quizAwarded < earned;
 
     const area = document.getElementById('quiz-area');
     const percentage = Math.round((state.quizScore / state.currentQuiz.length) * 100);
@@ -1168,8 +1246,9 @@ function finishQuiz() {
         <div class="quiz-result">
             <div class="quiz-score">${emoji} ${state.quizScore}/${state.currentQuiz.length}</div>
             <div class="quiz-score-label">${percentage}% risposte corrette</div>
-            <div class="quiz-xp-earned">+${xpEarned} XP guadagnati!</div>
-            <button class="btn btn-accent" onclick="startQuiz()">🔄 Nuovo Quiz</button>
+            <div class="quiz-xp-earned">+${quizAwarded} XP</div>
+            ${capped ? `<p class="quiz-sub">Hai raggiunto il massimo di XP da quiz per oggi: puoi continuare a esercitarti, ma gli XP ripartono domani.</p>` : ''}
+            <button class="btn btn-primary" onclick="startQuiz()">Nuovo quiz</button>
         </div>
     `;
 
@@ -1177,40 +1256,87 @@ function finishQuiz() {
 }
 
 function resetQuizArea() {
-    document.getElementById('quiz-area').innerHTML = `
+    const area = document.getElementById('quiz-area');
+    if (!area) return;
+    area.innerHTML = `
         <div class="quiz-placeholder">
             <span class="quiz-placeholder-icon">🧠</span>
-            <p>Premi "Nuova Sfida" per iniziare un quiz sulla materia!</p>
-            <p class="quiz-sub">+50 XP per ogni risposta corretta</p>
+            <p>Premi "Nuova sfida" per iniziare un quiz sulla materia!</p>
+            <p class="quiz-sub">5 domande, risposte in ordine casuale, con spiegazione</p>
         </div>
     `;
 }
 
 /* =============================================
-   FLASHCARDS
+   FLASHCARDS — ripetizione spaziata che dura nel tempo
+   Prima il mazzo ripartiva da zero a ogni apertura: la valutazione
+   (difficile/medio/facile) valeva solo per quella sessione.
+   Ora ogni carta ha un intervallo in giorni salvato su questo dispositivo.
    ============================================= */
+
+const SRS_KEY = 'studyo_srs';
+const SRS_SESSION_MAX = 20;     // carte per sessione
+const SRS_MIN_GAP = 3;          // carte che devono passare prima di rivedere la stessa
 
 let studyDeck = [];
 let fcCompleted = 0;
 let fcTotal = 0;
+let fcExtraPractice = false;    // ripasso extra: fuori dalla programmazione
 
-function openFlashcards() {
+function srsAll() {
+    try { return JSON.parse(localStorage.getItem(SRS_KEY) || '{}'); } catch (e) { return {}; }
+}
+function srsSave(all) {
+    try { localStorage.setItem(SRS_KEY, JSON.stringify(all)); } catch (e) {}
+}
+// Chiave stabile anche se l'ordine delle carte cambia
+function srsKey(card) { return _hashString(card.front).toString(36); }
+
+function srsFor(lobbyId, card) {
+    const all = srsAll();
+    return (all[lobbyId] || {})[srsKey(card)] || null;
+}
+
+function srsUpdate(lobbyId, card, patch) {
+    const all = srsAll();
+    if (!all[lobbyId]) all[lobbyId] = {};
+    all[lobbyId][srsKey(card)] = { ...(all[lobbyId][srsKey(card)] || {}), ...patch };
+    srsSave(all);
+}
+
+function addDays(dateStr, days) {
+    const d = new Date(dateStr + 'T00:00:00');
+    d.setDate(d.getDate() + days);
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
+// Carte in scadenza oggi (mai viste incluse)
+function dueCards(lobbyId, cards) {
+    const today = todayStr();
+    return cards.filter(c => {
+        const s = srsFor(lobbyId, c);
+        return !s || !s.due || s.due <= today;
+    });
+}
+
+async function openFlashcards(extra) {
     const lobbyId = state.currentLobby;
-    const cards = FLASHCARDS[lobbyId];
+    if (!lobbyId) return;
 
-    if (!cards || cards.length === 0) {
-        showNotification('Flashcard non ancora disponibili per questa materia!');
+    await ensureContent(lobbyId);
+    const cards = getCards(lobbyId);
+
+    if (!cards.length) {
+        showNotification('Per questa materia non ci sono ancora flashcard. Segnalacelo dal badge Beta.');
         return;
     }
 
-    // Build a study deck with spaced repetition metadata
-    studyDeck = cards.map((card, i) => ({
-        ...card,
-        id: i,
-        interval: 0, // 0 = new, not yet seen
-    }));
+    fcExtraPractice = !!extra;
+    const pool = fcExtraPractice ? cards.slice() : dueCards(lobbyId, cards);
+
+    studyDeck = shuffleArray(pool.slice()).slice(0, SRS_SESSION_MAX).map(c => ({ ...c, seenInSession: 0 }));
     fcCompleted = 0;
-    fcTotal = cards.length;
+    fcTotal = studyDeck.length;
 
     document.getElementById('fc-total').textContent = fcTotal;
     renderFlashcard();
@@ -1218,31 +1344,52 @@ function openFlashcards() {
 }
 
 function renderFlashcard() {
-    if (studyDeck.length === 0) {
-        // All cards mastered in this session
-        document.getElementById('flashcard-front').innerHTML = `
-            <div style="text-align:center">
-                <div style="font-size:48px;margin-bottom:12px">🎉</div>
-                <p>Tutte le carte completate!</p>
-                <p style="font-size:14px;color:var(--text-secondary);margin-top:8px">${fcCompleted} carte studiate con ripetizione spaziata</p>
-            </div>
-        `;
-        document.getElementById('flashcard-back').innerHTML = '';
-        document.getElementById('fc-current').textContent = fcTotal;
-        const el = document.getElementById('flashcard');
+    const front = document.getElementById('flashcard-front');
+    const back = document.getElementById('flashcard-back');
+    const el = document.getElementById('flashcard');
+    const actions = document.querySelector('.flashcard-actions');
+    const hint = document.getElementById('fc-hint');
+
+    // Niente da ripassare oggi: si può comunque fare pratica extra
+    if (fcTotal === 0) {
+        front.innerHTML = `<div class="fc-done">
+            <p><strong>Per oggi hai finito.</strong></p>
+            <p>Le carte tornano quando è il momento giusto per ricordarle.</p>
+            <button class="btn btn-secondary btn-sm" onclick="openFlashcards(true)">Ripassa comunque</button>
+        </div>`;
+        back.innerHTML = '';
+        if (actions) actions.hidden = true;
+        if (hint) hint.hidden = true;
         el.classList.remove('flipped');
+        document.getElementById('fc-current').textContent = '0';
+        return;
+    }
+
+    if (studyDeck.length === 0) {
+        front.innerHTML = `<div class="fc-done">
+            <p><strong>Sessione completata.</strong></p>
+            <p>${fcCompleted} ${fcCompleted === 1 ? 'carta ripassata' : 'carte ripassate'}${fcExtraPractice ? '' : ': le rivedrai nei prossimi giorni'}.</p>
+        </div>`;
+        back.innerHTML = '';
+        if (actions) actions.hidden = true;
+        if (hint) hint.hidden = true;
+        el.classList.remove('flipped');
+        document.getElementById('fc-current').textContent = fcTotal;
         return;
     }
 
     const card = studyDeck[0];
-    const repeatTag = card.interval > 0 ? ' <span style="font-size:11px;color:var(--accent)">(ripasso)</span>' : '';
-    document.getElementById('flashcard-front').innerHTML = `<p>${card.front}${repeatTag}</p>`;
-    document.getElementById('flashcard-back').innerHTML = `<p>${card.back}</p>`;
-    document.getElementById('fc-current').textContent = fcCompleted + 1;
+    const s = srsFor(state.currentLobby, card);
+    const tag = s && s.reps ? ' <span class="fc-tag">ripasso</span>' : '';
+    front.innerHTML = `<p>${card.front}${tag}</p>`;
+    back.innerHTML = `<p>${card.back}</p>`;
+    document.getElementById('fc-current').textContent = Math.min(fcCompleted + 1, fcTotal);
 
-    const el = document.getElementById('flashcard');
     el.classList.remove('flipped');
     state.flashcardFlipped = false;
+    // Si valuta solo dopo aver visto la risposta
+    if (actions) actions.hidden = true;
+    if (hint) hint.hidden = false;
 }
 
 function flipCard() {
@@ -1250,39 +1397,61 @@ function flipCard() {
     const el = document.getElementById('flashcard');
     el.classList.toggle('flipped');
     state.flashcardFlipped = !state.flashcardFlipped;
+
+    const actions = document.querySelector('.flashcard-actions');
+    const hint = document.getElementById('fc-hint');
+    if (actions) actions.hidden = !state.flashcardFlipped;
+    if (hint) hint.hidden = state.flashcardFlipped;
 }
 
+/* difficile → torna in questa sessione, ma non subito (almeno 3 carte dopo)
+   medio    → tra 1-2 giorni
+   facile   → intervallo più lungo, in base a quante volte l'hai già ricordata */
 function rateFlashcard(rating) {
     if (studyDeck.length === 0) return;
+    if (!state.flashcardFlipped) return;   // prima si gira la carta
 
-    const card = studyDeck.shift(); // Remove from front
-    let xp = 10;
+    const card = studyDeck.shift();
+    const lobbyId = state.currentLobby;
+    const prev = srsFor(lobbyId, card) || { interval: 0, ease: 2.3, reps: 0 };
+    const today = todayStr();
+    let interval, ease = prev.ease || 2.3;
 
-    if (rating === 'easy') {
-        // Easy: card is mastered, don't re-insert
-        xp = 20;
-        fcCompleted++;
-        showNotification('😎 Facile! Carta padroneggiata');
-    } else if (rating === 'medium') {
-        // Medium: re-insert further back (after 4-6 cards)
-        xp = 10;
-        card.interval++;
-        if (card.interval >= 3) {
-            // Seen 3 times as medium, consider learned
-            fcCompleted++;
+    if (rating === 'hard') {
+        ease = Math.max(1.5, ease - 0.15);
+        interval = 0;                                   // da rivedere oggi stesso
+        card.seenInSession = (card.seenInSession || 0) + 1;
+        // Rientra nel mazzo, ma con almeno SRS_MIN_GAP carte in mezzo
+        const at = Math.min(studyDeck.length, SRS_MIN_GAP + Math.floor(Math.random() * 2));
+        if (studyDeck.length === 0 && card.seenInSession >= 3) {
+            fcCompleted++;                              // mazzo di una carta sola: non si insiste all'infinito
         } else {
-            const insertAt = Math.min(studyDeck.length, 4 + Math.floor(Math.random() * 3));
-            studyDeck.splice(insertAt, 0, card);
+            studyDeck.splice(at, 0, card);
         }
-    } else if (rating === 'hard') {
-        // Hard: re-insert soon (after 1-2 cards)
-        xp = 5;
-        card.interval++;
-        const insertAt = Math.min(studyDeck.length, 1 + Math.floor(Math.random() * 2));
-        studyDeck.splice(insertAt, 0, card);
+    } else if (rating === 'medium') {
+        interval = prev.reps ? Math.max(1, Math.round((prev.interval || 1) * 1.4)) : 1;
+        fcCompleted++;
+    } else {
+        ease = Math.min(2.8, ease + 0.1);
+        interval = prev.reps ? Math.max(2, Math.round((prev.interval || 1) * ease)) : 3;
+        fcCompleted++;
     }
 
-    addXP(xp, 'Flashcard studiata');
+    srsUpdate(lobbyId, card, {
+        interval,
+        ease,
+        reps: (prev.reps || 0) + 1,
+        last: today,
+        due: addDays(today, Math.max(interval, rating === 'hard' ? 0 : 1))
+    });
+
+    // XP una sola volta al giorno per carta, con tetto giornaliero
+    const already = prev.last === today;
+    if (!already) {
+        const xp = rating === 'easy' ? 8 : rating === 'medium' ? 6 : 4;
+        awardStudyXP('flash', xp, 'Flashcard ripassata');
+    }
+
     renderFlashcard();
 }
 
@@ -2320,7 +2489,7 @@ function renderAISuggestions() {
     const box = document.getElementById('ai-suggest');
     if (!box) return;
     const lobby = LOBBIES.find(l => l.id === state.currentLobby);
-    const cards = FLASHCARDS[state.currentLobby] || [];
+    const cards = (typeof getCards === 'function') ? getCards(state.currentLobby) : (FLASHCARDS[state.currentLobby] || []);
     const subject = lobby ? lobby.name : 'questa materia';
 
     const ideas = [];
@@ -2694,7 +2863,7 @@ function openModal(name) {
 
 /* Meno finestre sopra la pagina: alcune "modali" vivono dentro la pagina a cui
    appartengono. Gli id restano gli stessi, quindi openModal/closeModal non cambiano. */
-const INLINE_PANELS = { 'insieme-inline': ['groups', 'session'], 'materiali-inline': ['notes', 'ai'] };
+const INLINE_PANELS = { 'insieme-inline': ['groups', 'session'], 'materiali-inline': ['notes', 'ai', 'editor'] };
 
 function setupInlinePanels() {
     Object.keys(INLINE_PANELS).forEach(hostId => {
