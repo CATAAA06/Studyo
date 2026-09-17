@@ -940,7 +940,7 @@ function startTimer() {
     document.getElementById('timer-start-btn').textContent = '⏸ Pausa';
     document.getElementById('timer-start-btn').classList.remove('btn-primary');
     document.getElementById('timer-start-btn').classList.add('btn-warning');
-    document.querySelector('.build-scene').style.boxShadow = '0 0 30px rgba(108, 92, 231, 0.2)';
+    document.querySelector('.build-scene').style.boxShadow = '0 0 30px rgba(200, 240, 49, 0.18)';
 
     state.timer = setInterval(() => {
         state.timerSeconds--;
@@ -2810,7 +2810,7 @@ function showNotification(text) {
         font-size: ${isMobile ? '13px' : '14px'};
         font-weight: 600;
         animation: fadeIn 0.3s ease;
-        box-shadow: 0 8px 32px rgba(108, 92, 231, 0.3);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         ${isMobile ? 'text-align: center;' : ''}
         pointer-events: auto;
     `;

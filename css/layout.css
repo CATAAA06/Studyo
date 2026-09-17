@@ -120,7 +120,7 @@
 .nav-more { color: var(--text-secondary); }
 
 .nav-bottom { margin-top: auto; padding-top: 16px; display: flex; flex-direction: column; gap: 2px; }
-.nav-focus .ic { color: #B794F6; }
+.nav-focus .ic { color: var(--accent); }
 
 /* Sidebar compressa: solo icone */
 .shell.nav-collapsed .nav-sidebar { width: var(--sidebar-w-collapsed); padding-left: 10px; padding-right: 10px; }
@@ -331,16 +331,16 @@
 .focus-band {
     display: flex; align-items: center; gap: 16px; width: 100%;
     padding: 18px 22px; margin-bottom: 32px;
-    background: linear-gradient(100deg, #17122A 0%, #141416 70%);
-    border: 1px solid #2E2548; border-radius: var(--radius);
+    background: linear-gradient(100deg, rgba(200, 240, 49, .07) 0%, #141416 70%);
+    border: 1px solid rgba(200, 240, 49, .22); border-radius: var(--radius);
     color: var(--text); text-align: left; cursor: pointer;
 }
-.focus-band:hover { border-color: #4A3B78; }
+.focus-band:hover { border-color: rgba(200, 240, 49, .45); }
 .focus-band-icon { font-size: 26px; }
 .focus-band-text { flex: 1; display: flex; flex-direction: column; gap: 2px; }
 .focus-band-text strong { font: 700 16px var(--font-display); }
 .focus-band-text span { font-size: 14px; color: var(--text-secondary); }
-.focus-band-cta { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 14px; color: #C9B6FF; white-space: nowrap; }
+.focus-band-cta { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 14px; color: var(--primary); white-space: nowrap; }
 
 .week-stats {
     display: flex; flex-wrap: wrap; align-items: center; gap: 8px 24px;
@@ -871,8 +871,8 @@ button.topbar-streak:hover { border-color: var(--border-strong); color: var(--te
 .topbar-streak.is-empty b { display: none; }
 .topbar-streak.is-empty .streak-start { display: inline; font-weight: 600; color: var(--text); }
 @media (max-width: 1180px) {
+    /* Su schermi stretti resta solo la fiamma: niente "0", il testo è nell'aria-label */
     .topbar-streak.is-empty .streak-start { display: none; }
-    .topbar-streak.is-empty b { display: inline; color: var(--text-muted); }
 }
 
 .week-stats-empty span { color: var(--text-secondary); }
