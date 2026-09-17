@@ -2240,20 +2240,25 @@ function openAI() {
 function refreshAIMode() {
     const hasKey = !!getAIKey();
     const badge = document.getElementById('ai-mode-badge');
-    const link = document.querySelector('.ai-mode-link');
+    const desc = document.getElementById('ai-mode-desc');
     const rm = document.getElementById('ai-key-remove');
     if (badge) {
-        badge.textContent = hasKey ? '✨ Claude collegato' : 'Modalità base';
+        badge.textContent = hasKey ? 'Claude collegato' : 'Pronto';
         badge.classList.toggle('live', hasKey);
     }
-    if (link) link.textContent = hasKey ? 'Gestisci' : "Collega un'AI vera";
+    if (desc) {
+        desc.textContent = hasKey
+            ? 'Risposte generate da Claude con la tua chiave personale.'
+            : 'Ti aiuta con definizioni, domande di ripasso e flashcard di questa materia.';
+    }
     if (rm) rm.style.display = hasKey ? 'block' : 'none';
 }
 
-function toggleAISettings() {
-    const box = document.getElementById('ai-settings');
+// Le impostazioni avanzate stanno in un <details> chiuso di default
+function toggleAISettings(open) {
+    const box = document.getElementById('ai-advanced');
     if (!box) return;
-    box.style.display = box.style.display === 'none' ? 'block' : 'none';
+    box.open = typeof open === 'boolean' ? open : !box.open;
 }
 
 function saveAIKey() {
@@ -2266,9 +2271,9 @@ function saveAIKey() {
     }
     localStorage.setItem(AI_KEY_STORE, key);
     input.value = '';
-    document.getElementById('ai-settings').style.display = 'none';
+    toggleAISettings(false);
     refreshAIMode();
-    showNotification('✨ AI collegata! Ora le risposte sono generate da Claude.');
+    showNotification('Chiave collegata: ora le risposte sono generate da Claude.');
 }
 
 function removeAIKey() {
@@ -2363,10 +2368,10 @@ function localTutorAnswer(question) {
     const tools = [];
     if (cards.length) tools.push(`${cards.length} flashcard`);
     if (quiz.length) tools.push(`un quiz da ${quiz.length} domande`);
-    const has = tools.length ? ` Per ${escapeHTML(subject)} ho ${tools.join(' e ')}: aprili dagli strumenti della lobby.` : '';
+    const has = tools.length ? ` Per ${escapeHTML(subject)} ho ${tools.join(' e ')}: aprili dalla scheda Ripassa.` : '';
 
-    return `Su questo non ho materiale pronto in modalità base.${has}
-        <span class="ai-src">Vuoi risposte complete? Collega un'AI vera dal pulsante qui sopra.</span>`;
+    return `Su questo non ho materiale pronto per questa materia.${has}
+        <span class="ai-src">Prova a chiedere una definizione o un argomento del programma. Se hai una chiave API personale, la trovi tra le impostazioni avanzate qui sotto.</span>`;
 }
 
 // --- Real Claude answers (user's own API key, stays on their device) ---

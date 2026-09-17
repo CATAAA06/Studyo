@@ -962,21 +962,10 @@
                 <h2>🤖 AI Tutor</h2>
                 <button class="modal-close" aria-label="Chiudi finestra" onclick="closeModal('ai')">✕</button>
             </div>
+            <!-- Funziona subito, senza configurare nulla: la chiave personale è un'opzione avanzata -->
             <div class="ai-mode" id="ai-mode">
-                <span class="ai-mode-badge" id="ai-mode-badge">Modalità base</span>
-                <button class="ai-mode-link" onclick="toggleAISettings()">Collega un'AI vera</button>
-            </div>
-
-            <div class="ai-settings" id="ai-settings" style="display:none">
-                <p class="ai-settings-help">
-                    Incolla una API key di Anthropic per risposte generate da Claude.
-                    Resta salvata solo sul tuo dispositivo e non viene mai inviata ai nostri server.
-                </p>
-                <div class="ai-key-row">
-                    <input type="password" id="ai-key-input" placeholder="sk-ant-..." autocomplete="off">
-                    <button class="btn btn-primary" onclick="saveAIKey()">Salva</button>
-                </div>
-                <button class="ai-key-remove" id="ai-key-remove" onclick="removeAIKey()" style="display:none">Rimuovi chiave</button>
+                <span class="ai-mode-badge" id="ai-mode-badge">Pronto</span>
+                <p class="ai-mode-desc" id="ai-mode-desc">Ti aiuta con definizioni, domande di ripasso e flashcard di questa materia.</p>
             </div>
 
             <div class="ai-chat" id="ai-chat">
@@ -984,9 +973,25 @@
             </div>
             <div class="ai-suggest" id="ai-suggest"></div>
             <div class="ai-input-area">
-                <input type="text" id="ai-input" placeholder="Chiedi qualcosa..." onkeypress="handleAIKey(event)">
-                <button class="btn btn-primary" onclick="sendAIMessage()">→</button>
+                <input type="text" id="ai-input" aria-label="Fai una domanda all'AI Tutor" placeholder="Chiedi qualcosa..." onkeypress="handleAIKey(event)">
+                <button class="btn btn-primary" aria-label="Invia domanda" onclick="sendAIMessage()">→</button>
             </div>
+
+            <details class="ai-advanced" id="ai-advanced">
+                <summary>Impostazioni avanzate</summary>
+                <div class="ai-settings" id="ai-settings">
+                    <p class="ai-settings-help">
+                        Facoltativo. Se hai una chiave API Anthropic personale puoi collegarla: le risposte
+                        le genera Claude e il costo è a tuo carico. La chiave resta solo su questo dispositivo
+                        e non passa dai nostri server.
+                    </p>
+                    <div class="ai-key-row">
+                        <input type="password" id="ai-key-input" aria-label="Chiave API Anthropic" placeholder="sk-ant-..." autocomplete="off">
+                        <button class="btn btn-secondary" onclick="saveAIKey()">Salva</button>
+                    </div>
+                    <button class="ai-key-remove" id="ai-key-remove" onclick="removeAIKey()" style="display:none">Rimuovi chiave</button>
+                </div>
+            </details>
         </div>
     </div>
 
