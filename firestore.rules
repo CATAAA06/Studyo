@@ -130,7 +130,8 @@ service cloud.firestore {
 
     // ---- COM'È L'ESAME (recensioni sull'esame) ----
     // Id documento = uid_materia: una sola recensione per persona per esame.
-    // Scrivono solo gli universitari; nessun campo parla del docente.
+    // Scrivono solo gli universitari. Il campo docente e solo un'etichetta
+    // per riconoscere l'edizione del corso, non un giudizio sulla persona.
     function isUniStudent() {
       let u = get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
       return !('school' in u) || u.school == 'universita';
