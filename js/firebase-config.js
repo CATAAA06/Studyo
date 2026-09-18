@@ -704,21 +704,39 @@ async function loadReviews(lobbyId) {
 async function saveReview(lobbyId, fields) {
     if (!state.firebaseUid) return false;
     const ref = db.collection('reviews').doc(reviewDocId(lobbyId));
+
+    const build = (data, prev) => ({
+        ...data,
+        uid: state.firebaseUid,
+        lobbyId: lobbyId,
+        authorName: state.playerName || 'Studente',
+        reportedBy: prev && Array.isArray(prev.reportedBy) ? prev.reportedBy : [],
+        createdAt: prev && prev.createdAt ? prev.createdAt : firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    let prev = null;
     try {
         // Chi modifica non può azzerare le segnalazioni ricevute
         const existing = await ref.get();
-        const prev = existing.exists ? existing.data() : null;
-        await ref.set({
-            ...fields,
-            uid: state.firebaseUid,
-            lobbyId: lobbyId,
-            authorName: state.playerName || 'Studente',
-            reportedBy: prev && Array.isArray(prev.reportedBy) ? prev.reportedBy : [],
-            createdAt: prev && prev.createdAt ? prev.createdAt : firebase.firestore.FieldValue.serverTimestamp(),
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+        prev = existing.exists ? existing.data() : null;
+        await ref.set(build(fields, prev));
         return true;
     } catch (e) {
+        // Se le regole del database non conoscono ancora il campo "docente",
+        // salvo comunque il resto invece di far perdere la recensione scritta.
+        if ((e.code === 'permission-denied') && fields && 'docente' in fields) {
+            const senzaDocente = { ...fields };
+            delete senzaDocente.docente;
+            try {
+                await ref.set(build(senzaDocente, prev));
+                console.warn('saveReview: campo docente non accettato dalle regole, salvata senza.');
+                return 'senza-docente';
+            } catch (e2) {
+                console.warn('saveReview retry failed:', e2.code || e2.message);
+                return false;
+            }
+        }
         console.warn('saveReview failed:', e.code || e.message);
         return false;
     }

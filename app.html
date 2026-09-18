@@ -514,6 +514,7 @@
                                         <button class="exam-scope-btn active" data-scope="mine" onclick="setReviewScope('mine')">Il mio ateneo</button>
                                         <button class="exam-scope-btn" data-scope="all" onclick="setReviewScope('all')">Tutti gli atenei</button>
                                     </div>
+                                    <div class="exam-prof" id="exam-prof" role="group" aria-label="Filtra per docente" hidden></div>
                                     <div id="exam-summary"></div>
                                     <div id="exam-reviews" class="exam-reviews"></div>
                                 </div>
@@ -751,7 +752,7 @@
 
             <div class="review-rule">
                 <strong>Parla dell'esame, non delle persone.</strong>
-                Niente giudizi su docenti o compagni: racconta com'è la prova e cosa ti è servito per prepararla. Le recensioni che parlano di persone vengono rimosse.
+                Niente giudizi su docenti o compagni: racconta com'è la prova e cosa ti è servito per prepararla. Le recensioni che parlano di persone vengono rimosse. Il cognome del docente serve solo a capire di quale edizione del corso parli.
             </div>
 
             <fieldset class="review-field">
@@ -774,6 +775,12 @@
                     <label for="review-year">Anno in cui l'hai sostenuto</label>
                     <select id="review-year"></select>
                 </div>
+            </div>
+
+            <div class="form-group">
+                <label for="review-docente">Docente (cognome) <span class="label-optional">facoltativo</span></label>
+                <input type="text" id="review-docente" maxlength="60" autocomplete="off" placeholder="Es: Rossi">
+                <p class="field-hint">Serve solo a identificare l'edizione del corso: lo stesso esame cambia parecchio da un docente all'altro. Scrivi solo il cognome, niente giudizi sulla persona. Se non lo ricordi, lascia vuoto.</p>
             </div>
 
             <fieldset class="review-field">
@@ -804,7 +811,7 @@
             <div class="form-group">
                 <label for="review-tip">Il tuo consiglio a chi lo deve dare</label>
                 <textarea id="review-tip" oninput="checkPersonMention()" maxlength="800" rows="3" placeholder="Es: inizia dagli esercizi dal primo giorno, la teoria all'orale la chiedono tutta"></textarea>
-                <p class="review-warn" id="review-warn" hidden>Stai parlando di una persona? Ricorda di descrivere l'esame, non chi lo tiene.</p>
+                <p class="review-warn" id="review-warn" hidden>Stai parlando di una persona? Descrivi l'esame, non chi lo tiene: per indicare l'edizione c'è il campo Docente qui sopra.</p>
             </div>
 
             <div class="review-actions">

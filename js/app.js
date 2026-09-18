@@ -1723,7 +1723,31 @@ function uniKey(name) {
     return s.slice(0, 120);
 }
 
-let reviewState = { lobbyId: null, list: [], scope: 'mine', difficulty: 0, loading: false };
+let reviewState = { lobbyId: null, list: [], scope: 'mine', docente: '', difficulty: 0, loading: false };
+
+// Il docente è solo un'etichetta per riconoscere l'edizione del corso.
+// Tolgo titoli e punteggiatura e tengo il cognome, così "prof. rossi" e "Rossi"
+// finiscono nello stesso gruppo.
+const DOCENTE_TITLES = new Set(['prof', 'profssa', 'professor', 'professore', 'professoressa',
+    'dott', 'dottssa', 'dottore', 'dottoressa', 'dr', 'drssa', 'ing', 'avv', 'docente', 'sig', 'sigra']);
+function cleanDocente(value) {
+    const words = (value || '').replace(/\s+/g, ' ').trim().split(' ');
+    while (words.length && DOCENTE_TITLES.has(normalizeText(words[0]).replace(/[^a-z]/g, ''))) words.shift();
+    let s = words.join(' ').replace(/[^\p{L}\s'’-]/gu, '').replace(/\s+/g, ' ').trim();
+    if (!s) return '';
+    if (s === s.toUpperCase()) s = s.toLowerCase();       // chi scrive tutto maiuscolo non sta urlando
+    s = s.replace(/(^|[\s'’-])(\p{L})/gu, (m, sep, letter) => sep + letter.toUpperCase());
+    return s.slice(0, 60);
+}
+
+function docenteKey(value) {
+    return normalizeText(cleanDocente(value)).replace(/[^a-z ]+/g, '').trim();
+}
+
+function docenteLabel(review) {
+    const d = cleanDocente(review && review.docente);
+    return d ? 'Prof. ' + d : '';
+}
 
 function reviewsEnabledFor(lobby) {
     return !!lobby && !lobby.isGroup && lobby.category !== 'superiori';
@@ -1750,6 +1774,66 @@ function scopedReviews() {
     return all.filter(r => r.uniKey && r.uniKey === mine);
 }
 
+// Recensioni davvero mostrate: ateneo + eventuale docente scelto
+function filteredReviews() {
+    const list = scopedReviews();
+    if (!reviewState.docente) return list;
+    if (reviewState.docente === '_nessuno') return list.filter(r => !docenteKey(r.docente));
+    return list.filter(r => docenteKey(r.docente) === reviewState.docente);
+}
+
+// Gruppi di docenti presenti, dal più citato al meno
+function docenteGroups() {
+    const groups = new Map();
+    scopedReviews().forEach(r => {
+        const key = docenteKey(r.docente);
+        if (!key) return;
+        const g = groups.get(key) || { key, label: cleanDocente(r.docente), count: 0 };
+        g.count++;
+        groups.set(key, g);
+    });
+    return [...groups.values()].sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+}
+
+function setReviewDocente(key) {
+    reviewState.docente = reviewState.docente === key ? '' : key;
+    renderProfFilter();
+    renderExamSummary();
+    renderReviewList();
+}
+
+function renderProfFilter() {
+    const box = document.getElementById('exam-prof');
+    if (!box) return;
+    const groups = docenteGroups();
+    const senza = scopedReviews().filter(r => !docenteKey(r.docente)).length;
+
+    // Un filtro con un solo docente non serve a niente
+    if (groups.length < 2) {
+        box.hidden = true;
+        box.innerHTML = '';
+        if (reviewState.docente) reviewState.docente = '';
+        return;
+    }
+
+    // Se il docente selezionato non c'è più (cambio ateneo), torno a tutti
+    if (reviewState.docente && reviewState.docente !== '_nessuno'
+        && !groups.some(g => g.key === reviewState.docente)) reviewState.docente = '';
+
+    const btn = (key, label, count) => {
+        const on = reviewState.docente === key;
+        return `<button type="button" class="exam-prof-btn ${on ? 'active' : ''}" aria-pressed="${on}"
+                onclick="setReviewDocente('${key}')">${escapeHTML(label)}<span aria-hidden="true"> · ${count}</span></button>`;
+    };
+
+    box.hidden = false;
+    box.innerHTML = `<span class="exam-prof-label">Docente</span>
+        <button type="button" class="exam-prof-btn ${reviewState.docente ? '' : 'active'}" aria-pressed="${!reviewState.docente}"
+            onclick="setReviewDocente('')">Tutti</button>
+        ${groups.map(g => btn(g.key, 'Prof. ' + g.label, g.count)).join('')}
+        ${senza ? btn('_nessuno', 'Non indicato', senza) : ''}`;
+}
+
 async function renderExamSection(lobby) {
     const card = document.getElementById('exam-card');
     if (!card) return;
@@ -1759,6 +1843,9 @@ async function renderExamSection(lobby) {
 
     reviewState.lobbyId = lobby.id;
     reviewState.list = [];
+    reviewState.docente = '';
+    const profBox = document.getElementById('exam-prof');
+    if (profBox) { profBox.hidden = true; profBox.innerHTML = ''; }
 
     // In prova le recensioni non si caricano: servono login e regole del database
     if (state.guest) {
@@ -1802,13 +1889,22 @@ async function renderExamSection(lobby) {
 
 function setReviewScope(scope, silent) {
     reviewState.scope = scope;
-    document.querySelectorAll('.exam-scope-btn').forEach(b => {
+    reviewState.docente = '';                     // i docenti cambiano da un ateneo all'altro
+    document.querySelectorAll('#exam-scope .exam-scope-btn').forEach(b => {
         const on = b.dataset.scope === scope;
         b.classList.toggle('active', on);
         b.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
+    renderProfFilter();
     renderExamSummary();
     renderReviewList();
+}
+
+function docenteBasisText() {
+    if (!reviewState.docente) return '';
+    if (reviewState.docente === '_nessuno') return ', senza docente indicato';
+    const g = docenteGroups().find(x => x.key === reviewState.docente);
+    return g ? `, edizione del prof. ${escapeHTML(g.label)}` : '';
 }
 
 function median(nums) {
@@ -1821,7 +1917,7 @@ function median(nums) {
 function renderExamSummary() {
     const box = document.getElementById('exam-summary');
     if (!box) return;
-    const list = scopedReviews();
+    const list = filteredReviews();
     if (!list.length) { box.innerHTML = ''; return; }
 
     const avg = list.reduce((a, r) => a + (r.difficulty || 0), 0) / list.length;
@@ -1875,13 +1971,13 @@ function renderExamSummary() {
         </div>
         <div class="exam-dist" aria-label="Distribuzione della difficoltà">${distribution}</div>
         ${typeShare ? `<p class="exam-types-share">Tipo di prova: ${typeShare}</p>` : ''}
-        <p class="exam-basis">Basato su ${list.length} ${list.length === 1 ? 'recensione' : 'recensioni'}${reviewState.scope === 'mine' ? ' del tuo ateneo' : ''}.</p>`;
+        <p class="exam-basis">Basato su ${list.length} ${list.length === 1 ? 'recensione' : 'recensioni'}${reviewState.scope === 'mine' ? ' del tuo ateneo' : ''}${docenteBasisText()}.</p>`;
 }
 
 function renderReviewList() {
     const box = document.getElementById('exam-reviews');
     if (!box) return;
-    const list = scopedReviews().sort((a, b) => {
+    const list = filteredReviews().sort((a, b) => {
         if ((b.year || 0) !== (a.year || 0)) return (b.year || 0) - (a.year || 0);
         const ta = a.updatedAt && a.updatedAt.toMillis ? a.updatedAt.toMillis() : 0;
         const tb = b.updatedAt && b.updatedAt.toMillis ? b.updatedAt.toMillis() : 0;
@@ -1889,6 +1985,15 @@ function renderReviewList() {
     });
 
     if (!list.length) {
+        // Se il filtro docente non dà risultati, il modo più utile è toglierlo
+        if (reviewState.docente) {
+            box.innerHTML = `<div class="session-empty">
+                <p>Nessuna recensione con questo filtro.</p>
+                <small>Prova a guardare tutte le edizioni dell'esame.</small>
+                <div style="margin-top:12px"><button class="btn btn-secondary btn-sm" onclick="setReviewDocente('')">Mostra tutti i docenti</button></div>
+            </div>`;
+            return;
+        }
         const cta = canWriteReviews()
             ? `<button class="btn btn-primary btn-sm" onclick="openReviewForm()">Scrivi la prima</button>`
             : '';
@@ -1906,6 +2011,11 @@ function renderReviewList() {
         const types = (r.examTypes || []).map(t => `<span class="review-tag">${EXAM_TYPE_LABEL[t] || escapeHTML(t)}</span>`).join('');
         const parz = r.parziali === 'si' ? '<span class="review-tag">Con parziali</span>'
                    : r.parziali === 'no' ? '<span class="review-tag">Senza parziali</span>' : '';
+        // Recensioni vecchie o di chi non ricordava: restano valide, senza etichetta piena
+        const prof = docenteLabel(r);
+        const profTag = prof
+            ? `<span class="review-tag review-tag-prof">${escapeHTML(prof)}</span>`
+            : `<span class="review-tag review-tag-prof is-empty">Docente non indicato</span>`;
         return `
         <article class="review ${mine ? 'is-mine' : ''}">
             <header class="review-head">
@@ -1917,7 +2027,7 @@ function renderReviewList() {
                 <span class="review-diff diff-${r.difficulty}">${r.difficulty}/5 · ${DIFFICULTY_LABEL[r.difficulty] || ''}</span>
             </header>
             <div class="review-tags">
-                <span class="review-tag">${r.hours} ore</span>${types}${parz}
+                ${profTag}<span class="review-tag">${r.hours} ore</span>${types}${parz}
             </div>
             ${r.material ? `<div class="review-block"><strong>Cosa è servito</strong><p>${escapeHTML(r.material)}</p></div>` : ''}
             ${r.tip ? `<div class="review-block"><strong>Consiglio</strong><p>${escapeHTML(r.tip)}</p></div>` : ''}
@@ -1968,6 +2078,7 @@ function openReviewForm() {
     const mine = reviewState.list.find(r => r.uid === state.firebaseUid);
     setReviewDifficulty(mine ? mine.difficulty : 0);
     document.getElementById('review-hours').value = mine ? mine.hours : '';
+    document.getElementById('review-docente').value = mine ? (mine.docente || '') : '';
     yearSel.value = mine ? String(mine.year) : String(now);
     document.querySelectorAll('#review-types input').forEach(cb => {
         cb.checked = !!(mine && (mine.examTypes || []).includes(cb.value));
@@ -2002,6 +2113,7 @@ async function submitReview() {
     const parzialiEl = document.querySelector('input[name="review-parziali"]:checked');
     const material = document.getElementById('review-material').value.trim();
     const tip = document.getElementById('review-tip').value.trim();
+    const docente = cleanDocente(document.getElementById('review-docente').value);
 
     if (!difficulty) { showNotification('Indica quanto è difficile l\'esame.'); return; }
     if (!hours || hours < 1 || hours > 1000) { showNotification('Indica le ore di studio (tra 1 e 1000).'); document.getElementById('review-hours').focus(); return; }
@@ -2015,6 +2127,7 @@ async function submitReview() {
         parziali: parzialiEl ? parzialiEl.value : 'nonso',
         material: material.slice(0, 800),
         tip: tip.slice(0, 800),
+        docente: docente,
         uni: (state.playerUni || '').slice(0, 120),
         uniKey: uniKey(state.playerUni)
     });
@@ -2022,7 +2135,11 @@ async function submitReview() {
     if (!ok) { showNotification('Non riesco a pubblicare la recensione. Riprova tra poco.'); return; }
 
     closeModal('review');
-    showNotification(isNew ? '📋 Recensione pubblicata. Grazie, aiuti chi viene dopo!' : 'Recensione aggiornata.');
+    if (ok === 'senza-docente' && docente) {
+        showNotification('Recensione pubblicata, ma il docente non è stato salvato. Riprova più tardi ad aggiungerlo.');
+    } else {
+        showNotification(isNew ? '📋 Recensione pubblicata. Grazie, aiuti chi viene dopo!' : 'Recensione aggiornata.');
+    }
     // XP una sola volta per esame, anche se la cancello e la riscrivo
     const reviewed = state.reviewedLobbies || [];
     if (isNew && !reviewed.includes(lobbyId)) {

@@ -140,7 +140,7 @@ service cloud.firestore {
       let d = request.resource.data;
       return d.keys().hasOnly(['uid', 'lobbyId', 'authorName', 'uni', 'uniKey',
                                'difficulty', 'hours', 'year', 'examTypes', 'parziali',
-                               'material', 'tip', 'reportedBy', 'createdAt', 'updatedAt'])
+                               'material', 'tip', 'docente', 'reportedBy', 'createdAt', 'updatedAt'])
              && d.uid == request.auth.uid
              && d.lobbyId is string && d.lobbyId.size() > 0 && d.lobbyId.size() < 80
              && reviewId == request.auth.uid + '_' + d.lobbyId
@@ -154,6 +154,9 @@ service cloud.firestore {
              && d.parziali in ['si', 'no', 'nonso']
              && d.material is string && d.material.size() <= 800
              && d.tip is string && d.tip.size() <= 800
+             // Docente: solo un'etichetta per riconoscere l'edizione del corso.
+             // Facoltativo, e le recensioni scritte prima non ce l'hanno.
+             && (!d.keys().hasAny(['docente']) || (d.docente is string && d.docente.size() <= 60))
              && d.updatedAt == request.time;
     }
 
